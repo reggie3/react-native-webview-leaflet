@@ -36,8 +36,9 @@ export default class LeafletReactHTML extends React.Component {
     super();
     let map;
     this.state = {
-      showDebug: false,
-      currentPaymentStatus: null
+      showDebug: true,
+      currentPaymentStatus: null,
+      mapCenterCoords: null
     };
   }
 
@@ -59,10 +60,9 @@ export default class LeafletReactHTML extends React.Component {
 
   componentDidMount = () => {
     this.printElement('componentDidMount success');
-    this.printElement(L);
     this.registerMessageListeners();
     this.map = L.map('map', {
-      center: [36.916667, -76.2],
+      center: this.state.mapCenterCoords ? this.state.mapCenterCoords : [38.889931, -77],
       zoom: 13
     });
     // Initialize the base layer
@@ -76,7 +76,22 @@ export default class LeafletReactHTML extends React.Component {
     ).addTo(this.map);
   };
   registerMessageListeners = () => {
-    console.log('registering listeners');
+    this.printElement('registering listeners');
+    
+    // update the center location of the map
+    RNMessageChannel.on("MAP_CENTER_COORD_CHANGE", event => {
+      this.printElement(event);
+        this.setState({mapCenterCoords: event.payload.mapCenterCoords});
+        this.printElement('panning map');
+        this.map.flyTo(event.payload.mapCenterCoords);
+    });
+
+    RNMessageChannel.on("UPDATE_MARKERS", event => {
+      this.printElement('updating markers');
+      this.printElement('markers 0: ' + event.payload.markers[0]);
+      this.setState({markers: event.payload.markers});
+
+    });
   };
 
   render = () => {

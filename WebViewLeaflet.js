@@ -7,9 +7,11 @@ import renderIf from 'render-if';
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
     super();
+    this.setInitialMapState = this.setInitialMapState.bind(this);
     this.state = {
       webviewIsLoaded: false,
-      showActivityIndicator: true
+      showActivityIndicator: true,
+      mapCenterCoords: null
     };
   }
 
@@ -40,8 +42,48 @@ export default class WebViewLeaflet extends React.Component {
     });
   };
 
+  componentWillReceiveProps = nextProps => {
+    if (this.props.mapCenterCoords !== nextProps.mapCenterCoords) {
+      console.log('Update mapCenterCoords');
+      /* this.setState({ mapCenterCoords: nextProps.mapCenterCoords });
+      if (this.state.webviewIsLoaded) { */
+      this.sendUpdatedMapCenterCoordsToHTML(nextProps.mapCenterCoords);
+    }
+    if (this.props.locations !== nextProps.locations) {
+      this.sendLocations(nextProps.locations);
+    }
+  };
+
+  sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {
+    this.webview.emit('MAP_CENTER_COORD_CHANGE', {
+      payload: {
+        mapCenterCoords
+      }
+    });
+  };
+
+  sendLocations = markers => {
+    this.webview.emit('UPDATE_MARKERS', {
+      payload: {
+        markers
+      }
+    });
+  };
+
+  setInitialMapState = () => {
+    this.setState({
+      webviewIsLoaded: true,
+      showActivityIndicator: false
+    });
+    if (this.props.mapCenterCoords) {
+      this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
+    }
+    if (this.props.locations) {
+      this.sendLocations(this.props.locations);
+    }
+  };
+
   render() {
-    debugger;
     return (
       <View
         style={{
@@ -54,7 +96,7 @@ export default class WebViewLeaflet extends React.Component {
             <View style={styles.activityIndicatorContainer}>
               <ActivityIndicator
                 size="large"
-                animating={this.state.showGetNonceActivityIndicator}
+                animating={this.state.showActivityIndicator}
                 color="blue"
               />
             </View>
@@ -65,17 +107,17 @@ export default class WebViewLeaflet extends React.Component {
             this.webview = webview;
           }}
           source={require('./dist/index.html')}
-          onLoad={() => {
-            this.setState({
-              webviewIsLoaded: true,
-              showActivityIndicator: false
-            });
-          }}
+          onLoadEnd={this.setInitialMapState} 
         />
       </View>
     );
   }
 }
+
+WebViewLeaflet.PropTypes = {
+  mapCenterCoords: PropTypes.array,
+  locations: PropTypes.array
+};
 
 const styles = StyleSheet.create({
   activityOverlayStyle: {

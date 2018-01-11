@@ -18940,10 +18940,9 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.componentDidMount = function () {
       _this.printElement('componentDidMount success');
-      _this.printElement(L);
       _this.registerMessageListeners();
       _this.map = L.map('map', {
-        center: [36.916667, -76.2],
+        center: _this.state.mapCenterCoords ? _this.state.mapCenterCoords : [38.889931, -77],
         zoom: 13
       });
       // Initialize the base layer
@@ -18954,7 +18953,15 @@ var LeafletReactHTML = function (_React$Component) {
     };
 
     _this.registerMessageListeners = function () {
-      console.log('registering listeners');
+      _this.printElement('registering listeners');
+
+      // update the center location of the map
+      _reactNativeWebviewMessaging2.default.on("MAP_CENTER_COORD_CHANGE", function (event) {
+        _this.printElement(event);
+        _this.setState({ mapCenterCoords: event.payload.mapCenterCoords });
+        _this.printElement('panning map');
+        _this.map.flyTo(event.payload.mapCenterCoords);
+      });
     };
 
     _this.render = function () {
@@ -18972,8 +18979,9 @@ var LeafletReactHTML = function (_React$Component) {
 
     var map = void 0;
     _this.state = {
-      showDebug: false,
-      currentPaymentStatus: null
+      showDebug: true,
+      currentPaymentStatus: null,
+      mapCenterCoords: null
     };
     return _this;
   }
