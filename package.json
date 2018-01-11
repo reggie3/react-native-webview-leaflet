@@ -11,6 +11,7 @@
     "react": "16.0.0",
     "react-dom": "^16.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
+    "react-native-webview-messaging": "^1.2.1",
     "render-if": "^0.1.1"
   },
   "devDependencies": {
