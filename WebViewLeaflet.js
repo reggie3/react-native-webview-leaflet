@@ -15,7 +15,7 @@ const WebViewWithMessaging = withMessaging(WebView);
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
     super();
-    this.remote=null;
+    this.remote = null;
     this.setInitialMapState = this.setInitialMapState.bind(this);
     this.webview = null;
     this.state = {
@@ -37,36 +37,14 @@ export default class WebViewLeaflet extends React.Component {
     console.log('wbvw braintree mounted');
   }
 
-  bindListeners = () => {
-    this.remote.on('TEST_MESSAGE', event => this.setState({
-      message: `Received "greetingFromWebview" event: ${JSON.stringify(event)}`
-    }));
-
-    // receive an event when the webview is ready
-    this.remote.on('WEBVIEW_READY', event =>{
-      console.log('Received Webview Ready');
-      this.setInitialMapState();
-    })
-  };
-
-  componentWillReceiveProps = nextProps => {
-    if (this.props.mapCenterCoords !== nextProps.mapCenterCoords) {
-      console.log('Update mapCenterCoords');
-      /* this.setState({ mapCenterCoords: nextProps.mapCenterCoords });
-      if (this.state.webviewIsLoaded) { */
-      this.sendUpdatedMapCenterCoordsToHTML(nextProps.mapCenterCoords);
-    }
-    if (this.props.locations !== nextProps.locations) {
-      this.sendLocations(nextProps.locations);
-    }
-  };
-
   sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {
-    this.remote.emit('MAP_CENTER_COORD_CHANGE', {
-      payload: {
-        mapCenterCoords
-      }
-    });
+    if (this.remote) {
+      this.remote.emit('MAP_CENTER_COORD_CHANGE', {
+        payload: {
+          mapCenterCoords
+        }
+      });
+    }
   };
 
   sendLocations = markers => {
@@ -91,12 +69,47 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
+  bindListeners = () => {
+    this.remote.on('TEST_MESSAGE', event =>
+      this.setState({
+        message: `Received "greetingFromWebview" event: ${JSON.stringify(
+          event
+        )}`
+      })
+    );
+
+    // receive an event when the webview is ready
+    this.remote.on('WEBVIEW_READY', event => {
+      console.log('Received Webview Ready');
+      this.setInitialMapState();
+    });
+    console.log('listeners bound');
+  };
+
+  componentWillReceiveProps = nextProps => {
+    if (this.props.mapCenterCoords !== nextProps.mapCenterCoords) {
+      console.log('Update mapCenterCoords');
+      /* this.setState({ mapCenterCoords: nextProps.mapCenterCoords });
+      if (this.state.webviewIsLoaded) { */
+      this.sendUpdatedMapCenterCoordsToHTML(nextProps.mapCenterCoords);
+    }
+    if (this.props.locations !== nextProps.locations) {
+      this.sendLocations(nextProps.locations);
+    }
+  };
+
+  onWebViewLoaded = () => {
+    this.setState({
+      webviewIsLoaded: true,
+      showActivityIndicator: false
+    });
+  };
+
   createWebViewRef = webview => {
     this.webview = webview;
   };
 
   render() {
-    debugger;
     return (
       <View
         style={{
@@ -104,7 +117,12 @@ export default class WebViewLeaflet extends React.Component {
           backgroundColor: 'green'
         }}
       >
-       {renderIf(this.state.showActivityIndicator)(
+        <WebViewWithMessaging
+          ref={this.createWebViewRef}
+          source={require('./dist/index.html')}
+          onLoadEnd={this.onWebViewLoaded}
+        />
+        {renderIf(this.state.showActivityIndicator)(
           <View style={styles.activityOverlayStyle}>
             <View style={styles.activityIndicatorContainer}>
               <ActivityIndicator
@@ -115,16 +133,6 @@ export default class WebViewLeaflet extends React.Component {
             </View>
           </View>
         )}
-        <WebViewWithMessaging
-          ref={this.createWebViewRef}
-          source={require('./dist/index.html')}
-          onLoad={() => {
-            this.setState({
-              webviewIsLoaded: true,
-              showActivityIndicator: false
-            });
-          }}
-        />
       </View>
     );
   }
@@ -138,16 +146,14 @@ WebViewLeaflet.PropTypes = {
 const styles = StyleSheet.create({
   activityOverlayStyle: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(150, 150, 150, .55)',
-    marginHorizontal: 20,
-    marginVertical: 60,
+    backgroundColor: 'rgba(255, 255, 255, .5)',
     display: 'flex',
     justifyContent: 'center',
     alignContent: 'center',
     borderRadius: 5
   },
   activityIndicatorContainer: {
-    backgroundColor: 'white',
+    backgroundColor: 'lightgray',
     padding: 10,
     borderRadius: 50,
     alignSelf: 'center',

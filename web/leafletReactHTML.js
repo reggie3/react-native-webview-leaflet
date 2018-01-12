@@ -2,6 +2,8 @@ import renderIf from 'render-if';
 // Initialize leaflet.js
 const L = require('leaflet');
 import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/images/marker-icon-2x.png';
+import 'leaflet/dist/images/marker-shadow.png';
 import glamorous from 'glamorous';
 import { connectToRemote } from 'react-native-webview-messaging/web';
 import React from '../react.production.min.js';
@@ -20,7 +22,9 @@ const WebviewContainer = glamorous.div({
 });
 
 const MessagesDiv = glamorous.div({
-  backgroundColor: 'orange'
+  backgroundColor: 'orange',
+  maxHeight: 150,
+  overflow: 'auto'
 });
 const MapDiv = glamorous.div({
   position: 'relative',
@@ -50,42 +54,42 @@ export default class LeafletReactHTML extends React.Component {
         let el = document.createElement('pre');
         el.innerHTML = util.inspect(data, { showHidden: false, depth: null });
         document.getElementById('messages').appendChild(el);
+        console.log(JSON.stringify(data));
       } else if (typeof data === 'string') {
         let el = document.createElement('pre');
         el.innerHTML = data;
         document.getElementById('messages').appendChild(el);
+        console.log(data);
       }
     }
   };
 
-  async makeRemoteConnection () {
-    console.log('connecting to remote');
+  makeRemoteConnection = async () => {
+    // this.printElement('connecting to remote');
     try {
-      console.log('here 1');
-      console.log(connectToRemote);
       let remote = await connectToRemote();
-      console.log('here 2');
-
       this.remote = remote;
       this.printElement('remote connected');
       this.bindListeners();
 
       // let the webview know we are listening
-      this.remote.emit('WEBVIEW_READY');
-      console.log('WEBVIEW_READY emitted');
+      // this.printElement('emitting webview ready');
+      this.remote.emit('WEBVIEW_READY', {
+        payload: 'hello'
+      });
+      // this.printElement('WEBVIEW_READY emitted');
     } catch (error) {
       this.printElement(`remote connect error ${error}`);
-      console.log(`remote connect error ${error}`);
     }
   };
 
   componentDidMount = () => {
-    console.log('leafletReactHTML.js componentDidMount');
+    this.printElement('leafletReactHTML.js componentDidMount');
     this.makeRemoteConnection();
 
     this.map = L.map('map', {
-      center: [36.916667, -76.2],
-      zoom: 13
+      center: [51.5, -0.09],
+      zoom: 15
     });
     // Initialize the base layer
     var osm_mapnik = L.tileLayer(
@@ -103,16 +107,32 @@ export default class LeafletReactHTML extends React.Component {
 
     // update the center location of the map
     this.remote.on('MAP_CENTER_COORD_CHANGE', event => {
-      this.printElement(event);
+      // this.printElement(event);
       this.setState({ mapCenterCoords: event.payload.mapCenterCoords });
-      this.printElement('panning map');
+      // this.printElement('panning map');
       this.map.flyTo(event.payload.mapCenterCoords);
     });
 
     this.remote.on('UPDATE_MARKERS', event => {
-      this.printElement('updating markers');
-      this.printElement('markers 0: ' + event.payload.markers[0]);
-      this.setState({ markers: event.payload.markers });
+      this.printElement('UPDATE_MARKERS event recieved');
+      // this.printElement('markers 0: ' + JSON.stringify(event.payload.markers[0]));
+      this.setState({ markers: event.payload.markers }, () => {
+        this.printElement('update marker callback');
+        this.updateMarkers();
+      });
+    });
+  };
+
+  updateMarkers = () => {
+    this.printElement('in updateMarkers');
+
+    this.state.markers.forEach(marker => {
+      this.printElement(marker.coords);
+      try {
+        L.marker(marker.coords).addTo(this.map);
+      } catch (error) {
+        this.printElement(`error adding maker: ${error}`);
+      }
     });
   };
 

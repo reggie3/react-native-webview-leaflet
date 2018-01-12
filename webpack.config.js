@@ -1,20 +1,30 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+require.context("./modules/tasks/", true, /.*/);
+
+const env = 'DEV';
 
 module.exports = {
-  entry: ["babel-polyfill",'./web/component.js'],
+  entry: ['babel-polyfill', './web/component.js'],
   output: {
     path: path.join(__dirname, './dist'),
     filename: '[name].bundle.js'
   },
-  
+
   module: {
     rules: [
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         loaders: [
-          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+          {
+            loader: 'file-loader',
+            options: {
+              name(file) {
+                return 'images/[name].[ext]';
+              }
+            }
+          }
         ]
       },
       {
