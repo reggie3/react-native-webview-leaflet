@@ -3,11 +3,12 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './web/component.js',
+  entry: ["babel-polyfill",'./web/component.js'],
   output: {
     path: path.join(__dirname, './dist'),
     filename: '[name].bundle.js'
   },
+  
   module: {
     rules: [
       {
