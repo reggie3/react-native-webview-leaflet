@@ -38,6 +38,14 @@ export default class App extends React.Component {
     this.setState({ location });
   };
 
+  onMapClicked=(coords)=>{
+    console.log(`Map Clicked: app received: ${coords}`);
+  }
+
+  onMarkerClicked=(id)=>{
+    console.log(`Marker Clicked: ${id}`);
+  }
+
   render() {
     let coords = [];
     if (this.state.location !== null) {
@@ -58,7 +66,11 @@ export default class App extends React.Component {
         >
           Animated Map Markers App
         </Text>
-        <WebViewLeaflet mapCenterCoords={coords} locations={locations} />
+        <WebViewLeaflet 
+        mapCenterCoords={coords} 
+        locations={locations}
+        onMapCLicked={this.onMapClicked}
+        onMarkerClicked={this.onMarkerClicked} />
       </View>
     );
   }
