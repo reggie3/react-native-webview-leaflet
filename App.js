@@ -4,15 +4,14 @@ import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 import locations from './locations';
 
-const emoji = [ "😴", "😄", "😃", "⛔", "🎠", "🚓", "🚇" ];
+const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
-
-
 
 export default class App extends React.Component {
   state = {
     location: null,
-    errorMessage: null
+    errorMessage: null,
+    locations
   };
 
   componentWillMount() {
@@ -24,6 +23,27 @@ export default class App extends React.Component {
     } else {
       this._getLocationAsync();
     }
+  }
+
+  componentDidMount() {
+    
+  }
+
+  onWebViewReady=()=>{
+    setInterval(() => {
+      console.log('updating durations');
+      let updatedLocations = this.state.locations.map(location => {
+        let updatedLocation =  Object.assign({}, location, {
+          animation: Object.assign({}, location.animation, {
+            duration: location.animation.duration + .5
+          })
+        });
+        return updatedLocation;
+      });
+      debugger;
+
+      this.setState({locations: updatedLocations})
+    }, 1000);
   }
 
   _getLocationAsync = async () => {
@@ -38,13 +58,13 @@ export default class App extends React.Component {
     this.setState({ location });
   };
 
-  onMapClicked=(coords)=>{
+  onMapClicked = coords => {
     console.log(`Map Clicked: app received: ${coords}`);
-  }
+  };
 
-  onMarkerClicked=(id)=>{
+  onMarkerClicked = id => {
     console.log(`Marker Clicked: ${id}`);
-  }
+  };
 
   render() {
     let coords = [];
@@ -66,11 +86,13 @@ export default class App extends React.Component {
         >
           Animated Map Markers App
         </Text>
-        <WebViewLeaflet 
-        mapCenterCoords={coords} 
-        locations={locations}
-        onMapCLicked={this.onMapClicked}
-        onMarkerClicked={this.onMarkerClicked} />
+        <WebViewLeaflet
+          mapCenterCoords={coords}
+          locations={this.state.locations}
+          onMapClicked={this.onMapClicked}
+          onMarkerClicked={this.onMarkerClicked}
+          onWebViewReady={this.onWebViewReady}
+        />
       </View>
     );
   }

@@ -92,7 +92,7 @@ export default class WebViewLeaflet extends React.Component {
     this.remote.on('MAP_CLICKED', event => {
       console.log('Received MAP_CLICKED');
       console.log(event);
-      this.props.onMapCLicked([
+      this.props.onMapClicked([
         event.payload.coords.lat,
         event.payload.coords.lng
       ]);
@@ -101,6 +101,7 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   componentWillReceiveProps = nextProps => {
+    debugger;
     if (this.props.mapCenterCoords !== nextProps.mapCenterCoords) {
       console.log('Update mapCenterCoords');
       /* this.setState({ mapCenterCoords: nextProps.mapCenterCoords });
@@ -117,6 +118,7 @@ export default class WebViewLeaflet extends React.Component {
       webviewIsLoaded: true,
       showActivityIndicator: false
     });
+    this.props.onWebViewReady();
   };
 
   createWebViewRef = webview => {
@@ -154,7 +156,10 @@ export default class WebViewLeaflet extends React.Component {
 
 WebViewLeaflet.PropTypes = {
   mapCenterCoords: PropTypes.array,
-  locations: PropTypes.array
+  locations: PropTypes.array,
+  onMapClicked: PropTypes.function,
+  onMarkerClicked: PropTypes.function,
+  onWebviewReady: PropTypes.function,
 };
 
 const styles = StyleSheet.create({

@@ -28413,8 +28413,10 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.componentDidMount = function () {
       _this.printElement('leafletReactHTML.js componentDidMount');
+      // setup react-native-webview-messaging channel
       _this.makeRemoteConnection();
 
+      // set up map
       _this.map = L.map('map', {
         center: [51.5, -0.09],
         zoom: 15
@@ -28457,7 +28459,7 @@ var LeafletReactHTML = function (_React$Component) {
       });
     };
 
-    _this.iconFactory = function (icon, animation) {
+    _this.getIcon = function (icon, animation) {
       // this.printElement(icon);
       // print animated markers
       if (animation) {
@@ -28477,27 +28479,59 @@ var LeafletReactHTML = function (_React$Component) {
     };
 
     _this.updateMarkers = function () {
-      // this.printElement('in updateMarkers');
+      _this.printElement('in updateMarkers');
+      _this.printElement(markers[0]);
 
-      _this.state.markers.forEach(function (marker) {
-        // this.printElement(marker.coords);
-        try {
-          var mapMarker = L.marker(marker.coords, {
-            icon: _this.iconFactory(marker.icon, marker.animation)
-          }).addTo(_this.map);
-
-          mapMarker.on('click', function () {
-            _this.printElement('marker clicked ' + marker.id);
-            _this.remote.emit('MARKER_CLICKED', {
-              payload: {
-                id: marker.id ? marker.id : null
-              }
-            });
-          });
-        } catch (error) {
-          _this.printElement('error adding maker: ' + error);
+      try {
+        //remove all the old markers from the map
+        if (_this.layerMapMarkers !== null) {
+          try {
+            _this.map.removeLayer(_this.layerMapMarkers);
+          } catch (error) {
+            _this.printElement('error removing layer: ' + error);
+          }
         }
-      });
+
+        // add the new markers to the map
+        // array to hold map markers in as they are created
+        // this array will be added to the map via a layer
+        var mapMarkers = _this.state.markers.map(function (marker) {
+          // this.printElement(marker.coords);
+
+          try {
+            var mapMarker = L.marker(marker.coords, {
+              icon: _this.getIcon(marker.icon, marker.animation)
+            });
+
+            // bind a click event to this marker with the marker id
+            // click event is for use by the parent of this html file's
+            // WebView
+            mapMarker.on('click', function () {
+              _this.printElement('marker clicked ' + marker.id);
+              _this.remote.emit('MARKER_CLICKED', {
+                payload: {
+                  id: marker.id ? marker.id : null
+                }
+              });
+            });
+
+            return mapMarker;
+          } catch (error) {
+            _this.printElement('error adding maker: ' + error);
+          }
+        });
+
+        _this.printElement('creating and adding layer');
+
+        try {
+          _this.layerMapMarkers = L.layerGroup(mapMarkers);
+          _this.map.addLayer(_this.layerMapMarkers);
+        } catch (error) {
+          _this.printElement('error adding layer: ' + error);
+        }
+      } catch (error) {
+        _this.printElement('error updating markers: ' + error);
+      }
     };
 
     _this.render = function () {
@@ -28515,6 +28549,8 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.map = null;
     _this.remote = null;
+    // this.mapMarkers = [];
+    _this.layerMapMarkers = null;
     _this.state = {
       showDebug: true,
       currentPaymentStatus: null
@@ -34484,10 +34520,9 @@ version:"16.0.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurren
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-var test = exports.test = "<svg version=\"1.1\"\nbaseProfile=\"full\"\nwidth=\"300\" height=\"200\"\nxmlns=\"http://www.w3.org/2000/svg\">\n<rect width=\"100%\" height=\"100%\" fill=\"red\" />\n<circle cx=\"150\" cy=\"100\" r=\"80\" fill=\"green\" />\n<text x=\"150\" y=\"125\" font-size=\"60\" text-anchor=\"middle\" fill=\"white\">SVG</text>\n</svg>";
-var circleMarker = exports.circleMarker = "<svg version=\"1.1\"\nfill-opacity=\"0.75\"\nbaseProfile=\"full\"\nwidth=\"40\" height=\"40\"\nviewBox=\"0 0 40 40\"\nxmlns=\"http://www.w3.org/2000/svg\">\n<circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"red\"/>\n</svg>";
+var mapMaker = exports.mapMaker = "<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n\t viewBox=\"0 0 365 560\" enable-background=\"new 0 0 365 560\" xml:space=\"preserve\">\n<g>\n\t<path fill=\"#00AEEF\" d=\"M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9\n\t\tC96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z M122.2,187.2c0-33.6,27.2-60.8,60.8-60.8\n\t\tc33.6,0,60.8,27.2,60.8,60.8S216.5,248,182.9,248C149.4,248,122.2,220.8,122.2,187.2z\"/>\n</g>\n</svg>";
 
 /***/ }),
 /* 402 */

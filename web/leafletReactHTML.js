@@ -45,6 +45,8 @@ export default class LeafletReactHTML extends React.Component {
     super();
     this.map = null;
     this.remote = null;
+    // this.mapMarkers = [];
+    this.layerMapMarkers = null;
     this.state = {
       showDebug: true,
       currentPaymentStatus: null
@@ -90,8 +92,10 @@ export default class LeafletReactHTML extends React.Component {
 
   componentDidMount = () => {
     this.printElement('leafletReactHTML.js componentDidMount');
+    // setup react-native-webview-messaging channel
     this.makeRemoteConnection();
 
+    // set up map
     this.map = L.map('map', {
       center: [51.5, -0.09],
       zoom: 15
@@ -117,7 +121,6 @@ export default class LeafletReactHTML extends React.Component {
     });
   };
 
-
   bindListeners = () => {
     // this.printElement('registering listeners');
 
@@ -139,24 +142,14 @@ export default class LeafletReactHTML extends React.Component {
     });
   };
 
-  iconFactory = (icon, animation) => {
+  getIcon = (icon, animation) => {
     // this.printElement(icon);
     // print animated markers
     if (animation) {
       return L.divIcon({
         iconSize: null,
         className: 'clearMarkerContainer',
-        html: `<div class='animationContainer' style="
-      animation-name: ${animation.name ? animation.name : 'bounce'}; 
-      animation-duration: ${animation.duration ? animation.duration : 1}s ;
-      animation-delay: ${animation.delay ? animation.delay : 0}s;
-      animation-iteration-count: ${
-        animation.interationCount ? animation.interationCount : 'infinite'
-      }">
-      <div style='font-size: 36px'>
-      ${icon}
-      </div>
-      </div>`
+        html: 
       });
     } else {
       // print non animated markers
@@ -170,28 +163,66 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
+  /*******************************
+   * 
+   * TODO: removing the layer of map marers does not work
+   * need to maintain reference to each marker, and individually update it
+   * by having it call getIcon with the updated date to get a new icon
+   */
   updateMarkers = () => {
-    // this.printElement('in updateMarkers');
+    this.printElement('in updateMarkers');
+    this.printElement(markers[0]);
 
-    this.state.markers.forEach(marker => {
-      // this.printElement(marker.coords);
-      try {
-        let mapMarker = L.marker(marker.coords, {
-          icon: this.iconFactory(marker.icon, marker.animation)
-        }).addTo(this.map);
-
-        mapMarker.on('click', () => {
-          this.printElement(`marker clicked ${marker.id}`);
-          this.remote.emit('MARKER_CLICKED', {
-            payload: {
-              id: marker.id ? marker.id : null
-            }
-          });
-        });
-      } catch (error) {
-        this.printElement(`error adding maker: ${error}`);
+    try {
+      //remove all the old markers from the map
+      if (this.layerMapMarkers !== null) {
+        try {
+          this.map.removeLayer(this.layerMapMarkers);
+        } catch (error) {
+          this.printElement(`error removing layer: ${error}`);
+        }
       }
-    });
+
+      // add the new markers to the map
+      // array to hold map markers in as they are created
+      // this array will be added to the map via a layer
+      let mapMarkers = this.state.markers.map(marker => {
+        // this.printElement(marker.coords);
+
+        try {
+          let mapMarker = L.marker(marker.coords, {
+            icon: this.getIcon(marker.icon, marker.animation)
+          });
+
+          // bind a click event to this marker with the marker id
+          // click event is for use by the parent of this html file's
+          // WebView
+          mapMarker.on('click', () => {
+            this.printElement(`marker clicked ${marker.id}`);
+            this.remote.emit('MARKER_CLICKED', {
+              payload: {
+                id: marker.id ? marker.id : null
+              }
+            });
+          });
+
+          return mapMarker;
+        } catch (error) {
+          this.printElement(`error adding maker: ${error}`);
+        }
+      });
+
+      this.printElement(`creating and adding layer`);
+
+      try {
+        this.layerMapMarkers = L.layerGroup(mapMarkers);
+        this.map.addLayer(this.layerMapMarkers);
+      } catch (error) {
+        this.printElement(`error adding layer: ${error}`);
+      }
+    } catch (error) {
+      this.printElement(`error updating markers: ${error}`);
+    }
   };
 
   render = () => {

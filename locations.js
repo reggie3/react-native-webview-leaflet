@@ -1,6 +1,6 @@
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
-const duration = Math.floor(Math.random() * 3) + 1;
+const duration = Math.floor(Math.random() * 10) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
 const interationCount = 'infinite';
 
@@ -11,7 +11,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -22,7 +22,7 @@ export default (locations = [
     icon: 'Hello',
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -33,7 +33,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -44,7 +44,7 @@ export default (locations = [
     icon: 'Fish',
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -55,7 +55,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -66,7 +66,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -77,7 +77,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -88,7 +88,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -99,7 +99,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -110,7 +110,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -121,7 +121,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -132,7 +132,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -143,7 +143,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -154,7 +154,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -165,7 +165,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -176,7 +176,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -187,7 +187,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -198,7 +198,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -209,7 +209,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
@@ -220,7 +220,7 @@ export default (locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
-      duration: Math.floor(Math.random() * 3) + 1,
+      duration: Math.floor(Math.random() * 10) + 1,
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
