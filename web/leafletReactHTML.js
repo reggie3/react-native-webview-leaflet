@@ -9,6 +9,11 @@ import { connectToRemote } from 'react-native-webview-messaging/web';
 import React from '../react.production.min.js';
 import PropTypes from 'prop-types';
 const util = require('util');
+import * as markers from './markers.js';
+import './markers.css';
+
+const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 
 const WebviewContainer = glamorous.div({
   position: 'absolute',
@@ -100,10 +105,21 @@ export default class LeafletReactHTML extends React.Component {
           '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     ).addTo(this.map);
+
+    // add click event to map
+    this.map.on('click', e => {
+      this.printElement(`map clicked ${e.latlng}`);
+      this.remote.emit('MAP_CLICKED', {
+        payload: {
+          coords: e.latlng
+        }
+      });
+    });
   };
 
+
   bindListeners = () => {
-    this.printElement('registering listeners');
+    // this.printElement('registering listeners');
 
     // update the center location of the map
     this.remote.on('MAP_CENTER_COORD_CHANGE', event => {
@@ -114,22 +130,64 @@ export default class LeafletReactHTML extends React.Component {
     });
 
     this.remote.on('UPDATE_MARKERS', event => {
-      this.printElement('UPDATE_MARKERS event recieved');
+      // this.printElement('UPDATE_MARKERS event recieved');
       // this.printElement('markers 0: ' + JSON.stringify(event.payload.markers[0]));
       this.setState({ markers: event.payload.markers }, () => {
-        this.printElement('update marker callback');
+        // this.printElement('update marker callback');
         this.updateMarkers();
       });
     });
   };
 
+  iconFactory = (icon, animation) => {
+    // this.printElement(icon);
+    // print animated markers
+    if (animation) {
+      return L.divIcon({
+        iconSize: null,
+        className: 'clearMarkerContainer',
+        html: `<div class='animationContainer' style="
+      animation-name: ${animation.name ? animation.name : 'bounce'}; 
+      animation-duration: ${animation.duration ? animation.duration : 1}s ;
+      animation-delay: ${animation.delay ? animation.delay : 0}s;
+      animation-iteration-count: ${
+        animation.interationCount ? animation.interationCount : 'infinite'
+      }">
+      <div style='font-size: 36px'>
+      ${icon}
+      </div>
+      </div>`
+      });
+    } else {
+      // print non animated markers
+      return L.divIcon({
+        iconSize: null,
+        className: 'clearMarkerContainer',
+        html: `<div style='font-size: 36px'>
+        ${icon}
+        </div>`
+      });
+    }
+  };
+
   updateMarkers = () => {
-    this.printElement('in updateMarkers');
+    // this.printElement('in updateMarkers');
 
     this.state.markers.forEach(marker => {
-      this.printElement(marker.coords);
+      // this.printElement(marker.coords);
       try {
-        L.marker(marker.coords).addTo(this.map);
+        let mapMarker = L.marker(marker.coords, {
+          icon: this.iconFactory(marker.icon, marker.animation)
+        }).addTo(this.map);
+
+        mapMarker.on('click', () => {
+          this.printElement(`marker clicked ${marker.id}`);
+          this.remote.emit('MARKER_CLICKED', {
+            payload: {
+              id: marker.id ? marker.id : null
+            }
+          });
+        });
       } catch (error) {
         this.printElement(`error adding maker: ${error}`);
       }

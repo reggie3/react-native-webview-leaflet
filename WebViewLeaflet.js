@@ -83,6 +83,13 @@ export default class WebViewLeaflet extends React.Component {
       console.log('Received Webview Ready');
       this.setInitialMapState();
     });
+  
+    this.remote.on('MARKER_CLICKED', event => {
+      console.log('Received MARKER_CLICKED');
+    });
+    this.remote.on('MAP_CLICKED', event => {
+      console.log('Received MAP_CLICKED');
+    });
     console.log('listeners bound');
   };
 
