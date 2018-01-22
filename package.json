@@ -1,0 +1,66 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "private": false,
+  "name": "react-native-webview-leaflet",
+  "version": "0.0.5",
+  "files": [
+    "dist",
+    "WebViewLeaflet.js",
+    "react.production.min.js",
+    "react-dom.production.min"
+  ],
+  "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reggie3/react-native-webview-leaflet.git"
+  },
+  "keywords": [
+    "react-native",
+    "leaflet",
+    "expo",
+    "webview"
+  ],
+  "author": "Reginald Johnson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/reggie3/react-native-webview-leaflet/issues"
+  },
+  "homepage": "https://github.com/reggie3/react-native-webview-leaflet#readme",
+  "dependencies": {
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "expo": "^24.0.0",
+    "glamor": "^2.20.40",
+    "glamorous": "^4.11.2",
+    "is-valid-coordinates": "^1.0.0",
+    "leaflet": "^1.2.0",
+    "prop-types": "^15.6.0",
+    "react": "16.0.0",
+    "react-dom": "^16.2.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
+    "react-native-webview-messaging": "^2.0.0-alpha.4",
+    "render-if": "^0.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.0.6",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
+    "css-loader": "^0.28.8",
+    "file-loader": "^1.1.6",
+    "html-webpack-plugin": "^2.30.1",
+    "identity-obj-proxy": "^3.0.0",
+    "image-webpack-loader": "^3.4.2",
+    "jest": "^22.0.6",
+    "mocha": "^4.1.0",
+    "regenerator-runtime": "^0.11.1",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.1"
+  }
+}
