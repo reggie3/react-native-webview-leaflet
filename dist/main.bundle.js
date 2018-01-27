@@ -28440,6 +28440,12 @@ var LeafletReactHTML = function (_React$Component) {
         attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(_this.map);
 
+      /* L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiZ2Vlemhhd2siLCJhIjoiY2ltcDFpY2dwMDBub3VtbTFkbWY5b3BhMSJ9.4mN7LI5CJMCDFvqkx1OJZw'
+        }).addTo(this.map); */
+
       // add click event to map
       var that = _this;
       _this.map.on('click', function (e) {
@@ -28451,8 +28457,8 @@ var LeafletReactHTML = function (_React$Component) {
         });
       });
       // create the marker layer
-      _this.layerMapMarkers = L.layerGroup();
-      _this.map.addLayer(_this.layerMapMarkers);
+      _this.layerMarkerCluster = L.markerClusterGroup();
+      _this.map.addLayer(_this.layerMarkerCluster);
 
       if (BROWSER_TESTING_ENABLED) {
         _this.updateMarkers(_this.state.locations);
@@ -28536,7 +28542,7 @@ var LeafletReactHTML = function (_React$Component) {
       try {
         // this.printElement(marker.getElement());
         // remove this marker
-        marker.removeFrom(_this.map);
+        marker.removeFrom(_this.layerMarkerCluster);
         // create a new marker with correct properties
         var newMarker = _this.createNewMarker(markerInfo);
         _this.addMarkerToMakerLayer(newMarker);
@@ -28581,20 +28587,9 @@ var LeafletReactHTML = function (_React$Component) {
     _this.addMarkerToMakerLayer = function (marker) {
       // this.printElement(`adding marker: ${marker}`)
       try {
-        marker.addTo(_this.map);
+        marker.addTo(_this.layerMarkerCluster);
       } catch (error) {
         _this.printElement('error adding maker to layer: ' + error);
-      }
-    };
-
-    _this.removeMapMarkerLayer = function () {
-      //remove all the old markers from the map
-      if (_this.layerMapMarkers !== null) {
-        try {
-          _this.map.removeLayer(_this.layerMapMarkers);
-        } catch (error) {
-          _this.printElement('error removing layer: ' + error);
-        }
       }
     };
 
@@ -28635,7 +28630,7 @@ var LeafletReactHTML = function (_React$Component) {
     _this.map = null;
     _this.remote = null;
     _this.mapMarkerDictionary = {};
-    _this.layerMapMarkers = null;
+    _this.layerMarkerCluster = null;
 
     _this.state = {
       showDebug: true,

@@ -53,7 +53,7 @@ export default class LeafletReactHTML extends React.Component {
     this.map = null;
     this.remote = null;
     this.mapMarkerDictionary = {};
-    this.layerMapMarkers = null;
+    this.layerMarkerCluster = null;
 
     this.state = {
       showDebug: true,
@@ -119,6 +119,12 @@ export default class LeafletReactHTML extends React.Component {
           '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     ).addTo(this.map);
+    
+    /* L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      maxZoom: 18,
+      id: 'mapbox.streets',
+      accessToken: 'pk.eyJ1IjoiZ2Vlemhhd2siLCJhIjoiY2ltcDFpY2dwMDBub3VtbTFkbWY5b3BhMSJ9.4mN7LI5CJMCDFvqkx1OJZw'
+      }).addTo(this.map); */
 
     // add click event to map
     let that = this;
@@ -131,8 +137,8 @@ export default class LeafletReactHTML extends React.Component {
       });
     });
     // create the marker layer
-    this.layerMapMarkers = L.layerGroup();
-    this.map.addLayer(this.layerMapMarkers);
+    this.layerMarkerCluster = L.markerClusterGroup();
+    this.map.addLayer(this.layerMarkerCluster);
     
     if (BROWSER_TESTING_ENABLED) {
       this.updateMarkers(this.state.locations);
@@ -237,7 +243,7 @@ export default class LeafletReactHTML extends React.Component {
     try {
       // this.printElement(marker.getElement());
       // remove this marker
-      marker.removeFrom(this.map);
+      marker.removeFrom(this.layerMarkerCluster);
       // create a new marker with correct properties
       let newMarker = this.createNewMarker(markerInfo);
       this.addMarkerToMakerLayer(newMarker);
@@ -292,22 +298,13 @@ export default class LeafletReactHTML extends React.Component {
   addMarkerToMakerLayer = marker => {
     // this.printElement(`adding marker: ${marker}`)
     try {
-      marker.addTo(this.map);
+      marker.addTo(this.layerMarkerCluster);
     } catch (error) {
       this.printElement(`error adding maker to layer: ${error}`);
     }
   };
 
-  removeMapMarkerLayer = () => {
-    //remove all the old markers from the map
-    if (this.layerMapMarkers !== null) {
-      try {
-        this.map.removeLayer(this.layerMapMarkers);
-      } catch (error) {
-        this.printElement(`error removing layer: ${error}`);
-      }
-    }
-  };
+ 
 
   render = () => {
     return (
