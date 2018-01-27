@@ -12,7 +12,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000
   },
@@ -60,6 +60,22 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.scss', '.css'],
+    alias: {
+      leaflet_search:
+        __dirname + '/node_modules/leaflet-search/dist/leaflet-search.min.js',
+      leaflet_search_css:
+        __dirname + '/node_modules/leaflet-search/dist/leaflet-search.min.css',
+      marker_cluster_css:
+        __dirname +
+        '/node_modules/leaflet.markercluster/dist/MarkerCluster.css',
+      marker_cluster_default_css:
+        __dirname +
+        '/node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
+      leaflet_css: __dirname + '/node_modules/leaflet/dist/leaflet.css'
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

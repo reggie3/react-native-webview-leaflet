@@ -32,7 +32,7 @@ const locations = [
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     
   },
-  /*
+  
   {
     id: Math.floor(Math.random() * 1000),
     coords: [37.0580835, -75.82318747],
@@ -219,6 +219,6 @@ const locations = [
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
-  } */
+  } 
 ];
 export default locations;

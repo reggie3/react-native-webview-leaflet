@@ -23,19 +23,22 @@ export default class WebViewLeaflet extends React.Component {
   }
 
   componentDidMount() {
-    // register listeners to listen for events from the html
-    // we'll receive a nonce once the requestPaymentMethodComplete is completed
+    console.log(`WebViewLeaflet INFO: connecting to remote`);
+
     connectToRemote(this.webview)
       .then(remote => {
         this.remote = remote;
+        console.log(`WebViewLeaflet INFO: remote connected`);
         this.bindListeners();
 
         // attempt to send the map center coords in case the remote is 
         // connected after the webview is ready
         this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
       })
-      .catch(console.log);
-    console.log('wbvw braintree mounted');
+      .catch((error)=>{
+        console.log(`WebViewLeaflet ERROR: ${error}`);
+      });
+    console.log('WebViewLeaflet INFO: wbvw braintree mounted');
   }
 
   sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {

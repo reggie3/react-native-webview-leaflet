@@ -1,7 +1,14 @@
 import renderIf from 'render-if';
 // Initialize leaflet.js
-const L = require('leaflet');
-import 'leaflet/dist/leaflet.css';
+var L = require('leaflet')
+// require('leaflet_search')
+// require('leaflet_search_css')
+require('leaflet.markercluster')
+require('marker_cluster_css')
+require('marker_cluster_default_css')
+require('leaflet_css')
+
+// import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import glamorous from 'glamorous';
@@ -14,7 +21,7 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
