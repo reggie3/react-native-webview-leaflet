@@ -16,7 +16,7 @@ export default (locations = [
       interationCount
     }
   },
-  {
+ /*  {
     id: Math.floor(Math.random() * 1000),
     coords: [36.46410354, -75.6432701],
     icon: 'Hello',
@@ -224,5 +224,5 @@ export default (locations = [
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
-  }
+  } */
 ]);

@@ -21,7 +21,7 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
@@ -56,7 +56,7 @@ export default class LeafletReactHTML extends React.Component {
     this.layerMarkerCluster = null;
 
     this.state = {
-      showDebug: true,
+      showDebug: false,
       locations: BROWSER_TESTING_ENABLED ? locations : []
     };
   }

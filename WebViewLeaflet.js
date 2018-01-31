@@ -179,7 +179,7 @@ export default class WebViewLeaflet extends React.Component {
   }
 }
 
-WebViewLeaflet.PropTypes = {
+WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
   onMapClicked: PropTypes.function,
