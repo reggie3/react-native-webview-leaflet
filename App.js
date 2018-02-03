@@ -42,7 +42,7 @@ export default class App extends React.Component {
   };
 
   onWebViewReady = () => {
-    setInterval(this.updateMarkerSpeed.bind(this), 1000);
+    // setInterval(this.updateMarkerSpeed.bind(this), 1000);
   };
 
   updateMarkerSpeed = () => {

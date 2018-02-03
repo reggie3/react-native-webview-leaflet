@@ -1,18 +1,14 @@
 import React from './react.production.min.js';
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Text} from 'react-native';
-import { connectToRemote, WebView } from 'react-native-webview-messaging';
+import { View, StyleSheet, ActivityIndicator, Text, WebView } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
+const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
     super();
     this.remote = null;
-    this.setInitialMapState = this.setInitialMapState.bind(this);
+    // this.setInitialMapState = this.setInitialMapState.bind(this);
     this.webview = null;
     this.state = {
       webviewIsLoaded: false,
@@ -23,45 +19,22 @@ export default class WebViewLeaflet extends React.Component {
   }
 
   componentDidMount() {
-    console.log(`WebViewLeaflet INFO: connecting to remote`);
-
-    connectToRemote(this.webview)
-      .then(remote => {
-        this.remote = remote;
-        console.log(`WebViewLeaflet INFO: remote connected`);
-        this.bindListeners();
-
-        // attempt to send the map center coords in case the remote is 
-        // connected after the webview is ready
-        this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
-      })
-      .catch((error)=>{
-        console.log(`WebViewLeaflet ERROR: ${error}`);
-      });
-    console.log('WebViewLeaflet INFO: wbvw braintree mounted');
   }
 
   sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {
-    console.log(`updating coords ${mapCenterCoords}`)
-    if (this.remote && mapCenterCoords) {
-      this.remote.emit('MAP_CENTER_COORD_CHANGE', {
-        payload: {
-          mapCenterCoords,
-          panToLocation: this.props.panToLocation
-        }
+    console.log(`updating coords ${mapCenterCoords}`);
+      this.sendMessage('MAP_CENTER_COORD_CHANGE', {
+        mapCenterCoords,
+        panToLocation: this.props.panToLocation
       });
-    }
+    
   };
 
   sendLocations = markers => {
-    this.remote.emit('UPDATE_MARKERS', {
-      payload: {
-        markers
-      }
-    });
+    this.sendMessage('UPDATE_MARKERS', {markers});
   };
 
-  setInitialMapState = () => {
+/*   setInitialMapState = () => {
     console.log('setting initial map state');
     this.setState({
       webviewIsLoaded: true,
@@ -73,37 +46,82 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.hasOwnProperty('locations')) {
       this.sendLocations(this.props.locations);
     }
+  }; */
+
+  handleMessage = event => {
+    let msgData;
+    try {
+      msgData = JSON.parse(event.nativeEvent.data);
+      if (
+        msgData.hasOwnProperty('prefix') &&
+        msgData.prefix === MESSAGE_PREFIX
+      ) {
+        console.log(`WebViewLeaflet: received message ${msgData.type}`);
+
+        switch (msgData.type) {
+          // receive an event when the webview is ready
+         /*  case 'WEBVIEW_READY':
+            console.log('Received Webview Ready');
+            this.setInitialMapState();
+            break; */
+
+          case 'MARKER_CLICKED':
+            console.log('Received MARKER_CLICKED');
+            console.log(msgData);
+            this.props.onMarkerClicked(msgData.payload.id);
+            break;
+
+          case 'MAP_CLICKED':
+            console.log('Received MAP_CLICKED');
+            console.log(msgData);
+            this.props.onMapClicked([
+              msgData.payload.coords.lat,
+              msgData.payload.coords.lng
+            ]);
+            break;
+          default:
+            console.warn(
+              `WebViewLeaflet Error: Unhandled message type received "${
+                msgData.type
+              }"`
+            );
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+      return;
+    }
   };
 
-  bindListeners = () => {
-    this.remote.on('TEST_MESSAGE', event =>
-      this.setState({
-        message: `Received "greetingFromWebview" event: ${JSON.stringify(
-          event
-        )}`
-      })
+  sendMessage = (type, payload) => {
+    console.log(`WebViewLeaflet: sending message ${type}`);
+    this.webview.postMessage(JSON.stringify(
+      {
+        prefix: MESSAGE_PREFIX,
+        type,
+        payload
+      }),
+      '*'
     );
+  };
 
-    // receive an event when the webview is ready
-    this.remote.on('WEBVIEW_READY', event => {
-      console.log('Received Webview Ready');
-      this.setInitialMapState();
+  onWebViewLoaded = () => {
+    this.setState({
+      webviewIsLoaded: true,
+      showActivityIndicator: false
     });
+    if (this.props.mapCenterCoords.length > 0) {
+      this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
+    }
+    if (this.props.hasOwnProperty('locations')) {
+      this.sendLocations(this.props.locations);
+    }
+    // let the parent know the webview is ready
+    this.props.onWebViewReady();
+  };
 
-    this.remote.on('MARKER_CLICKED', event => {
-      console.log('Received MARKER_CLICKED');
-      console.log(event);
-      this.props.onMarkerClicked(event.payload.id);
-    });
-    this.remote.on('MAP_CLICKED', event => {
-      console.log('Received MAP_CLICKED');
-      console.log(event);
-      this.props.onMapClicked([
-        event.payload.coords.lat,
-        event.payload.coords.lng
-      ]);
-    });
-    console.log('listeners bound');
+  createWebViewRef = webview => {
+    this.webview = webview;
   };
 
   componentWillReceiveProps = nextProps => {
@@ -135,21 +153,6 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  onWebViewLoaded = () => {
-    this.setState({
-      webviewIsLoaded: true,
-      showActivityIndicator: false
-    });
-    if (this.props.mapCenterCoords.length > 0) {
-      this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
-    }
-    this.props.onWebViewReady();
-  };
-
-  createWebViewRef = webview => {
-    this.webview = webview;
-  };
-
   render() {
     return (
       <View
@@ -162,6 +165,7 @@ export default class WebViewLeaflet extends React.Component {
           ref={this.createWebViewRef}
           source={require('./dist/index.html')}
           onLoadEnd={this.onWebViewLoaded}
+          onMessage={this.handleMessage}
         />
         {renderIf(this.state.showActivityIndicator)(
           <View style={styles.activityOverlayStyle}>
@@ -179,7 +183,7 @@ export default class WebViewLeaflet extends React.Component {
   }
 }
 
-WebViewLeaflet.propTypes = {
+/* WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
   onMapClicked: PropTypes.function,
@@ -199,7 +203,7 @@ WebViewLeaflet.defaults = {
     console.log('onWebviewReady');
   },
   panToLocation: false
-};
+}; */
 
 const styles = StyleSheet.create({
   activityOverlayStyle: {

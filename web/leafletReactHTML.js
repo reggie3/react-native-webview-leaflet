@@ -1,30 +1,30 @@
 import renderIf from 'render-if';
 // Initialize leaflet.js
-var L = require('leaflet')
+const L = require('leaflet');
+const util = require('util');
 // require('leaflet_search')
 // require('leaflet_search_css')
-require('leaflet.markercluster')
-require('marker_cluster_css')
-require('marker_cluster_default_css')
-require('leaflet_css')
+require('leaflet.markercluster');
+require('marker_cluster_css');
+require('marker_cluster_default_css');
+require('leaflet_css');
 
 // import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import glamorous from 'glamorous';
-import { connectToRemote } from 'react-native-webview-messaging/web';
 import React from '../react.production.min.js';
 import PropTypes from 'prop-types';
-const util = require('util');
 import * as markers from './markers.js';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
+const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 const WebviewContainer = glamorous.div({
   position: 'absolute',
@@ -56,7 +56,7 @@ export default class LeafletReactHTML extends React.Component {
     this.layerMarkerCluster = null;
 
     this.state = {
-      showDebug: false,
+      showDebug: true,
       locations: BROWSER_TESTING_ENABLED ? locations : []
     };
   }
@@ -79,31 +79,12 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
-  makeRemoteConnection = async () => {
-    this.printElement('connecting to remote');
-    try {
-      let remote = await connectToRemote();
-      this.remote = remote;
-      this.printElement('remote connected');
-      this.printElement(this.remote);
-      this.bindListeners();
-
-      // let the webview know we are listening
-      this.printElement('emitting webview ready');
-      this.remote.emit('WEBVIEW_READY', {
-        payload: 'hello'
-      });
-      this.printElement('WEBVIEW_READY emitted');
-    } catch (error) {
-      console.log(`Error: ${error}`);
-      this.printElement(`remote connect error ${error}`);
-    }
-  };
-
   componentDidMount = () => {
     this.printElement('leafletReactHTML.js componentDidMount');
     // setup react-native-webview-messaging channel
-    this.makeRemoteConnection();
+    document.addEventListener('message', this.handleMessage), false;
+
+    this.sendMessage('TEST', 'Test Payload');
 
     // set up map
     this.map = L.map('map', {
@@ -119,7 +100,7 @@ export default class LeafletReactHTML extends React.Component {
           '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     ).addTo(this.map);
-    
+
     /* L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
       maxZoom: 18,
       id: 'mapbox.streets',
@@ -130,47 +111,83 @@ export default class LeafletReactHTML extends React.Component {
     let that = this;
     this.map.on('click', e => {
       that.printElement(`map clicked ${e.latlng}`);
-      that.remote.emit('MAP_CLICKED', {
-        payload: {
-          coords: e.latlng
-        }
+      that.sendMessage('MAP_CLICKED', {
+        coords: e.latlng
       });
     });
     // create the marker layer
     this.layerMarkerCluster = L.markerClusterGroup();
     this.map.addLayer(this.layerMarkerCluster);
-    
+
     if (BROWSER_TESTING_ENABLED) {
       this.updateMarkers(this.state.locations);
       this.setuUpMarkerAlterationTest();
     }
   };
 
-  bindListeners = () => {
-    this.printElement('registering listeners');
+  sendMessage = (type, payload) => {
+    window.postMessage(
+      JSON.stringify({
+        prefix: MESSAGE_PREFIX,
+        type,
+        payload
+      }),
+      '*'
+    );
+  };
 
-    // update the center location of the map
-    this.remote.on('MAP_CENTER_COORD_CHANGE', event => {
-    this.printElement(event);
-      this.setState({ mapCenterCoords: event.payload.mapCenterCoords });
-      // this.printElement('panning map');
-      if (event.payload.panToLocation === true) {
-        this.printElement('panning map');
-        this.map.flyTo(event.payload.mapCenterCoords);
-      } else {
-        this.printElement('setting map');
-        this.map.setView(event.payload.mapCenterCoords);
+  handleMessage = event => {
+    this.printElement(`received message`);
+    /* this.printElement(
+      util.inspect(event.data, {
+        showHidden: false,
+        depth: null,
+      })
+    ); */
+
+    let msgData;
+    try {
+      msgData = JSON.parse(event.data);
+      if (
+        msgData.hasOwnProperty('prefix') &&
+        msgData.prefix === MESSAGE_PREFIX
+      ) {
+        // this.printElement(msgData);
+        switch (msgData.type) {
+          // receive an event when the webview is ready
+          case 'MAP_CENTER_COORD_CHANGE':
+            // this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
+            this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords });
+            // this.printElement('panning map');
+            if (msgData.payload.panToLocation === true) {
+              // this.printElement('panning map');
+              this.map.flyTo(msgData.payload.mapCenterCoords);
+            } else {
+              // this.printElement('setting map');
+              this.map.setView(msgData.payload.mapCenterCoords);
+            }
+            break;
+
+          case 'UPDATE_MARKERS':
+            /* this.printElement('UPDATE_MARKERS event recieved');
+            this.printElement(
+              'markers 0: ' + JSON.stringify(msgData.payload.markers[0])
+            ); */
+            this.updateMarkers(msgData.payload.markers);
+            break;
+
+          default:
+            console.warn(
+              `leafletReactHTML Error: Unhandled message type received "${
+                msgData.type
+              }"`
+            );
+        }
       }
-    });
-
-    this.remote.on('UPDATE_MARKERS', event => {
-      // this.printElement('UPDATE_MARKERS event recieved');
-      /*  this.printElement(
-        'markers 0: ' + JSON.stringify(event.payload.markers[0])
-      ); */
-
-      this.updateMarkers(event.payload.markers);
-    });
+    } catch (err) {
+      this.printElement(`leafletReactHTML error: ${err}`);
+      return;
+    }
   };
 
   getAnimatedHTMLString = (icon, animation) => {
@@ -271,18 +288,19 @@ export default class LeafletReactHTML extends React.Component {
         icon: this.getIcon(
           markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍',
           markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null
-        )
+        ),
+        id: markerInfo.id ? markerInfo.id : null
       });
 
       // bind a click event to this marker with the marker id
       // click event is for use by the parent of this html file's
       // WebView
-      mapMarker.on('click', () => {
-        this.printElement(`marker clicked ${marker.id}`);
-        this.remote.emit('MARKER_CLICKED', {
-          payload: {
-            id: markerInfo.id ? markerInfo.id : null
-          }
+      let that = this;
+      mapMarker.on('click', (e) => {
+        // const markerID = this.options.id;
+        that.printElement(`leafletReactHTML: marker clicked ${ markerInfo.id}`);
+        that.sendMessage('MARKER_CLICKED', {
+          id: markerInfo.id
         });
       });
 
@@ -304,8 +322,6 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
- 
-
   render = () => {
     return (
       <WebviewContainer
@@ -326,7 +342,7 @@ export default class LeafletReactHTML extends React.Component {
   updateMarkerSpeed = () => {
     console.log('altering markers');
     let updatedLocations = this.state.locations.map(location => {
-      if(!location.animation){
+      if (!location.animation) {
         return location;
       }
       let updatedLocation = Object.assign({}, location, {
