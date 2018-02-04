@@ -2,16 +2,18 @@ import React from 'react';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
-import locations from './locations';
 
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+const duration = Math.floor(Math.random() * 3) + 1;
+const delay = Math.floor(Math.random()) * 0.5;
+const interationCount = 'infinite';
 
 export default class App extends React.Component {
   state = {
     location: null,
     errorMessage: null,
-    locations,
+    locations: null,
     coords: []
   };
 
@@ -35,10 +37,50 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
+    let locations = this.createRandomMarkers(location.coords, 20, 100000);
     this.setState({
+      locations,
       location,
       coords: [location.coords.latitude, location.coords.longitude]
     });
+  };
+
+  // create set of location objects centered around the current user location
+  createRandomMarkers = (center, numberOfMarkers, radius) => {
+    let newMarkers = [];
+    for (let i = 0; i < numberOfMarkers; i++) {
+      // get a random location centered around the current postion
+      let x0 = center.longitude;
+      let y0 = center.latitude;
+
+      let r = radius / 111300; // = 100 meters
+
+        let u = Math.random();
+        let v = Math.random();
+        let w = r * Math.sqrt(u);
+        let t = 2 * Math.PI * v;
+        let x = w * Math.cos(t);
+        let y1 = w * Math.sin(t);
+        let x1 = x / Math.cos(y0);
+
+        let foundLatitude = y0 + y1;
+        let foundLongitude = x0 + x1;
+
+      newMarkers.push({
+        id: Math.floor(Math.random() * 1000),
+        //coords: [33.946, -91.000],
+         coords: [foundLatitude, foundLongitude],
+        // coords: [37.06452161, -85.67364786],
+        icon: emoji[Math.floor(Math.random() * emoji.length)],
+        animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+        }
+      });
+    }
+    return newMarkers;
   };
 
   onWebViewReady = () => {

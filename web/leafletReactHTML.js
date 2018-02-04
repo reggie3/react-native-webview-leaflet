@@ -20,12 +20,14 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+const SHOW_DEBUG_INFORMATION = false;
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 let messageQueue = [];
+let messageCounter = 0;
 
 const WebviewContainer = glamorous.div({
   position: 'absolute',
@@ -40,29 +42,13 @@ const WebviewContainer = glamorous.div({
 
 const MessagesDiv = glamorous.div({
   backgroundColor: 'orange',
-  maxHeight: 150,
+  maxHeight: 200,
   overflow: 'auto'
 });
 const MapDiv = glamorous.div({
   position: 'relative',
   flex: 1
 });
-
-const generateUUID = () => {
-  // Public Domain/MIT
-  var d = new Date().getTime();
-  if (
-    typeof performance !== 'undefined' &&
-    typeof performance.now === 'function'
-  ) {
-    d += performance.now(); //use high-precision timer if available
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = ((d + Math.random() * 16) % 16) | 0;
-    d = Math.floor(d / 16);
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-  });
-};
 
 export default class LeafletReactHTML extends React.Component {
   constructor() {
@@ -71,9 +57,9 @@ export default class LeafletReactHTML extends React.Component {
     this.remote = null;
     this.mapMarkerDictionary = {};
     this.layerMarkerCluster = null;
+    this.currentLocationMarker = null;
 
     this.state = {
-      showDebug: true,
       locations: BROWSER_TESTING_ENABLED ? locations : [],
       readyToSendNextMessage: true
     };
@@ -82,7 +68,7 @@ export default class LeafletReactHTML extends React.Component {
   // print passed information in an html element; useful for debugging
   // since console.log and debug statements won't work in a conventional way
   printElement = data => {
-    if (this.state.showDebug) {
+    if (SHOW_DEBUG_INFORMATION) {
       if (typeof data === 'object') {
         let el = document.createElement('pre');
         el.innerHTML = util.inspect(data, { showHidden: false, depth: null });
@@ -111,22 +97,17 @@ export default class LeafletReactHTML extends React.Component {
     var osm_mapnik = L.tileLayer(
       'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
-        maxZoom: 10,
+        maxZoom: 20,
         attribution:
           '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     ).addTo(this.map);
 
-    /* L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-      maxZoom: 18,
-      id: 'mapbox.streets',
-      accessToken: 'pk.eyJ1IjoiZ2Vlemhhd2siLCJhIjoiY2ltcDFpY2dwMDBub3VtbTFkbWY5b3BhMSJ9.4mN7LI5CJMCDFvqkx1OJZw'
-      }).addTo(this.map); */
 
     // add click event to map
     let that = this;
     this.map.on('click', e => {
-      that.printElement(`map clicked ${e.latlng}`);
+      // that.printElement(`map clicked ${e.latlng}`);
       that.addMessageToQueue('MAP_CLICKED', {
         coords: e.latlng
       });
@@ -144,12 +125,13 @@ export default class LeafletReactHTML extends React.Component {
   addMessageToQueue = (type, payload) => {
     messageQueue.push(
       JSON.stringify({
-        messageID: generateUUID(),
+        messageID: messageCounter++,
         prefix: MESSAGE_PREFIX,
         type,
         payload
       })
     );
+    this.printElement(`adding message ${messageCounter} to queue`);
     if (this.state.readyToSendNextMessage) {
       this.sendNextMessage();
     }
@@ -194,6 +176,7 @@ export default class LeafletReactHTML extends React.Component {
               // this.printElement('setting map');
               this.map.setView(msgData.payload.mapCenterCoords);
             }
+            this.updateCurrentPostionMarker(msgData.payload.mapCenterCoords);
             break;
 
           case 'UPDATE_MARKERS':
@@ -223,11 +206,30 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
+  updateCurrentPostionMarker = currentPos => {
+    // this.printElement(`leafletReactHTML: currentPos: ${currentPos}`);
+    if (this.currentLocationMarker) {
+      this.currentLocationMarker.removeFrom(this.map);
+    }
+    this.currentLocationMarker = L.marker(currentPos, {
+      icon: this.getIcon('❤️', {
+       name: 'beat',
+       duration: .25,
+       delay: 0,
+       interationCount: 'infinite',
+       direction: 'alternate'
+      }),
+      
+    });
+    this.currentLocationMarker.addTo(this.map);
+  };
+
   getAnimatedHTMLString = (icon, animation) => {
     return `<div class='animationContainer' style="
       animation-name: ${animation.name ? animation.name : 'bounce'}; 
       animation-duration: ${animation.duration ? animation.duration : 1}s ;
       animation-delay: ${animation.delay ? animation.delay : 0}s;
+      animation-direction: ${animation.direction ? animation.direction : 'normal'};
       animation-iteration-count: ${
         animation.interationCount ? animation.interationCount : 'infinite'
       }">
@@ -280,6 +282,9 @@ export default class LeafletReactHTML extends React.Component {
           );
         } else {
           let newMarker = this.createNewMarker(markerInfo);
+          this.printElement(`adding markerInfo:`);
+          this.printElement(newMarker);
+
           this.addMarkerToMakerLayer(newMarker);
         }
       });
@@ -291,7 +296,7 @@ export default class LeafletReactHTML extends React.Component {
 
   updateMarker = (marker, markerInfo) => {
     try {
-      // this.printElement(marker.getElement());
+      this.printElement(`updateMarker ${marker.getElement()}`);
       // remove this marker
       marker.removeFrom(this.layerMarkerCluster);
       // create a new marker with correct properties
@@ -305,10 +310,12 @@ export default class LeafletReactHTML extends React.Component {
   createNewMarker = markerInfo => {
     // validate the marker
     // id and coords are required
+    // this.printElement(`creating new marker`)
+    // this.printElement(markerInfo);
     if (
       !markerInfo.hasOwnProperty('id') ||
       !markerInfo.hasOwnProperty('coords') ||
-      !isValidCoordinates(markerInfo.coords[0], markerInfo.coords[1])
+      !isValidCoordinates(markerInfo.coords[1], markerInfo.coords[0])
     ) {
       console.log(
         `Invalid map marker received.
@@ -324,7 +331,8 @@ export default class LeafletReactHTML extends React.Component {
         ),
         id: markerInfo.id ? markerInfo.id : null
       });
-
+      this.printElement(`new mapMarker`);
+      this.printElement(mapMarker);
       // bind a click event to this marker with the marker id
       // click event is for use by the parent of this html file's
       // WebView
@@ -347,7 +355,7 @@ export default class LeafletReactHTML extends React.Component {
   };
 
   addMarkerToMakerLayer = marker => {
-    // this.printElement(`adding marker: ${marker}`)
+    // this.printElement(`adding marker: ${marker}`);
     try {
       marker.addTo(this.layerMarkerCluster);
     } catch (error) {
@@ -363,7 +371,7 @@ export default class LeafletReactHTML extends React.Component {
         }}
       >
         <MapDiv id="map" />
-        {renderIf(this.state.showDebug)(<MessagesDiv id="messages" />)}
+        {renderIf(SHOW_DEBUG_INFORMATION)(<MessagesDiv id="messages" />)}
       </WebviewContainer>
     );
   };

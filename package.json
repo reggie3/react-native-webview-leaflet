@@ -2,7 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.0.64",
+  "version": "0.0.7",
   "files": [
     "dist",
     "WebViewLeaflet.js",

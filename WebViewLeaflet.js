@@ -111,10 +111,11 @@ export default class WebViewLeaflet extends React.Component {
       webviewIsLoaded: true,
       showActivityIndicator: false
     });
+    // this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
     if (this.props.mapCenterCoords.length > 0) {
       this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
     }
-    if (this.props.hasOwnProperty('locations')) {
+    if (this.props.hasOwnProperty('locations') && this.props.locations) {
       this.sendLocations(this.props.locations);
     }
     // let the parent know the webview is ready

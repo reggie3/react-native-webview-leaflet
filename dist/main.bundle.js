@@ -28324,12 +28324,14 @@ __webpack_require__(407);
 var isValidCoordinates = __webpack_require__(413);
 
 
-var BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+var BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+var SHOW_DEBUG_INFORMATION = false;
 var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 var updateCounter = 0;
 var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 var messageQueue = [];
+var messageCounter = 0;
 
 var WebviewContainer = _glamorous2.default.div({
   position: 'absolute',
@@ -28344,26 +28346,13 @@ var WebviewContainer = _glamorous2.default.div({
 
 var MessagesDiv = _glamorous2.default.div({
   backgroundColor: 'orange',
-  maxHeight: 150,
+  maxHeight: 200,
   overflow: 'auto'
 });
 var MapDiv = _glamorous2.default.div({
   position: 'relative',
   flex: 1
 });
-
-var generateUUID = function generateUUID() {
-  // Public Domain/MIT
-  var d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-    d += performance.now(); //use high-precision timer if available
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
-  });
-};
 
 var LeafletReactHTML = function (_React$Component) {
   _inherits(LeafletReactHTML, _React$Component);
@@ -28374,7 +28363,7 @@ var LeafletReactHTML = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (LeafletReactHTML.__proto__ || Object.getPrototypeOf(LeafletReactHTML)).call(this));
 
     _this.printElement = function (data) {
-      if (_this.state.showDebug) {
+      if (SHOW_DEBUG_INFORMATION) {
         if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
           var el = document.createElement('pre');
           el.innerHTML = util.inspect(data, { showHidden: false, depth: null });
@@ -28401,20 +28390,14 @@ var LeafletReactHTML = function (_React$Component) {
       });
       // Initialize the base layer
       var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 10,
+        maxZoom: 20,
         attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(_this.map);
-
-      /* L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1IjoiZ2Vlemhhd2siLCJhIjoiY2ltcDFpY2dwMDBub3VtbTFkbWY5b3BhMSJ9.4mN7LI5CJMCDFvqkx1OJZw'
-        }).addTo(this.map); */
 
       // add click event to map
       var that = _this;
       _this.map.on('click', function (e) {
-        that.printElement('map clicked ' + e.latlng);
+        // that.printElement(`map clicked ${e.latlng}`);
         that.addMessageToQueue('MAP_CLICKED', {
           coords: e.latlng
         });
@@ -28431,11 +28414,12 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.addMessageToQueue = function (type, payload) {
       messageQueue.push(JSON.stringify({
-        messageID: generateUUID(),
+        messageID: messageCounter++,
         prefix: MESSAGE_PREFIX,
         type: type,
         payload: payload
       }));
+      _this.printElement('adding message ' + messageCounter + ' to queue');
       if (_this.state.readyToSendNextMessage) {
         _this.sendNextMessage();
       }
@@ -28475,6 +28459,7 @@ var LeafletReactHTML = function (_React$Component) {
                 // this.printElement('setting map');
                 _this.map.setView(msgData.payload.mapCenterCoords);
               }
+              _this.updateCurrentPostionMarker(msgData.payload.mapCenterCoords);
               break;
 
             case 'UPDATE_MARKERS':
@@ -28500,8 +28485,26 @@ var LeafletReactHTML = function (_React$Component) {
       }
     };
 
+    _this.updateCurrentPostionMarker = function (currentPos) {
+      // this.printElement(`leafletReactHTML: currentPos: ${currentPos}`);
+      if (_this.currentLocationMarker) {
+        _this.currentLocationMarker.removeFrom(_this.map);
+      }
+      _this.currentLocationMarker = L.marker(currentPos, {
+        icon: _this.getIcon('❤️', {
+          name: 'beat',
+          duration: .25,
+          delay: 0,
+          interationCount: 'infinite',
+          direction: 'alternate'
+        })
+
+      });
+      _this.currentLocationMarker.addTo(_this.map);
+    };
+
     _this.getAnimatedHTMLString = function (icon, animation) {
-      return '<div class=\'animationContainer\' style="\n      animation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n      animation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n      animation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n      animation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n      <div style=\'font-size: 36px\'>\n      ' + icon + '\n      </div>\n      </div>';
+      return '<div class=\'animationContainer\' style="\n      animation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n      animation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n      animation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n      animation-direction: ' + (animation.direction ? animation.direction : 'normal') + ';\n      animation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n      <div style=\'font-size: 36px\'>\n      ' + icon + '\n      </div>\n      </div>';
     };
 
     _this.getIcon = function (icon, animation) {
@@ -28536,6 +28539,9 @@ var LeafletReactHTML = function (_React$Component) {
             _this.updateMarker(_this.mapMarkerDictionary[markerInfo.id], markerInfo);
           } else {
             var newMarker = _this.createNewMarker(markerInfo);
+            _this.printElement('adding markerInfo:');
+            _this.printElement(newMarker);
+
             _this.addMarkerToMakerLayer(newMarker);
           }
         });
@@ -28547,7 +28553,7 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.updateMarker = function (marker, markerInfo) {
       try {
-        // this.printElement(marker.getElement());
+        _this.printElement('updateMarker ' + marker.getElement());
         // remove this marker
         marker.removeFrom(_this.layerMarkerCluster);
         // create a new marker with correct properties
@@ -28561,7 +28567,9 @@ var LeafletReactHTML = function (_React$Component) {
     _this.createNewMarker = function (markerInfo) {
       // validate the marker
       // id and coords are required
-      if (!markerInfo.hasOwnProperty('id') || !markerInfo.hasOwnProperty('coords') || !isValidCoordinates(markerInfo.coords[0], markerInfo.coords[1])) {
+      // this.printElement(`creating new marker`)
+      // this.printElement(markerInfo);
+      if (!markerInfo.hasOwnProperty('id') || !markerInfo.hasOwnProperty('coords') || !isValidCoordinates(markerInfo.coords[1], markerInfo.coords[0])) {
         console.log('Invalid map marker received.\n         Map markers require an id value and and valid lat/long coordinates value');
         return;
       }
@@ -28570,7 +28578,8 @@ var LeafletReactHTML = function (_React$Component) {
           icon: _this.getIcon(markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍', markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null),
           id: markerInfo.id ? markerInfo.id : null
         });
-
+        _this.printElement('new mapMarker');
+        _this.printElement(mapMarker);
         // bind a click event to this marker with the marker id
         // click event is for use by the parent of this html file's
         // WebView
@@ -28593,7 +28602,7 @@ var LeafletReactHTML = function (_React$Component) {
     };
 
     _this.addMarkerToMakerLayer = function (marker) {
-      // this.printElement(`adding marker: ${marker}`)
+      // this.printElement(`adding marker: ${marker}`);
       try {
         marker.addTo(_this.layerMarkerCluster);
       } catch (error) {
@@ -28610,7 +28619,7 @@ var LeafletReactHTML = function (_React$Component) {
           }
         },
         _reactProductionMin2.default.createElement(MapDiv, { id: 'map' }),
-        (0, _renderIf2.default)(_this.state.showDebug)(_reactProductionMin2.default.createElement(MessagesDiv, { id: 'messages' }))
+        (0, _renderIf2.default)(SHOW_DEBUG_INFORMATION)(_reactProductionMin2.default.createElement(MessagesDiv, { id: 'messages' }))
       );
     };
 
@@ -28639,9 +28648,9 @@ var LeafletReactHTML = function (_React$Component) {
     _this.remote = null;
     _this.mapMarkerDictionary = {};
     _this.layerMarkerCluster = null;
+    _this.currentLocationMarker = null;
 
     _this.state = {
-      showDebug: true,
       locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
       readyToSendNextMessage: true
     };
@@ -33924,7 +33933,7 @@ exports = module.exports = __webpack_require__(71)(false);
 
 
 // module
-exports.push([module.i, "/*General marker style*/\r\n.marker {\r\n  background-color: rgba(255, 255, 255, 0);\r\n  width: 100%;\r\n  height: 100%;\r\n  position: relative;\r\n}\r\n\r\n/* div containing the marker parent */\r\n.clearMarkerContainer {\r\n  background-color: rgba(57, 57, 216, 0);\r\n  display: flex;\r\n  justify-content: center;\r\n}\r\n\r\n/* div containing all the animated portions of the marker */\r\n.animationContainer{\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: flex-end;\r\n}\r\n\r\n\r\n@keyframes bounce {\r\n  0% {\r\n    transform: scale(1, .8) translateY(10px);\r\n  }\r\n  45% {\r\n    transform: scale(.8, 1) translateY(-27px);\r\n  }\r\n  50% {\r\n    transform: scale(.8, 1) translateY(-30px);\r\n  }\r\n  55% {\r\n    transform: scale(.8, 1) translateY(-27px);\r\n  }\r\n  100% {\r\n    transform: scale(1, .8) translateY(10px);\r\n  }\r\n}\r\n\r\n@keyframes fade {\r\n  0% {\r\n    opacity: .1;\r\n  }\r\n  50% {\r\n    opacity: 1;\r\n  }\r\n  100% {\r\n    opacity: .1;\r\n  }\r\n}\r\n\r\n@keyframes pulse {\r\n  0% {\r\n    transform: scale(1);\r\n  }\r\n  50% {\r\n    transform: scale(1.25);\r\n  }\r\n  100% {\r\n    transform: scale(1);\r\n  }\r\n}\r\n\r\n@keyframes jump {\r\n  0% {\r\n    transform: none;\r\n  }\r\n  50% {\r\n    transform: translateY(-2em);\r\n  }\r\n}\r\n\r\n@keyframes waggle {\r\n  0% {\r\n    transform: none;\r\n  }\r\n  50% {\r\n    transform: rotateZ(-20deg) scale(1.2);\r\n  }\r\n  60% {\r\n    transform: rotateZ(25deg) scale(1.2);\r\n  }\r\n  67.5% {\r\n    transform: rotateZ(-15deg) scale(1.2);\r\n  }\r\n  75% {\r\n    transform: rotateZ(15deg) scale(1.2);\r\n  }\r\n  82.5% {\r\n    transform: rotateZ(-12deg) scale(1.2);\r\n  }\r\n  85% {\r\n    transform: rotateZ(0) scale(1.2);\r\n  }\r\n  100% {\r\n    transform: rotateZ(0) scale(1);\r\n  }\r\n}\r\n\r\n\r\n@keyframes spin {\r\n  50% {\r\n    transform: rotateZ(-20deg);\r\n    animation-timing-function: ease;\r\n  }\r\n  100% {\r\n    transform: rotateZ(360deg);\r\n  }\r\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "/*General marker style*/\r\n.marker {\r\n  background-color: rgba(255, 255, 255, 0);\r\n  width: 100%;\r\n  height: 100%;\r\n  position: relative;\r\n}\r\n\r\n/* div containing the marker parent */\r\n.clearMarkerContainer {\r\n  background-color: rgba(57, 57, 216, 0);\r\n  display: flex;\r\n  justify-content: center;\r\n}\r\n\r\n/* div containing all the animated portions of the marker */\r\n.animationContainer{\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: flex-end;\r\n}\r\n\r\n\r\n@keyframes bounce {\r\n  0% {\r\n    transform: scale(1, .8) translateY(10px);\r\n  }\r\n  45% {\r\n    transform: scale(.8, 1) translateY(-27px);\r\n  }\r\n  50% {\r\n    transform: scale(.8, 1) translateY(-30px);\r\n  }\r\n  55% {\r\n    transform: scale(.8, 1) translateY(-27px);\r\n  }\r\n  100% {\r\n    transform: scale(1, .8) translateY(10px);\r\n  }\r\n}\r\n\r\n@keyframes fade {\r\n  0% {\r\n    opacity: .1;\r\n  }\r\n  50% {\r\n    opacity: 1;\r\n  }\r\n  100% {\r\n    opacity: .1;\r\n  }\r\n}\r\n\r\n@keyframes pulse {\r\n  0% {\r\n    transform: scale(1);\r\n  }\r\n  50% {\r\n    transform: scale(1.25);\r\n  }\r\n  100% {\r\n    transform: scale(1);\r\n  }\r\n}\r\n\r\n@keyframes jump {\r\n  0% {\r\n    transform: none;\r\n  }\r\n  50% {\r\n    transform: translateY(-2em);\r\n  }\r\n}\r\n\r\n@keyframes waggle {\r\n  0% {\r\n    transform: none;\r\n  }\r\n  50% {\r\n    transform: rotateZ(-20deg) scale(1.2);\r\n  }\r\n  60% {\r\n    transform: rotateZ(25deg) scale(1.2);\r\n  }\r\n  67.5% {\r\n    transform: rotateZ(-15deg) scale(1.2);\r\n  }\r\n  75% {\r\n    transform: rotateZ(15deg) scale(1.2);\r\n  }\r\n  82.5% {\r\n    transform: rotateZ(-12deg) scale(1.2);\r\n  }\r\n  85% {\r\n    transform: rotateZ(0) scale(1.2);\r\n  }\r\n  100% {\r\n    transform: rotateZ(0) scale(1);\r\n  }\r\n}\r\n\r\n\r\n@keyframes spin {\r\n  50% {\r\n    transform: rotateZ(-20deg);\r\n    animation-timing-function: ease;\r\n  }\r\n  100% {\r\n    transform: rotateZ(360deg);\r\n  }\r\n}\r\n\r\n\r\n/* Heart beat animation */\r\n@keyframes beat{\r\n\tto { transform: scale(.7); }\r\n}", ""]);
 
 // exports
 
