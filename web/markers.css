@@ -110,8 +110,6 @@
   }
 }
 
-
-/* Heart beat animation */
 @keyframes beat{
 	to { transform: scale(.7); }
 }
