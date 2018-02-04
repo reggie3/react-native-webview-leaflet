@@ -25,6 +25,7 @@ const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+let messageQueue = [];
 
 const WebviewContainer = glamorous.div({
   position: 'absolute',
@@ -47,6 +48,22 @@ const MapDiv = glamorous.div({
   flex: 1
 });
 
+const generateUUID = () => {
+  // Public Domain/MIT
+  var d = new Date().getTime();
+  if (
+    typeof performance !== 'undefined' &&
+    typeof performance.now === 'function'
+  ) {
+    d += performance.now(); //use high-precision timer if available
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = ((d + Math.random() * 16) % 16) | 0;
+    d = Math.floor(d / 16);
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+};
+
 export default class LeafletReactHTML extends React.Component {
   constructor() {
     super();
@@ -57,7 +74,8 @@ export default class LeafletReactHTML extends React.Component {
 
     this.state = {
       showDebug: true,
-      locations: BROWSER_TESTING_ENABLED ? locations : []
+      locations: BROWSER_TESTING_ENABLED ? locations : [],
+      readyToSendNextMessage: true
     };
   }
 
@@ -84,8 +102,6 @@ export default class LeafletReactHTML extends React.Component {
     // setup react-native-webview-messaging channel
     document.addEventListener('message', this.handleMessage), false;
 
-    this.sendMessage('TEST', 'Test Payload');
-
     // set up map
     this.map = L.map('map', {
       center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
@@ -111,7 +127,7 @@ export default class LeafletReactHTML extends React.Component {
     let that = this;
     this.map.on('click', e => {
       that.printElement(`map clicked ${e.latlng}`);
-      that.sendMessage('MAP_CLICKED', {
+      that.addMessageToQueue('MAP_CLICKED', {
         coords: e.latlng
       });
     });
@@ -125,25 +141,37 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
-  sendMessage = (type, payload) => {
-    window.postMessage(
+  addMessageToQueue = (type, payload) => {
+    messageQueue.push(
       JSON.stringify({
+        messageID: generateUUID(),
         prefix: MESSAGE_PREFIX,
         type,
         payload
-      }),
-      '*'
+      })
     );
+    if (this.state.readyToSendNextMessage) {
+      this.sendNextMessage();
+    }
+  };
+
+  sendNextMessage = () => {
+    if (messageQueue.length > 0) {
+      const nextMessage = messageQueue.shift();
+      this.printElement(`sending message ${nextMessage}`);
+      window.postMessage(nextMessage, '*');
+      this.setState({ readyToSendNextMessage: false });
+    }
   };
 
   handleMessage = event => {
     this.printElement(`received message`);
-    /* this.printElement(
+    this.printElement(
       util.inspect(event.data, {
         showHidden: false,
-        depth: null,
+        depth: null
       })
-    ); */
+    );
 
     let msgData;
     try {
@@ -176,8 +204,13 @@ export default class LeafletReactHTML extends React.Component {
             this.updateMarkers(msgData.payload.markers);
             break;
 
+          case 'MESSAGE_ACKNOWLEDGED':
+            this.setState({ readyToSendNextMessage: true });
+            this.sendNextMessage();
+            break;
+
           default:
-            console.warn(
+            printElement(
               `leafletReactHTML Error: Unhandled message type received "${
                 msgData.type
               }"`
@@ -296,10 +329,10 @@ export default class LeafletReactHTML extends React.Component {
       // click event is for use by the parent of this html file's
       // WebView
       let that = this;
-      mapMarker.on('click', (e) => {
+      mapMarker.on('click', e => {
         // const markerID = this.options.id;
-        that.printElement(`leafletReactHTML: marker clicked ${ markerInfo.id}`);
-        that.sendMessage('MARKER_CLICKED', {
+        that.printElement(`leafletReactHTML: marker clicked ${markerInfo.id}`);
+        that.addMessageToQueue('MARKER_CLICKED', {
           id: markerInfo.id
         });
       });

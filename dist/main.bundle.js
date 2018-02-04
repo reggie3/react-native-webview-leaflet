@@ -28329,6 +28329,7 @@ var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 var updateCounter = 0;
 var MESSAGE_PREFIX = 'react-native-webview-leaflet';
+var messageQueue = [];
 
 var WebviewContainer = _glamorous2.default.div({
   position: 'absolute',
@@ -28350,6 +28351,19 @@ var MapDiv = _glamorous2.default.div({
   position: 'relative',
   flex: 1
 });
+
+var generateUUID = function generateUUID() {
+  // Public Domain/MIT
+  var d = new Date().getTime();
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+    d += performance.now(); //use high-precision timer if available
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+  });
+};
 
 var LeafletReactHTML = function (_React$Component) {
   _inherits(LeafletReactHTML, _React$Component);
@@ -28380,8 +28394,6 @@ var LeafletReactHTML = function (_React$Component) {
       // setup react-native-webview-messaging channel
       document.addEventListener('message', _this.handleMessage), false;
 
-      _this.sendMessage('TEST', 'Test Payload');
-
       // set up map
       _this.map = L.map('map', {
         center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
@@ -28403,7 +28415,7 @@ var LeafletReactHTML = function (_React$Component) {
       var that = _this;
       _this.map.on('click', function (e) {
         that.printElement('map clicked ' + e.latlng);
-        that.sendMessage('MAP_CLICKED', {
+        that.addMessageToQueue('MAP_CLICKED', {
           coords: e.latlng
         });
       });
@@ -28417,22 +28429,33 @@ var LeafletReactHTML = function (_React$Component) {
       }
     };
 
-    _this.sendMessage = function (type, payload) {
-      window.postMessage(JSON.stringify({
+    _this.addMessageToQueue = function (type, payload) {
+      messageQueue.push(JSON.stringify({
+        messageID: generateUUID(),
         prefix: MESSAGE_PREFIX,
         type: type,
         payload: payload
-      }), '*');
+      }));
+      if (_this.state.readyToSendNextMessage) {
+        _this.sendNextMessage();
+      }
+    };
+
+    _this.sendNextMessage = function () {
+      if (messageQueue.length > 0) {
+        var nextMessage = messageQueue.shift();
+        _this.printElement('sending message ' + nextMessage);
+        window.postMessage(nextMessage, '*');
+        _this.setState({ readyToSendNextMessage: false });
+      }
     };
 
     _this.handleMessage = function (event) {
       _this.printElement('received message');
-      /* this.printElement(
-        util.inspect(event.data, {
-          showHidden: false,
-          depth: null,
-        })
-      ); */
+      _this.printElement(util.inspect(event.data, {
+        showHidden: false,
+        depth: null
+      }));
 
       var msgData = void 0;
       try {
@@ -28462,8 +28485,13 @@ var LeafletReactHTML = function (_React$Component) {
               _this.updateMarkers(msgData.payload.markers);
               break;
 
+            case 'MESSAGE_ACKNOWLEDGED':
+              _this.setState({ readyToSendNextMessage: true });
+              _this.sendNextMessage();
+              break;
+
             default:
-              console.warn('leafletReactHTML Error: Unhandled message type received "' + msgData.type + '"');
+              printElement('leafletReactHTML Error: Unhandled message type received "' + msgData.type + '"');
           }
         }
       } catch (err) {
@@ -28550,7 +28578,7 @@ var LeafletReactHTML = function (_React$Component) {
         mapMarker.on('click', function (e) {
           // const markerID = this.options.id;
           that.printElement('leafletReactHTML: marker clicked ' + markerInfo.id);
-          that.sendMessage('MARKER_CLICKED', {
+          that.addMessageToQueue('MARKER_CLICKED', {
             id: markerInfo.id
           });
         });
@@ -28614,7 +28642,8 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.state = {
       showDebug: true,
-      locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : []
+      locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
+      readyToSendNextMessage: true
     };
     return _this;
   }

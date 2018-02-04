@@ -57,6 +57,7 @@ export default class WebViewLeaflet extends React.Component {
         msgData.prefix === MESSAGE_PREFIX
       ) {
         console.log(`WebViewLeaflet: received message ${msgData.type}`);
+        this.sendMessage('MESSAGE_ACKNOWLEDGED');
 
         switch (msgData.type) {
           // receive an event when the webview is ready
