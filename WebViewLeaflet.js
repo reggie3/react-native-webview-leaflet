@@ -1,8 +1,27 @@
 import React from './react.production.min.js';
-import { View, StyleSheet, ActivityIndicator, Text, WebView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Text,
+  WebView
+} from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
+import { RkButton, RkTheme } from 'react-native-ui-kitten';
+
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+RkTheme.setType('RkButton', 'mimicLeafletButton', {
+  fontSize: 22,
+  width: 50,
+  borderRadius: 2,
+  hitSlop: { top: 5, left: 5, bottom: 5, right: 5 },
+  backgroundColor: 'rgb(255,255,255)',
+  borderColor: 'rgb(200,200,200)',
+  borderWidth: 1,
+  borderRadius: 4,
+  margin: 0
+});
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -18,23 +37,21 @@ export default class WebViewLeaflet extends React.Component {
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
-  sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {
-    console.log(`updating coords ${mapCenterCoords}`);
-      this.sendMessage('MAP_CENTER_COORD_CHANGE', {
-        mapCenterCoords,
-        panToLocation: this.props.panToLocation
-      });
-    
+  sendUpdatedMapCenterCoordsToHTML = () => {
+    console.log(`updating coords ${this.props.mapCenterCoords}`);
+    this.sendMessage('MAP_CENTER_COORD_CHANGE', {
+      mapCenterCoords: this.props.mapCenterCoords,
+      panToLocation: this.props.panToLocation
+    });
   };
 
   sendLocations = markers => {
-    this.sendMessage('UPDATE_MARKERS', {markers});
+    this.sendMessage('UPDATE_MARKERS', { markers });
   };
 
-/*   setInitialMapState = () => {
+  /*   setInitialMapState = () => {
     console.log('setting initial map state');
     this.setState({
       webviewIsLoaded: true,
@@ -61,7 +78,7 @@ export default class WebViewLeaflet extends React.Component {
 
         switch (msgData.type) {
           // receive an event when the webview is ready
-         /*  case 'WEBVIEW_READY':
+          /*  case 'WEBVIEW_READY':
             console.log('Received Webview Ready');
             this.setInitialMapState();
             break; */
@@ -96,8 +113,8 @@ export default class WebViewLeaflet extends React.Component {
 
   sendMessage = (type, payload) => {
     console.log(`WebViewLeaflet: sending message ${type}`);
-    this.webview.postMessage(JSON.stringify(
-      {
+    this.webview.postMessage(
+      JSON.stringify({
         prefix: MESSAGE_PREFIX,
         type,
         payload
@@ -169,6 +186,36 @@ export default class WebViewLeaflet extends React.Component {
           onLoadEnd={this.onWebViewLoaded}
           onMessage={this.handleMessage}
         />
+        <View
+          style={{
+            position: 'absolute',
+            right: 10,
+            bottom: 20,
+            padding: 10
+          }}
+        >
+          <View
+            style={{
+              shadowColor: '#000000',
+              shadowOffset: {
+                width: 30,
+                height: 3
+              },
+              shadowRadius: 5,
+              shadowOpacity: 1.0,
+              // needed to get shadows working in android
+              backgroundColor : "#0000", // invisible color
+              elevation: 4  //
+            }}
+          >
+            <RkButton
+              rkType="mimicLeafletButton"
+              onPress={this.sendUpdatedMapCenterCoordsToHTML}
+            >
+              🎯
+            </RkButton>
+          </View>
+        </View>
         {renderIf(this.state.showActivityIndicator)(
           <View style={styles.activityOverlayStyle}>
             <View style={styles.activityIndicatorContainer}>

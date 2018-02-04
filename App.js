@@ -37,7 +37,7 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    let locations = this.createRandomMarkers(location.coords, 20, 100000);
+    let locations = this.createRandomMarkers(location.coords, 20, 10000);
     this.setState({
       locations,
       location,

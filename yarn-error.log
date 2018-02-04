@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add guid
+  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react-native-ui-kitten
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Android;C:\Windows\System32;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\nodejs\;C:\Users\regin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\regin\AppData\Roaming\npm
@@ -18,7 +18,7 @@ npm manifest:
     "main": "node_modules/expo/AppEntry.js",
     "private": false,
     "name": "react-native-webview-leaflet",
-    "version": "0.0.64",
+    "version": "0.0.7",
     "files": [
       "dist",
       "WebViewLeaflet.js",
