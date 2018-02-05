@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Platform } from 'react-native';
+import { StyleSheet, Text, View, Platform, Alert } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 
@@ -102,11 +102,24 @@ export default class App extends React.Component {
 
   onMapClicked = coords => {
     console.log(`Map Clicked: app received: ${coords}`);
+    this.showAlert('Map Clicked', `Coordinates = ${coords}`)
   };
 
   onMarkerClicked = id => {
     console.log(`Marker Clicked: ${id}`);
+    this.showAlert('Marker Clicked', `Marker ID = ${id}`)
   };
+
+  showAlert=(title, body)=>{
+    Alert.alert(
+      title,
+      body,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      { cancelable: false }
+    )
+  }
 
   render() {
     return (

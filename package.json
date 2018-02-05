@@ -1,5 +1,5 @@
 {
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
   "version": "0.0.71",
