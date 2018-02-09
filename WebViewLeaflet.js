@@ -1,4 +1,4 @@
-import React from './react.production.min.js';
+import React from 'react';
 import {
   View,
   StyleSheet,
@@ -12,25 +12,23 @@ import renderIf from 'render-if';
 import { RkButton, RkTheme } from 'react-native-ui-kitten';
 import * as webViewDownloadHelper from './webViewDownloadHelper';
 import { FileSystem } from 'expo';
-const Rollbar = require('rollbar');
-import * as secrets from './secrets';
 
-const rollbar = new Rollbar({
-  accessToken: secrets.rollbarToken,
-  captureUncaught: true,
-  captureUnhandledRejections: true
-});
-
+// name and version of the package that contains the index file(s) the webview will load
 const PACKAGE_NAME = 'react-native-webview-leaflet';
-const PACKAGE_VERSION = '0.0.71';
+const PACKAGE_VERSION = '0.0.74';
+
+// path to the file that the webview will load
 const INDEX_FILE_PATH = `${
   FileSystem.documentDirectory
 }${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`;
-const MESSAGE_PREFIX = 'react-native-webview-leaflet';
-const fileURLs = [
+// the files that will be downloaded
+const FILES_TO_DOWNLOAD = [
   'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/index.html',
   'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/main.bundle.js'
 ];
+
+const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+
 RkTheme.setType('RkButton', 'mimicLeafletButton', {
   fontSize: 22,
   width: 50,
@@ -50,7 +48,6 @@ export default class WebViewLeaflet extends React.Component {
     // this.setInitialMapState = this.setInitialMapState.bind(this);
     this.webview = null;
     this.state = {
-      filesDownloaded: false,
       downloadCompleted: false,
       webViewNotLoaded: true,
       webViewFilesNotAvailable: true,
@@ -60,20 +57,20 @@ export default class WebViewLeaflet extends React.Component {
   }
 
   componentDidMount() {
-    // this.downloadWebViewFiles();
+    this.downloadWebViewFiles(FILES_TO_DOWNLOAD);
   }
 
-  downloadWebViewFiles = async () => {
+  downloadWebViewFiles = async (filesToDownload) => {
     let downloadStatus = await webViewDownloadHelper.checkForFiles(
       PACKAGE_NAME,
       PACKAGE_VERSION,
-      fileURLs,
+      filesToDownload,
       this.webViewDownloadStatusCallBack
     );
     if (downloadStatus.success) {
-      filesNotLoaded = false;
-    } else {
-      rollbar.error(
+      this.setState({ webViewFilesNotAvailable: false });
+    } else if (!downloadStatus.success){
+      console.log(
         `unable to download html files: ${JSON.stringify(downloadStatus)}`
       );
       Alert.alert(
@@ -83,7 +80,9 @@ export default class WebViewLeaflet extends React.Component {
         { cancelable: false }
       );
     }
-    debugger;
+    else{
+      this.setState({ webViewFilesNotAvailable: false });
+    }
   };
 
   webViewDownloadStatusCallBack = message => {
@@ -102,20 +101,6 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage('UPDATE_MARKERS', { markers });
   };
 
-  /*   setInitialMapState = () => {
-    console.log('setting initial map state');
-    this.setState({
-      webviewIsLoaded: true,
-      showActivityIndicator: false
-    });
-    if (this.props.mapCenterCoords) {
-      this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
-    }
-    if (this.props.hasOwnProperty('locations')) {
-      this.sendLocations(this.props.locations);
-    }
-  }; */
-
   handleMessage = event => {
     let msgData;
     try {
@@ -128,11 +113,6 @@ export default class WebViewLeaflet extends React.Component {
         this.sendMessage('MESSAGE_ACKNOWLEDGED');
 
         switch (msgData.type) {
-          // receive an event when the webview is ready
-          /*  case 'WEBVIEW_READY':
-            console.log('Received Webview Ready');
-            this.setInitialMapState();
-            break; */
 
           case 'MARKER_CLICKED':
             console.log('Received MARKER_CLICKED');
@@ -163,15 +143,18 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   sendMessage = (type, payload) => {
-    console.log(`WebViewLeaflet: sending message ${type}`);
-    this.webview.postMessage(
-      JSON.stringify({
-        prefix: MESSAGE_PREFIX,
-        type,
-        payload
-      }),
-      '*'
-    );
+    // only send message when webview is loaded
+    if (this.webview) {
+      console.log(`WebViewLeaflet: sending message ${type}`);
+      this.webview.postMessage(
+        JSON.stringify({
+          prefix: MESSAGE_PREFIX,
+          type,
+          payload
+        }),
+        '*'
+      );
+    }
   };
 
   onWebViewLoaded = () => {
@@ -231,56 +214,80 @@ export default class WebViewLeaflet extends React.Component {
           backgroundColor: '#a2e8a2'
         }}
       >
-        <WebView
-          ref={this.createWebViewRef}
-          source={{
-            uri: `${
-              FileSystem.documentDirectory
-            }${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`
-          }}
-          onLoadEnd={this.onWebViewLoaded}
-          onMessage={this.handleMessage}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            right: 10,
-            bottom: 20,
-            padding: 10
-          }}
-        >
+        {renderIf(this.state.webViewFilesNotAvailable)(
           <View
             style={{
-              shadowColor: '#000000',
-              shadowOffset: {
-                width: 30,
-                height: 3
-              },
-              shadowRadius: 5,
-              shadowOpacity: 1.0,
-              // needed to get shadows working in android
-              backgroundColor: '#0000', // invisible color
-              elevation: 4 //
+              ...StyleSheet.absoluteFillObject,
+              ...{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }
             }}
           >
-            <RkButton
-              rkType="mimicLeafletButton"
-              onPress={this.sendUpdatedMapCenterCoordsToHTML}
-            >
-              🎯
-            </RkButton>
+            <View style={styles.activityIndicatorContainer}>
+              <ActivityIndicator
+                size="large"
+                animating={this.state.webViewFilesNotAvailable}
+                color="orange"
+              />
+            </View>
           </View>
-        </View>
-        {renderIf(this.state.webViewNotLoaded || this.state.filesNotLoaded)(
+        )}
+        {renderIf(
+          this.state.webViewNotLoaded && !this.state.webViewFilesNotAvailable
+        )(
           <View style={styles.activityOverlayStyle}>
             <View style={styles.activityIndicatorContainer}>
               <ActivityIndicator
                 size="large"
-                animating={
-                  this.state.webViewNotLoaded || this.state.filesNotLoaded
-                }
+                animating={this.state.webViewNotLoaded}
                 color="blue"
               />
+            </View>
+          </View>
+        )}
+        {renderIf(!this.state.webViewFilesNotAvailable)(
+          <View style={{ ...StyleSheet.absoluteFillObject }}>
+            <WebView
+              ref={this.createWebViewRef}
+              source={{
+                uri: `${
+                  FileSystem.documentDirectory
+                }${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`
+              }}
+              onLoadEnd={this.onWebViewLoaded}
+              onMessage={this.handleMessage}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                right: 10,
+                bottom: 20,
+                padding: 10
+              }}
+            >
+              <View
+                style={{
+                  shadowColor: '#000000',
+                  shadowOffset: {
+                    width: 30,
+                    height: 3
+                  },
+                  shadowRadius: 5,
+                  shadowOpacity: 1.0,
+                  // needed to get shadows working in android
+                  backgroundColor: '#0000', // invisible color
+                  elevation: 4 //
+                }}
+              >
+                <RkButton
+                  rkType="mimicLeafletButton"
+                  onPress={this.sendUpdatedMapCenterCoordsToHTML}
+                >
+                  🎯
+                </RkButton>
+              </View>
             </View>
           </View>
         )}

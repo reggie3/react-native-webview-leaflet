@@ -1,83 +1,92 @@
 import { FileSystem } from 'expo';
-const Rollbar = require('rollbar');
-import * as secrets from './secrets';
-
-const rollbar = new Rollbar({
-  accessToken: secrets.rollbarToken,
-  captureUncaught: true,
-  captureUnhandledRejections: true
-});
 
 export const checkForFiles = async (directory, version, files, callback) => {
   // directory name of the form:
   //    react-native-webview-leaflet/24
-  const DIRECTORY_NAME =
+  const CURRENT_VERSION_DIRECTORY_NAME =
     FileSystem.documentDirectory + directory + '/' + version;
-
+  const PARENT_DIRECTORY = FileSystem.documentDirectory + directory;
   const GOOD_DOWNLOAD_FILE_NAME = 'downloads_completed';
-  try {
-    let checkIfExists = await FileSystem.getInfoAsync(DIRECTORY_NAME);
 
-    // check to see if the directory exists
+  try {
+    // get list of versions currently in the directory so that they can be deleted if needed
+    console.log('reading parent directory');
+    let parentDirectoryContents = await getParentDirectoryContents(PARENT_DIRECTORY);
+    console.log(`parent contents: ${parentDirectoryContents}`);
+
+    // check to see if this version's download directory already exists
+    let checkIfExists = await FileSystem.getInfoAsync(
+      CURRENT_VERSION_DIRECTORY_NAME
+    );
     if (checkIfExists.exists) {
-      rollbar.log('directory found');
-      rollbar.log('checking for good downloads');
+      console.log('directory found');
+      console.log('checking for good downloads');
       let checkForGoodDownloads = await FileSystem.getInfoAsync(
-        DIRECTORY_NAME + '/' + GOOD_DOWNLOAD_FILE_NAME
+        CURRENT_VERSION_DIRECTORY_NAME + '/' + GOOD_DOWNLOAD_FILE_NAME
       );
-      rollbar.log(`found ${JSON.stringify(checkForGoodDownloads)}`);
+      console.log(`found good downloads`);
       if (checkForGoodDownloads.exists) {
-        rollbar.log('found good downloads');
+        console.log('found good downloads');
         return {
-            success: true,
-            msg: 'found good downloads'
-          };;
+          success: true,
+          msg: 'found good downloads'
+        };
       } else {
-        rollbar.log('downloads bad, deleting directory');
-        await FileSystem.deleteAsync(DIRECTORY_NAME);
-        rollbar.log('directory deleted');
-        rollbar.log('downloading files');
-        let downloadResults = await downloadFiles(files, DIRECTORY_NAME);
-        debugger;
-        rollbar.log(downloadResults);
+        console.log('downloads bad, deleting directory');
+        await FileSystem.deleteAsync(CURRENT_VERSION_DIRECTORY_NAME);
+        console.log('directory deleted');
+        console.log('downloading files');
+        let downloadResults = await downloadFiles(
+          files,
+          CURRENT_VERSION_DIRECTORY_NAME
+        );
+        console.log(downloadResults);
       }
     } else {
       // directory doesn't exist so create it
-      rollbar.log('creating directory');
-      await FileSystem.makeDirectoryAsync(DIRECTORY_NAME, {
+      console.log('creating directory');
+      await FileSystem.makeDirectoryAsync(CURRENT_VERSION_DIRECTORY_NAME, {
         intermediates: true
       });
-      rollbar.log('directory created');
-      rollbar.log('downloading files created');
+      console.log('directory created');
+      console.log('downloading files created');
       // download the files into the newly created directory
-      let downloadResults = await downloadFiles(files, DIRECTORY_NAME);
+      let downloadResults = await downloadFiles(
+        files,
+        CURRENT_VERSION_DIRECTORY_NAME
+      );
       if (downloadResults.downloadFailures.length > 0) {
-        rollbar.log('some files failed to download');
+        console.log('some files failed to download');
       } else {
         // successfully downloaded all the files so write the file denoting
         // a good download
-        rollbar.log('all files downloaded');
+        console.log('all files downloaded');
         await FileSystem.writeAsStringAsync(
-          DIRECTORY_NAME + '/' + GOOD_DOWNLOAD_FILE_NAME,
+          CURRENT_VERSION_DIRECTORY_NAME + '/' + GOOD_DOWNLOAD_FILE_NAME,
           version
         );
-        rollbar.log('completion file written');
+        console.log('completion file written');
       }
     }
-    rollbar.log('reading directory');
 
+    // delete previous versions
+    parentDirectoryContents.forEach(directoryName => {
+      console.log(`deleting version ${directoryName}`);
+      FileSystem.deleteAsync(PARENT_DIRECTORY + '/' + directoryName);
+    });
+
+    // read and return a list of all files in the directory
+    console.log('reading directory');
     let directoryReadResults = await FileSystem.readDirectoryAsync(
-      DIRECTORY_NAME
+      CURRENT_VERSION_DIRECTORY_NAME
     );
-    rollbar.log(directoryReadResults);
-
-    // return a list of all files in the directory
+    console.log(directoryReadResults);
     return {
       success: true,
       files: directoryReadResults
     };
   } catch (error) {
-    rollbar.error(error);
+    console.error(error);
     return {
       success: false,
       error
@@ -85,11 +94,26 @@ export const checkForFiles = async (directory, version, files, callback) => {
   }
 };
 
-const downloadFiles = async (files, DIRECTORY_NAME) => {
+const getParentDirectoryContents = async PARENT_DIRECTORY => {
+  let parentDirectoryInfoResults = await FileSystem.getInfoAsync(
+    PARENT_DIRECTORY
+  );
+  if (parentDirectoryInfoResults.exists) {
+    let parentDirectoryContents = await FileSystem.readDirectoryAsync(
+      PARENT_DIRECTORY
+    );
+    return parentDirectoryContents;
+  }
+  return [];
+};
+
+const downloadFiles = async (files, CURRENT_VERSION_DIRECTORY_NAME) => {
   let downloadPromises = files.map(async file => {
     return await FileSystem.downloadAsync(
       file,
-      DIRECTORY_NAME + '/' + file.substring(file.lastIndexOf('/') + 1)
+      CURRENT_VERSION_DIRECTORY_NAME +
+        '/' +
+        file.substring(file.lastIndexOf('/') + 1)
     );
   });
 
@@ -99,10 +123,8 @@ const downloadFiles = async (files, DIRECTORY_NAME) => {
   downloadResults.forEach(downloadResult => {
     if (downloadResult.status === 200) {
       downloadSuccess.push(downloadResult.uri);
-      debugger;
     } else {
       downloadFailures.push(downloadResult.uri);
-      debugger;
     }
   });
 

@@ -40,9 +40,7 @@
     "react-dom": "^16.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
     "react-native-ui-kitten": "^3.0.0",
-    "react-native-webview-messaging": "^2.0.0-alpha.4",
     "render-if": "^0.1.1",
-    "rollbar": "^2.3.8",
     "util": "^0.10.3"
   },
   "devDependencies": {

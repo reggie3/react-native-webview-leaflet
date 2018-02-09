@@ -19,18 +19,20 @@ import * as markers from './markers.js';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
-const Rollbar = require('rollbar');
+/* const console = require('console');
 import * as secrets from '../secrets';
 
-const rollbar = new Rollbar({
-  accessToken: secrets.rollbarToken,
+const console = new console({
+  accessToken: secrets.consoleToken,
   captureUncaught: true,
   captureUnhandledRejections: true
-});
+}); */
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
 const SHOW_DEBUG_INFORMATION = false;
+// used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+// used for testing seperately of the react-native applicaiton
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
@@ -93,7 +95,6 @@ export default class LeafletReactHTML extends React.Component {
 
   componentDidMount = () => {
     this.printElement('leafletReactHTML.js componentDidMount');
-    // setup react-native-webview-messaging channel
     if(document){
       document.addEventListener('message', this.handleMessage), false;
     }
@@ -101,7 +102,7 @@ export default class LeafletReactHTML extends React.Component {
       window.addEventListener('message', this.handleMessage), false;
     }
     else{
-      rollbar.log('unable to add event listener')
+      console.log('unable to add event listener')
     }
 
     // set up map

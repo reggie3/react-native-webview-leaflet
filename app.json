@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "react-native-webview-leaflet",
-    "description": "This project is really great.",
+    "description": "This webview containing a clickable Leaflet map.",
     "slug": "react-native-webview-leaflet",
     "privacy": "public",
     "sdkVersion": "24.0.0",

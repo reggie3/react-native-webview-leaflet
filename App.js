@@ -37,18 +37,18 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    let locations = this.createRandomMarkers(location.coords, 20, 10000);
+    // let locations = this.createRandomMarkers(location.coords, 20, 10000);
     
     // center random markers around Washington DC
-    // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
+    let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
 
     this.setState({
       locations,
       location,
 
       // center around Washington DC
-      // coords: [38.889931, -77.009003]
-      coords: [location.coords.latitude, location.coords.longitude]
+      coords: [38.889931, -77.009003]
+      //coords: [location.coords.latitude, location.coords.longitude]
     });
   };
 
@@ -75,9 +75,8 @@ export default class App extends React.Component {
 
       newMarkers.push({
         id: Math.floor(Math.random() * 1000),
-        //coords: [33.946, -91.000],
-         coords: [foundLatitude, foundLongitude],
-        // coords: [37.06452161, -85.67364786],
+        // coords: [33.946, -91.000],
+        coords: [foundLatitude, foundLongitude],
         icon: emoji[Math.floor(Math.random() * emoji.length)],
         animation: {
           name: animations[Math.floor(Math.random() * animations.length)],
@@ -157,7 +156,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#d8a2e8',
+    backgroundColor: '#bfffbf',
     display: 'flex'
   },
   statusBar: {
