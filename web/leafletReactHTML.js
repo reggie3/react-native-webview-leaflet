@@ -19,6 +19,14 @@ import * as markers from './markers.js';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
+const Rollbar = require('rollbar');
+import * as secrets from '../secrets';
+
+const rollbar = new Rollbar({
+  accessToken: secrets.rollbarToken,
+  captureUncaught: true,
+  captureUnhandledRejections: true
+});
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
 const SHOW_DEBUG_INFORMATION = false;
@@ -86,7 +94,15 @@ export default class LeafletReactHTML extends React.Component {
   componentDidMount = () => {
     this.printElement('leafletReactHTML.js componentDidMount');
     // setup react-native-webview-messaging channel
-    document.addEventListener('message', this.handleMessage), false;
+    if(document){
+      document.addEventListener('message', this.handleMessage), false;
+    }
+    else if(window){
+      window.addEventListener('message', this.handleMessage), false;
+    }
+    else{
+      rollbar.log('unable to add event listener')
+    }
 
     // set up map
     this.map = L.map('map', {

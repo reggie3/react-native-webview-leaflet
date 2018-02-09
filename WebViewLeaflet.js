@@ -4,13 +4,33 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
-  WebView
+  WebView,
+  Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import { RkButton, RkTheme } from 'react-native-ui-kitten';
+import * as webViewDownloadHelper from './webViewDownloadHelper';
+import { FileSystem } from 'expo';
+const Rollbar = require('rollbar');
+import * as secrets from './secrets';
 
+const rollbar = new Rollbar({
+  accessToken: secrets.rollbarToken,
+  captureUncaught: true,
+  captureUnhandledRejections: true
+});
+
+const PACKAGE_NAME = 'react-native-webview-leaflet';
+const PACKAGE_VERSION = '0.0.71';
+const INDEX_FILE_PATH = `${
+  FileSystem.documentDirectory
+}${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+const fileURLs = [
+  'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/index.html',
+  'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/main.bundle.js'
+];
 RkTheme.setType('RkButton', 'mimicLeafletButton', {
   fontSize: 22,
   width: 50,
@@ -30,14 +50,45 @@ export default class WebViewLeaflet extends React.Component {
     // this.setInitialMapState = this.setInitialMapState.bind(this);
     this.webview = null;
     this.state = {
-      webviewIsLoaded: false,
-      showActivityIndicator: true,
+      filesDownloaded: false,
+      downloadCompleted: false,
+      webViewNotLoaded: true,
+      webViewFilesNotAvailable: true,
       mapCenterCoords: null,
       locations: []
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    // this.downloadWebViewFiles();
+  }
+
+  downloadWebViewFiles = async () => {
+    let downloadStatus = await webViewDownloadHelper.checkForFiles(
+      PACKAGE_NAME,
+      PACKAGE_VERSION,
+      fileURLs,
+      this.webViewDownloadStatusCallBack
+    );
+    if (downloadStatus.success) {
+      filesNotLoaded = false;
+    } else {
+      rollbar.error(
+        `unable to download html files: ${JSON.stringify(downloadStatus)}`
+      );
+      Alert.alert(
+        'Error',
+        `unable to download html files: ${JSON.stringify(downloadStatus)}`,
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false }
+      );
+    }
+    debugger;
+  };
+
+  webViewDownloadStatusCallBack = message => {
+    console.log(mesage);
+  };
 
   sendUpdatedMapCenterCoordsToHTML = () => {
     console.log(`updating coords ${this.props.mapCenterCoords}`);
@@ -126,7 +177,7 @@ export default class WebViewLeaflet extends React.Component {
   onWebViewLoaded = () => {
     this.setState({
       webviewIsLoaded: true,
-      showActivityIndicator: false
+      webViewNotLoaded: false
     });
     // this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
     if (this.props.mapCenterCoords.length > 0) {
@@ -177,12 +228,16 @@ export default class WebViewLeaflet extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: 'green'
+          backgroundColor: '#a2e8a2'
         }}
       >
         <WebView
           ref={this.createWebViewRef}
-          source={require('./dist/index.html')}
+          source={{
+            uri: `${
+              FileSystem.documentDirectory
+            }${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`
+          }}
           onLoadEnd={this.onWebViewLoaded}
           onMessage={this.handleMessage}
         />
@@ -204,8 +259,8 @@ export default class WebViewLeaflet extends React.Component {
               shadowRadius: 5,
               shadowOpacity: 1.0,
               // needed to get shadows working in android
-              backgroundColor : "#0000", // invisible color
-              elevation: 4  //
+              backgroundColor: '#0000', // invisible color
+              elevation: 4 //
             }}
           >
             <RkButton
@@ -216,12 +271,14 @@ export default class WebViewLeaflet extends React.Component {
             </RkButton>
           </View>
         </View>
-        {renderIf(this.state.showActivityIndicator)(
+        {renderIf(this.state.webViewNotLoaded || this.state.filesNotLoaded)(
           <View style={styles.activityOverlayStyle}>
             <View style={styles.activityIndicatorContainer}>
               <ActivityIndicator
                 size="large"
-                animating={this.state.showActivityIndicator}
+                animating={
+                  this.state.webViewNotLoaded || this.state.filesNotLoaded
+                }
                 color="blue"
               />
             </View>
