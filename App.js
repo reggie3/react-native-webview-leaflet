@@ -37,18 +37,18 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    // let locations = this.createRandomMarkers(location.coords, 20, 10000);
+    let locations = this.createRandomMarkers(location.coords, 20, 10000);
     
     // center random markers around Washington DC
-    let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
+    // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
 
     this.setState({
       locations,
       location,
 
       // center around Washington DC
-      coords: [38.889931, -77.009003]
-      //coords: [location.coords.latitude, location.coords.longitude]
+      // coords: [38.889931, -77.009003]
+      coords: [location.coords.latitude, location.coords.longitude]
     });
   };
 
@@ -156,7 +156,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#bfffbf',
+    backgroundColor: '#ccccff',
     display: 'flex'
   },
   statusBar: {
