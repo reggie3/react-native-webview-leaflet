@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react-native-ui-kitten
+  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add --dev gulp
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Android;C:\Windows\System32;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\nodejs\;C:\Users\regin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\regin\AppData\Roaming\npm
@@ -18,12 +18,12 @@ npm manifest:
     "main": "node_modules/expo/AppEntry.js",
     "private": false,
     "name": "react-native-webview-leaflet",
-    "version": "0.0.7",
+    "version": "0.0.82",
     "files": [
       "dist",
       "WebViewLeaflet.js",
-      "react.production.min.js",
-      "react-dom.production.min"
+      "webViewDownloadHelper.js",
+      "config.js"
     ],
     "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
     "repository": {
@@ -34,7 +34,7 @@ npm manifest:
       "react-native",
       "leaflet",
       "expo",
-      "webview"
+      "webview",
     ],
     "author": "Reginald Johnson",
     "license": "MIT",
@@ -43,23 +43,21 @@ npm manifest:
     },
     "homepage": "https://github.com/reggie3/react-native-webview-leaflet#readme",
     "dependencies": {
-      "babel-plugin-transform-regenerator": "^6.26.0",
-      "babel-polyfill": "^6.26.0",
-      "expo": "^24.0.0",
       "glamor": "^2.20.40",
       "glamorous": "^4.11.2",
       "is-valid-coordinates": "^1.0.0",
       "leaflet": "^1.3.1",
       "leaflet.markercluster": "^1.3.0",
       "prop-types": "^15.6.0",
-      "react": "16.0.0",
-      "react-dom": "^16.2.0",
-      "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
-      "react-native-webview-messaging": "^2.0.0-alpha.4",
-      "render-if": "^0.1.1",
-      "util": "^0.10.3"
+      "react-native-ui-kitten": "^3.0.0",
+      "util": "^0.10.3",
+      "render-if": "^0.1.1"
+  
+     
     },
     "devDependencies": {
+      "babel-plugin-transform-regenerator": "^6.26.0",
+      "babel-polyfill": "^6.26.0",
       "babel-core": "^6.26.0",
       "babel-jest": "^22.0.6",
       "babel-loader": "^7.1.2",
@@ -3091,7 +3089,7 @@ Lockfile:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
   
-  events@^1.0.0, events@^1.1.1:
+  events@^1.0.0:
     version "1.1.1"
     resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
   
@@ -4042,6 +4040,10 @@ Lockfile:
   hoek@4.x.x:
     version "4.2.0"
     resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
+  
+  hoist-non-react-statics@^2.0.0:
+    version "2.3.1"
+    resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.3.1.tgz#343db84c6018c650778898240135a1420ee22ce0"
   
   home-or-tmp@^2.0.0:
     version "2.0.0"
@@ -6976,6 +6978,13 @@ Lockfile:
       color "^2.0.1"
       lodash "^4.16.6"
   
+  react-native-ui-kitten@^3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-3.0.0.tgz#2265393b57c6e637e55d7b7b5e5a214816b90ed6"
+    dependencies:
+      hoist-non-react-statics "^2.0.0"
+      prop-types "^15.5.10"
+  
   react-native-vector-icons@4.4.2:
     version "4.4.2"
     resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.4.2.tgz#090f42ee0396c4cc4eae0ddaa518028ba8df40c7"
@@ -6983,12 +6992,6 @@ Lockfile:
       lodash "^4.0.0"
       prop-types "^15.5.10"
       yargs "^8.0.2"
-  
-  react-native-webview-messaging@^2.0.0-alpha.4:
-    version "2.0.0-alpha.4"
-    resolved "https://registry.yarnpkg.com/react-native-webview-messaging/-/react-native-webview-messaging-2.0.0-alpha.4.tgz#22aec0834a85afb4e52dca08181163a352c7f1c8"
-    dependencies:
-      events "^1.1.1"
   
   "react-native@https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz":
     version "0.51.0"
@@ -9079,4 +9082,10 @@ Lockfile:
       fd-slicer "~1.0.1"
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\node_modules\@expo\vector-icons\node_modules\.bin'
+  SyntaxError: C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\package.json: Unexpected token ] in JSON at position 536
+      at JSON.parse (<anonymous>)
+      at C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:770:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:92:30)
+      at C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:103:13
+      at <anonymous>

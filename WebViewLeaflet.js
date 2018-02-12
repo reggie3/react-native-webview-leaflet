@@ -12,15 +12,16 @@ import renderIf from 'render-if';
 import { RkButton, RkTheme } from 'react-native-ui-kitten';
 import * as webViewDownloadHelper from './webViewDownloadHelper';
 import { FileSystem } from 'expo';
+import config from './config';
 
 // name and version of the package that contains the index file(s) the webview will load
 const PACKAGE_NAME = 'react-native-webview-leaflet';
-const PACKAGE_VERSION = '0.0.74';
+const PACKAGE_VERSION = '0.0.86';
 
 // path to the file that the webview will load
 const INDEX_FILE_PATH = `${
   FileSystem.documentDirectory
-}${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`;
+}${config.PACKAGE_NAME}/${config.PACKAGE_VERSION}/index.html`;
 // the files that will be downloaded
 const FILES_TO_DOWNLOAD = [
   'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/index.html',
@@ -56,31 +57,34 @@ export default class WebViewLeaflet extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount=()=> {
     this.downloadWebViewFiles(FILES_TO_DOWNLOAD);
   }
 
-  downloadWebViewFiles = async (filesToDownload) => {
-    let downloadStatus = await webViewDownloadHelper.checkForFiles(
-      PACKAGE_NAME,
-      PACKAGE_VERSION,
-      filesToDownload,
-      this.webViewDownloadStatusCallBack
-    );
-    if (downloadStatus.success) {
-      this.setState({ webViewFilesNotAvailable: false });
-    } else if (!downloadStatus.success){
-      console.log(
-        `unable to download html files: ${JSON.stringify(downloadStatus)}`
+  downloadWebViewFiles = async filesToDownload => {
+    if (!config.USE_LOCAL_FILES) {
+      let downloadStatus = await webViewDownloadHelper.checkForFiles(
+        config.PACKAGE_NAME,
+        config.PACKAGE_VERSION,
+        filesToDownload,
+        this.webViewDownloadStatusCallBack
       );
-      Alert.alert(
-        'Error',
-        `unable to download html files: ${JSON.stringify(downloadStatus)}`,
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        { cancelable: false }
-      );
-    }
-    else{
+      if (downloadStatus.success) {
+        this.setState({ webViewFilesNotAvailable: false });
+      } else if (!downloadStatus.success) {
+        console.log(
+          `unable to download html files: ${JSON.stringify(downloadStatus)}`
+        );
+        Alert.alert(
+          'Error',
+          `unable to download html files: ${JSON.stringify(downloadStatus)}`,
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+          { cancelable: false }
+        );
+      } else {
+        this.setState({ webViewFilesNotAvailable: false });
+      }
+    } else {
       this.setState({ webViewFilesNotAvailable: false });
     }
   };
@@ -100,6 +104,10 @@ export default class WebViewLeaflet extends React.Component {
   sendLocations = markers => {
     this.sendMessage('UPDATE_MARKERS', { markers });
   };
+
+  sendZoom = zoom =>{
+    this.sendMessage('SET_ZOOM', { zoom });
+  }
 
   handleMessage = event => {
     let msgData;
@@ -159,15 +167,20 @@ export default class WebViewLeaflet extends React.Component {
 
   onWebViewLoaded = () => {
     this.setState({
-      webviewIsLoaded: true,
       webViewNotLoaded: false
     });
+    console.log('************************');
+    console.log(this.props);
     // this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
     if (this.props.mapCenterCoords.length > 0) {
       this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
     }
     if (this.props.hasOwnProperty('locations') && this.props.locations) {
       this.sendLocations(this.props.locations);
+    }
+    if (this.props.hasOwnProperty('zoom') && this.props.zoom) {
+      debugger;
+      this.sendZoom(this.props.zoom);
     }
     // let the parent know the webview is ready
     this.props.onWebViewReady();
@@ -183,12 +196,11 @@ export default class WebViewLeaflet extends React.Component {
       JSON.stringify(nextProps.mapCenterCoords)
     ) {
       console.log('Update mapCenterCoords');
-      /* this.setState({ mapCenterCoords: nextProps.mapCenterCoords });
-      if (this.state.webviewIsLoaded) { */
+
       this.sendUpdatedMapCenterCoordsToHTML(nextProps.mapCenterCoords);
     }
 
-    if (this.state.webviewIsLoaded) {
+    if (!this.state.webViewNotLoaded) {
       if (
         nextProps.hasOwnProperty('locations') &&
         JSON.stringify(this.state.locations) !==

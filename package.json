@@ -1,13 +1,13 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.0.71",
+  "version": "0.0.97",
   "files": [
     "dist",
     "WebViewLeaflet.js",
-    "react.production.min.js",
-    "react-dom.production.min"
+    "webViewDownloadHelper.js",
+    "config.js"
   ],
   "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
   "repository": {
@@ -27,34 +27,40 @@
   },
   "homepage": "https://github.com/reggie3/react-native-webview-leaflet#readme",
   "dependencies": {
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
-    "expo": "^24.0.0",
     "glamor": "^2.20.40",
     "glamorous": "^4.11.2",
     "is-valid-coordinates": "^1.0.0",
     "leaflet": "^1.3.1",
     "leaflet.markercluster": "^1.3.0",
     "prop-types": "^15.6.0",
-    "react": "16.0.0",
-    "react-dom": "^16.2.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
     "react-native-ui-kitten": "^3.0.0",
-    "render-if": "^0.1.1",
-    "util": "^0.10.3"
+    "util": "^0.10.3",
+    "render-if": "^0.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-jest": "^22.0.6",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^4.1.2",
     "css-loader": "^0.28.8",
+    "fancy-log": "^1.3.2",
     "file-loader": "^1.1.6",
+    "gulp": "^4.0.0",
+    "gulp-bump": "^3.1.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-intercept": "^0.1.0",
+    "gulp-json-editor": "^2.2.1",
+    "gulp-publish": "^0.8.7",
+    "gulp-run": "^1.7.1",
+    "gulp-run-command": "^0.0.9",
+    "gulp-sequence": "^1.0.0",
     "html-webpack-plugin": "^2.30.1",
     "identity-obj-proxy": "^3.0.0",
     "image-webpack-loader": "^3.4.2",
@@ -63,6 +69,7 @@
     "regenerator-runtime": "^0.11.1",
     "style-loader": "^0.19.1",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.1"
+    "webpack-dev-server": "^2.10.1",
+    "webpack-stream": "^4.0.1"
   }
 }

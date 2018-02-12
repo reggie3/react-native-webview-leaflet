@@ -13,7 +13,7 @@ require('leaflet_css');
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import glamorous from 'glamorous';
-import React from '../react.production.min.js';
+import React from 'react';
 import PropTypes from 'prop-types';
 import * as markers from './markers.js';
 import './markers.css';
@@ -29,7 +29,7 @@ const console = new console({
 }); */
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
+const SHOW_DEBUG_INFORMATION = true;
 // used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 // used for testing seperately of the react-native applicaiton
@@ -95,20 +95,18 @@ export default class LeafletReactHTML extends React.Component {
 
   componentDidMount = () => {
     this.printElement('leafletReactHTML.js componentDidMount');
-    if(document){
+    if (document) {
       document.addEventListener('message', this.handleMessage), false;
-    }
-    else if(window){
+    } else if (window) {
       window.addEventListener('message', this.handleMessage), false;
-    }
-    else{
-      console.log('unable to add event listener')
+    } else {
+      console.log('unable to add event listener');
     }
 
     // set up map
     this.map = L.map('map', {
       center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
-      zoom: 15
+      zoom: 1
     });
     // Initialize the base layer
     var osm_mapnik = L.tileLayer(
@@ -119,7 +117,6 @@ export default class LeafletReactHTML extends React.Component {
           '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }
     ).addTo(this.map);
-
 
     // add click event to map
     let that = this;
@@ -209,6 +206,10 @@ export default class LeafletReactHTML extends React.Component {
             this.sendNextMessage();
             break;
 
+          case 'SET_ZOOM':
+            this.map.setZoom(msgData.payload.zoom);
+            break;
+
           default:
             printElement(
               `leafletReactHTML Error: Unhandled message type received "${
@@ -230,13 +231,12 @@ export default class LeafletReactHTML extends React.Component {
     }
     this.currentLocationMarker = L.marker(currentPos, {
       icon: this.getIcon('❤️', {
-       name: 'beat',
-       duration: .25,
-       delay: 0,
-       interationCount: 'infinite',
-       direction: 'alternate'
-      }),
-      
+        name: 'beat',
+        duration: 0.25,
+        delay: 0,
+        interationCount: 'infinite',
+        direction: 'alternate'
+      })
     });
     this.currentLocationMarker.addTo(this.map);
   };
@@ -246,7 +246,9 @@ export default class LeafletReactHTML extends React.Component {
       animation-name: ${animation.name ? animation.name : 'bounce'}; 
       animation-duration: ${animation.duration ? animation.duration : 1}s ;
       animation-delay: ${animation.delay ? animation.delay : 0}s;
-      animation-direction: ${animation.direction ? animation.direction : 'normal'};
+      animation-direction: ${
+        animation.direction ? animation.direction : 'normal'
+      };
       animation-iteration-count: ${
         animation.interationCount ? animation.interationCount : 'infinite'
       }">
