@@ -147,7 +147,7 @@ export default class App extends React.Component {
           onMarkerClicked={this.onMarkerClicked}
           onWebViewReady={this.onWebViewReady}
           panToLocation={false}
-          zoom={1}
+          zoom={5}
         />
       </View>
     );

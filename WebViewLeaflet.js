@@ -264,7 +264,7 @@ export default class WebViewLeaflet extends React.Component {
               source={{
                 uri: `${
                   FileSystem.documentDirectory
-                }${PACKAGE_NAME}/${PACKAGE_VERSION}/index.html`
+                }${config.PACKAGE_NAME}/${config.PACKAGE_VERSION}/index.html`
               }}
               onLoadEnd={this.onWebViewLoaded}
               onMessage={this.handleMessage}
