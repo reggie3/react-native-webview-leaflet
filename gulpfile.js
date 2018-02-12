@@ -120,10 +120,10 @@ gulp.task(
     'forNPM',
     'editConfig',
     'webpack',
-    'git-add',
-    'git-commit',
-    'git-push',
-    'npm-publish',
+    gulp.parallel(
+      gulp.series('git-add', 'git-commit', 'git-push'),
+      'npm-publish'
+    ),
     'forExpo'
   )
 );
