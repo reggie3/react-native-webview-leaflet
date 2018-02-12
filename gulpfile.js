@@ -45,15 +45,13 @@ gulp.task('test', function() {
 });
 
 const updatePackageJSONforNPM = json => {};
-
+// read the package.json and update it for npm publishing
 gulp.task('forNPM', done => {
   gulp
     .src('./package.json')
     .pipe(bump())
     .pipe(
       jeditor(function(json) {
-        currentVersion = json.version;
-        // console.log(currentVersion);
         json.dependencies = npmDeps;
         json.main = npmMain;
         return json;
@@ -64,6 +62,8 @@ gulp.task('forNPM', done => {
   done();
 });
 
+// read and bump the package version in config.js so that it
+// matches the version number about to be published
 gulp.task('editConfig', done => {
   gulp
     .src('./config.js')
@@ -73,6 +73,7 @@ gulp.task('editConfig', done => {
   done();
 });
 
+// pack the files
 gulp.task('webpack', done => {
   return webpack_stream(webpack_config).pipe(gulp.dest(`${paths.build}`));
   done();
@@ -113,7 +114,7 @@ gulp.task('forExpo', done => {
   done();
 });
 
-// read the package.json
+
 gulp.task(
   'publish',
   gulp.series(

@@ -14,9 +14,7 @@ import * as webViewDownloadHelper from './webViewDownloadHelper';
 import { FileSystem } from 'expo';
 import config from './config';
 
-// name and version of the package that contains the index file(s) the webview will load
-const PACKAGE_NAME = 'react-native-webview-leaflet';
-const PACKAGE_VERSION = '0.0.86';
+
 
 // path to the file that the webview will load
 const INDEX_FILE_PATH = `${
