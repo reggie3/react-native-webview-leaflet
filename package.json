@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.0.97",
+  "version": "0.0.98",
   "files": [
     "dist",
     "WebViewLeaflet.js",

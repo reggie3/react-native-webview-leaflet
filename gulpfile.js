@@ -102,8 +102,6 @@ gulp.task('git-push', done => {
 gulp.task('forExpo', done => {
   gulp
     .src('./package.json')
-    .pipe(bump())
-
     .pipe(
       jeditor({
         dependencies: expoDeps,
