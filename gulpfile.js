@@ -74,10 +74,16 @@ gulp.task('editConfig', done => {
 });
 
 // pack the files
-gulp.task('webpack', done => {
-  return webpack_stream(webpack_config).pipe(gulp.dest(`${paths.build}`));
+gulp.task('webpack-prod', done => {
+  return run('npm run prod').exec(); // run "npm start".
   done();
 });
+
+gulp.task('webpack-dev', done => {
+  return run('npm run dev').exec(); // run "npm start".
+  done();
+});
+
 
 gulp.task('npm-publish', done => {
   return run('npm publish').exec(); // run "npm start".
@@ -116,11 +122,25 @@ gulp.task('forExpo', done => {
 
 
 gulp.task(
-  'publish',
+  'pub',
   gulp.series(
     'forNPM',
     'editConfig',
-    'webpack',
+    'webpack-prod',
+    gulp.parallel(
+      gulp.series('git-add', 'git-commit', 'git-push'),
+      'npm-publish'
+    ),
+    'forExpo'
+  )
+);
+
+gulp.task(
+  'dev',
+  gulp.series(
+    'forNPM',
+    'editConfig',
+    'webpack-dev',
     gulp.parallel(
       gulp.series('git-add', 'git-commit', 'git-push'),
       'npm-publish'

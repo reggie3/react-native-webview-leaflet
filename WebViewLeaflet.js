@@ -167,6 +167,10 @@ export default class WebViewLeaflet extends React.Component {
       debugger;
       this.sendZoom(this.props.zoom);
     }
+    if (this.props.hasOwnProperty('showZoomControls') && this.props.showZoomControls) {
+      debugger;
+      this.sendShowZoomControls(this.props.showZoomControls);
+    }
     // let the parent know the webview is ready
     this.props.onWebViewReady();
   };
@@ -256,18 +260,21 @@ export default class WebViewLeaflet extends React.Component {
               onLoadEnd={this.onWebViewLoaded}
               onMessage={this.handleMessage}
             />
-            <View
-              style={{
-                position: 'absolute',
-                right: 10,
-                bottom: 20,
-                padding: 10
-              }}
-            >
-              <Button
-              onPress={this.sendUpdatedMapCenterCoordsToHTML}
-              text={"🎯"}/>
-            </View>
+            {renderIf(this.props.centerButton)(
+              <View
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  bottom: 20,
+                  padding: 10
+                }}
+              >
+                <Button
+                  onPress={this.sendUpdatedMapCenterCoordsToHTML}
+                  text={'🎯'}
+                />
+              </View>
+            )}
           </View>
         )}
       </View>
@@ -275,27 +282,24 @@ export default class WebViewLeaflet extends React.Component {
   }
 }
 
-/* WebViewLeaflet.propTypes = {
+WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
   onMapClicked: PropTypes.function,
   onMarkerClicked: PropTypes.function,
   onWebviewReady: PropTypes.function,
-  panToLocation: PropTypes.bool
+  panToLocation: PropTypes.bool,
+  zoom: PropTypes.number,
+  showZoomControls: PropTypes.bool,
+  centerButton: PropTypes.bool
 };
 
 WebViewLeaflet.defaults = {
-  onMapClicked: () => {
-    console.log('onMapClicked');
-  },
-  onMarkerClicked: () => {
-    console.log('onMarkerClicked');
-  },
-  onWebviewReady: () => {
-    console.log('onWebviewReady');
-  },
+  zoom: 10,
+  showZoomControls: true,
+  centerButton: true,
   panToLocation: false
-}; */
+};
 
 const styles = StyleSheet.create({
   activityOverlayStyle: {

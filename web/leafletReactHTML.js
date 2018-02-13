@@ -210,6 +210,9 @@ export default class LeafletReactHTML extends React.Component {
             this.map.setZoom(msgData.payload.zoom);
             break;
 
+            case 'SHOW_ZOOM_CONTROLS':
+            break;
+
           default:
             printElement(
               `leafletReactHTML Error: Unhandled message type received "${

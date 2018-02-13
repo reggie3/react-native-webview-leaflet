@@ -2,7 +2,12 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "scripts": {
+    "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
+    "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
+    "clean": "rimraf ./dist"
+  },
   "files": [
     "dist",
     "WebViewLeaflet.js",
@@ -71,6 +76,7 @@
     "style-loader": "^0.19.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.10.1",
-    "webpack-stream": "^4.0.1"
+    "webpack-stream": "^4.0.1",
+    "webpack-strip": "^0.1.0"
   }
 }

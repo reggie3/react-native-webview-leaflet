@@ -4507,6 +4507,10 @@ hoek@4.x.x:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
 
+hoist-non-react-statics@^2.0.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.3.1.tgz#343db84c6018c650778898240135a1420ee22ce0"
+
 home-or-tmp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/home-or-tmp/-/home-or-tmp-2.0.0.tgz#e36c3f2d2cae7d746a857e38d18d5f32a7882db8"
@@ -5842,7 +5846,7 @@ loader-runner@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.3.0.tgz#f482aea82d543e07921700d5a46ef26fdac6b8a2"
 
-loader-utils@^0.2.16:
+loader-utils@^0.2.16, loader-utils@^0.2.6:
   version "0.2.17"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.17.tgz#f86e6374d43205a6e6c60e9196f17c0299bfb348"
   dependencies:
@@ -7740,6 +7744,13 @@ react-native-safe-module@^1.1.0:
   dependencies:
     color "^2.0.1"
     lodash "^4.16.6"
+
+react-native-ui-kitten@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-3.0.0.tgz#2265393b57c6e637e55d7b7b5e5a214816b90ed6"
+  dependencies:
+    hoist-non-react-statics "^2.0.0"
+    prop-types "^15.5.10"
 
 react-native-vector-icons@4.4.2:
   version "4.4.2"
@@ -9739,6 +9750,12 @@ webpack-stream@^4.0.1:
     through "^2.3.8"
     vinyl "^2.1.0"
     webpack "^3.4.1"
+
+webpack-strip@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/webpack-strip/-/webpack-strip-0.1.0.tgz#2737acdd5049502299156a2d6a3ab697239a3359"
+  dependencies:
+    loader-utils "^0.2.6"
 
 webpack@^3.10.0:
   version "3.10.0"

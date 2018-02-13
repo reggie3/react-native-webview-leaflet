@@ -1,8 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackStrip = require('webpack-strip')
 
-const env = 'DEV';
+const ENV = process.env.NODE_ENV;
 
 module.exports = {
   entry: ['babel-polyfill', './web/component.js'],
