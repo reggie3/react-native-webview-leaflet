@@ -285,10 +285,10 @@ export default class WebViewLeaflet extends React.Component {
 WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
-  onMapClicked: PropTypes.function,
+/*   onMapClicked: PropTypes.function,
   onMarkerClicked: PropTypes.function,
   onWebviewReady: PropTypes.function,
-  panToLocation: PropTypes.bool,
+  panToLocation: PropTypes.bool, */
   zoom: PropTypes.number,
   showZoomControls: PropTypes.bool,
   centerButton: PropTypes.bool

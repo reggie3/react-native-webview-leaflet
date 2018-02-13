@@ -5,7 +5,9 @@ const concat = require('gulp-concat');
 const jeditor = require('gulp-json-editor');
 const bump = require('gulp-bump');
 const webpack_stream = require('webpack-stream');
-const webpack_config = require('./webpack.config.js');
+const webpaconfig = require('./webpack.config.js');
+const webpackDevConfig = require('./webpack.config.dev');
+const webpackProdConfig = require('./webpack.config.prod');
 const run = require('gulp-run');
 
 // dependencies for npm publishing
@@ -75,12 +77,12 @@ gulp.task('editConfig', done => {
 
 // pack the files
 gulp.task('webpack-prod', done => {
-  return run('npm run prod').exec(); // run "npm start".
+  return webpack_stream(webpackDevConfig).pipe(gulp.dest(`${paths.build}`));
   done();
 });
 
 gulp.task('webpack-dev', done => {
-  return run('npm run dev').exec(); // run "npm start".
+  return webpack_stream(webpackDevConfig).pipe(gulp.dest(`${paths.build}`));
   done();
 });
 
@@ -122,7 +124,7 @@ gulp.task('forExpo', done => {
 
 
 gulp.task(
-  'pub',
+  'prod',
   gulp.series(
     'forNPM',
     'editConfig',

@@ -1,11 +1,24 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackClearConsole = require('webpack-clear-console')
-// const commonWebpack = require('./webpack.config.common')
+const WebpackClearConsole = require("webpack-clear-console").WebpackClearConsole;
 
-// console.log(commonWebpack);
+const ENV = process.env.NODE_ENV;
+console.log(process.env.NODE_ENV);
 
+const plugins = ENV === 'development' ?  [
+  new HtmlWebpackPlugin({
+    template: './web/leafletReact.html',
+    inject: 'body'
+  })
+]:
+ [
+  new HtmlWebpackPlugin({
+    template: './web/leafletReact.html',
+    inject: 'body'
+  }),
+  // new WebpackClearConsole()
+]
 
 module.exports = {
   entry: ['babel-polyfill', './web/component.js'],
@@ -42,27 +55,26 @@ module.exports = {
         test: /\.js$/,
         include: [path.resolve(__dirname, 'web')],
         exclude: /(node_modules|bower_components)/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  'env',
-                  {
-                    targets: {
-                      browsers: ['last 2 versions', 'safari >= 7']
-                    }
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                'env',
+                {
+                  targets: {
+                    browsers: ['last 2 versions', 'safari >= 7']
                   }
-                ],
-                'react',
-                'stage-2'
+                }
               ],
-              plugins: ['babel-plugin-transform-object-rest-spread'],
-              babelrc: false
-            }
+              'react',
+              'stage-2'
+            ],
+            plugins: ['babel-plugin-transform-object-rest-spread'],
+            babelrc: false
           }
-        ]
+        }
+      ]
       }
     ]
   },
@@ -82,10 +94,6 @@ module.exports = {
       leaflet_css: __dirname + '/node_modules/leaflet/dist/leaflet.css'
     }
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './web/leafletReact.html',
-      inject: 'body'
-    })
-  ]
+  // calculated higher up
+  plugins 
 };
