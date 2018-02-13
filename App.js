@@ -148,6 +148,7 @@ export default class App extends React.Component {
           onWebViewReady={this.onWebViewReady}
           panToLocation={false}
           zoom={5}
+          showZoomControls={false}
         />
       </View>
     );

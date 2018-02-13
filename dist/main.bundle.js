@@ -28495,6 +28495,12 @@ var LeafletReactHTML = function (_React$Component) {
               break;
 
             case 'SHOW_ZOOM_CONTROLS':
+              if (msg.payload.showZoomControls) {
+                _this.map.zoomControl.add();
+              }
+              {
+                _this.map.zoomControl.remove();
+              }
               break;
 
             default:

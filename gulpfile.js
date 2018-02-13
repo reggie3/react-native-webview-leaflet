@@ -1,6 +1,5 @@
 const gulp = require('gulp');
-const log = require('fancy-log');
-const intercept = require('gulp-intercept');
+
 const concat = require('gulp-concat');
 const jeditor = require('gulp-json-editor');
 const bump = require('gulp-bump');

@@ -95,6 +95,9 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage('SET_ZOOM', { zoom });
   };
 
+  sendShowZoomControls =(showZoomControls)=>{
+    this.sendMessage('SHOW_ZOOM_CONTROLS', {showZoomControls});
+  }
   handleMessage = event => {
     let msgData;
     try {
@@ -134,7 +137,7 @@ export default class WebViewLeaflet extends React.Component {
       return;
     }
   };
-
+  
   sendMessage = (type, payload) => {
     // only send message when webview is loaded
     if (this.webview) {
@@ -208,6 +211,7 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   render() {
+    debugger;
     return (
       <View
         style={{
@@ -285,16 +289,16 @@ export default class WebViewLeaflet extends React.Component {
 WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
-/*   onMapClicked: PropTypes.function,
-  onMarkerClicked: PropTypes.function,
-  onWebviewReady: PropTypes.function,
-  panToLocation: PropTypes.bool, */
+onMapClicked: PropTypes.func,
+  onMarkerClicked: PropTypes.func,
+  onWebviewReady: PropTypes.func,
+  panToLocation: PropTypes.bool, 
   zoom: PropTypes.number,
   showZoomControls: PropTypes.bool,
   centerButton: PropTypes.bool
 };
 
-WebViewLeaflet.defaults = {
+WebViewLeaflet.defaultProps = {
   zoom: 10,
   showZoomControls: true,
   centerButton: true,
