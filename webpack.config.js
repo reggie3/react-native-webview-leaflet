@@ -1,9 +1,23 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackStrip = require('webpack-strip')
+const WebpackClearConsole = require("webpack-clear-console").WebpackClearConsole;
 
 const ENV = process.env.NODE_ENV;
+
+const plugins = ENV === 'DEV' ?  [
+  new HtmlWebpackPlugin({
+    template: './web/leafletReact.html',
+    inject: 'body'
+  })
+]:
+ [
+  new HtmlWebpackPlugin({
+    template: './web/leafletReact.html',
+    inject: 'body'
+  }),
+  new WebpackClearConsole()
+]
 
 module.exports = {
   entry: ['babel-polyfill', './web/component.js'],
@@ -40,7 +54,7 @@ module.exports = {
         test: /\.js$/,
         include: [path.resolve(__dirname, 'web')],
         exclude: /(node_modules|bower_components)/,
-        use: {
+        use: [{
           loader: 'babel-loader',
           options: {
             presets: [
@@ -59,6 +73,7 @@ module.exports = {
             babelrc: false
           }
         }
+      ]
       }
     ]
   },
@@ -78,10 +93,6 @@ module.exports = {
       leaflet_css: __dirname + '/node_modules/leaflet/dist/leaflet.css'
     }
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './web/leafletReact.html',
-      inject: 'body'
-    })
-  ]
+  // calculated higher up
+  plugins 
 };

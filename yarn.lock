@@ -9688,6 +9688,10 @@ webidl-conversions@^4.0.1, webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
 
+webpack-clear-console@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/webpack-clear-console/-/webpack-clear-console-1.0.3.tgz#86f0eefe96199527d667f2e37e30fc5b1c2b4359"
+
 webpack-dev-middleware@1.12.2:
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-1.12.2.tgz#f8fc1120ce3b4fc5680ceecb43d777966b21105e"
