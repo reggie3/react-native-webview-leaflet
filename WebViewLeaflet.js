@@ -5,21 +5,21 @@ import {
   ActivityIndicator,
   Text,
   WebView,
-  Alert
+  Alert,
+  Platform,
+  Touchable
 } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
-import { RkButton, RkTheme } from 'react-native-ui-kitten';
 import * as webViewDownloadHelper from './webViewDownloadHelper';
 import { FileSystem } from 'expo';
 import config from './config';
-
-
+import Button from './Button';
 
 // path to the file that the webview will load
-const INDEX_FILE_PATH = `${
-  FileSystem.documentDirectory
-}${config.PACKAGE_NAME}/${config.PACKAGE_VERSION}/index.html`;
+const INDEX_FILE_PATH = `${FileSystem.documentDirectory}${
+  config.PACKAGE_NAME
+}/${config.PACKAGE_VERSION}/index.html`;
 // the files that will be downloaded
 const FILES_TO_DOWNLOAD = [
   'https://raw.githubusercontent.com/reggie3/react-native-webview-leaflet/master/dist/index.html',
@@ -27,18 +27,6 @@ const FILES_TO_DOWNLOAD = [
 ];
 
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
-
-RkTheme.setType('RkButton', 'mimicLeafletButton', {
-  fontSize: 22,
-  width: 50,
-  borderRadius: 2,
-  hitSlop: { top: 5, left: 5, bottom: 5, right: 5 },
-  backgroundColor: 'rgb(255,255,255)',
-  borderColor: 'rgb(200,200,200)',
-  borderWidth: 1,
-  borderRadius: 4,
-  margin: 0
-});
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -55,9 +43,9 @@ export default class WebViewLeaflet extends React.Component {
     };
   }
 
-  componentDidMount=()=> {
+  componentDidMount = () => {
     this.downloadWebViewFiles(FILES_TO_DOWNLOAD);
-  }
+  };
 
   downloadWebViewFiles = async filesToDownload => {
     if (!config.USE_LOCAL_FILES) {
@@ -103,9 +91,9 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage('UPDATE_MARKERS', { markers });
   };
 
-  sendZoom = zoom =>{
+  sendZoom = zoom => {
     this.sendMessage('SET_ZOOM', { zoom });
-  }
+  };
 
   handleMessage = event => {
     let msgData;
@@ -119,7 +107,6 @@ export default class WebViewLeaflet extends React.Component {
         this.sendMessage('MESSAGE_ACKNOWLEDGED');
 
         switch (msgData.type) {
-
           case 'MARKER_CLICKED':
             console.log('Received MARKER_CLICKED');
             console.log(msgData);
@@ -262,9 +249,9 @@ export default class WebViewLeaflet extends React.Component {
             <WebView
               ref={this.createWebViewRef}
               source={{
-                uri: `${
-                  FileSystem.documentDirectory
-                }${config.PACKAGE_NAME}/${config.PACKAGE_VERSION}/index.html`
+                uri: `${FileSystem.documentDirectory}${config.PACKAGE_NAME}/${
+                  config.PACKAGE_VERSION
+                }/index.html`
               }}
               onLoadEnd={this.onWebViewLoaded}
               onMessage={this.handleMessage}
@@ -277,27 +264,9 @@ export default class WebViewLeaflet extends React.Component {
                 padding: 10
               }}
             >
-              <View
-                style={{
-                  shadowColor: '#000000',
-                  shadowOffset: {
-                    width: 30,
-                    height: 3
-                  },
-                  shadowRadius: 5,
-                  shadowOpacity: 1.0,
-                  // needed to get shadows working in android
-                  backgroundColor: '#0000', // invisible color
-                  elevation: 4 //
-                }}
-              >
-                <RkButton
-                  rkType="mimicLeafletButton"
-                  onPress={this.sendUpdatedMapCenterCoordsToHTML}
-                >
-                  🎯
-                </RkButton>
-              </View>
+              <Button
+              onPress={this.sendUpdatedMapCenterCoordsToHTML}
+              text={"🎯"}/>
             </View>
           </View>
         )}
@@ -349,5 +318,14 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 5,
     shadowOpacity: 1.0
-  }
+  },
+  button: Platform.select({
+    ios: {},
+    android: {
+      elevation: 4,
+      // Material design blue from https://material.google.com/style/color.html#color-color-palette
+      backgroundColor: '#2196F3',
+      borderRadius: 2
+    }
+  })
 });

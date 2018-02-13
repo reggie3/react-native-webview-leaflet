@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add --dev gulp-publish
+  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react-native-icon-button
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Android;C:\Windows\System32;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\nodejs\;C:\Users\regin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\regin\AppData\Roaming\npm
@@ -18,7 +18,7 @@ npm manifest:
     "main": "node_modules/expo/AppEntry.js",
     "private": false,
     "name": "react-native-webview-leaflet",
-    "version": "0.0.100",
+    "version": "0.0.101",
     "files": [
       "dist",
       "WebViewLeaflet.js",
@@ -10242,4 +10242,4 @@ Lockfile:
       fd-slicer "~1.0.1"
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\node_modules\acorn-globals\node_modules\.bin'
+  Error: EPERM: operation not permitted, unlink 'C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\node_modules\@expo\vector-icons\node_modules\.bin'
