@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.1.822",
+  "version": "0.1.823",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -76,6 +76,8 @@
     "webpack": "^3.11.0",
     "webpack-clear-console": "^1.0.3",
     "webpack-dev-server": "^2.10.1",
+    "webpack-remove-debug": "^0.1.0",
+    "webpack-stream": "^4.0.1",
     "webpack-strip": "^0.1.0"
   }
 }

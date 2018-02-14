@@ -86,6 +86,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './web/leafletReact.html',
       inject: 'body'
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+          drop_console: true
+      }
+  })
   ]
 };
