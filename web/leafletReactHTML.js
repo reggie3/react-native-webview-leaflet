@@ -212,10 +212,10 @@ export default class LeafletReactHTML extends React.Component {
 
           case 'SHOW_ZOOM_CONTROLS':
             if (msg.payload.showZoomControls) {
-              this.map.zoomControl.add();
+              this.map.addControl(this.map.zoomControl);
             }
             {
-              this.map.zoomControl.remove();
+              this.map.removeControl(this.map.zoomControl);
             }
             break;
 

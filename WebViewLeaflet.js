@@ -163,14 +163,14 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.mapCenterCoords.length > 0) {
       this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
     }
-    if (this.props.hasOwnProperty('locations') && this.props.locations) {
+    if (this.props.hasOwnProperty('locations')) {
       this.sendLocations(this.props.locations);
     }
-    if (this.props.hasOwnProperty('zoom') && this.props.zoom) {
+    if (this.props.hasOwnProperty('zoom')) {
       debugger;
       this.sendZoom(this.props.zoom);
     }
-    if (this.props.hasOwnProperty('showZoomControls') && this.props.showZoomControls) {
+    if (this.props.hasOwnProperty('showZoomControls')) {
       debugger;
       this.sendShowZoomControls(this.props.showZoomControls);
     }
@@ -211,7 +211,6 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   render() {
-    debugger;
     return (
       <View
         style={{
