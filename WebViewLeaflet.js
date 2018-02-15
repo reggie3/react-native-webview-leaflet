@@ -231,7 +231,7 @@ export default class WebViewLeaflet extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: '#a2e8a2'
+          backgroundColor: '#e0fffb'
         }}
       >
         {renderIf(this.state.webViewFilesNotAvailable)(
