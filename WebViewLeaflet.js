@@ -52,7 +52,7 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   downloadFilesForWebView = async () => {
-    debugger;
+    ;
     let downloadStatus = await versionedFileDownloader(
       this.webViewDownloadStatusCallBack,
       {
@@ -172,11 +172,11 @@ export default class WebViewLeaflet extends React.Component {
       this.sendLocations(this.props.locations);
     }
     if (this.props.hasOwnProperty('zoom')) {
-      debugger;
+      ;
       this.sendZoom(this.props.zoom);
     }
     if (this.props.hasOwnProperty('showZoomControls')) {
-      debugger;
+      ;
       this.sendShowZoomControls(this.props.showZoomControls);
     }
     // let the parent know the webview is ready
