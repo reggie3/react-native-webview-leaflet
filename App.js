@@ -150,6 +150,8 @@ export default class App extends React.Component {
           zoom={5}
           showZoomControls={false}
         />
+        <View style={{display: 'flex',
+      flexDirection: 'row'}}></View>
       </View>
     );
   }
