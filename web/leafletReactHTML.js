@@ -29,7 +29,7 @@ const console = new console({
 }); */
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
+const SHOW_DEBUG_INFORMATION = true;
 // used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 // used for testing seperately of the react-native applicaiton

@@ -84,10 +84,12 @@ export default class WebViewLeaflet extends React.Component {
 
   sendUpdatedMapCenterCoordsToHTML = () => {
     console.log(`updating coords ${this.state.mapCenterCoords}`);
-    this.sendMessage('MAP_CENTER_COORD_CHANGE', {
-      mapCenterCoords: this.state.mapCenterCoords,
-      panToLocation: this.props.panToLocation
-    });
+    if (this.state.mapCenterCoords) {
+      this.sendMessage('MAP_CENTER_COORD_CHANGE', {
+        mapCenterCoords: this.state.mapCenterCoords,
+        panToLocation: this.props.panToLocation
+      });
+    }
   };
 
   sendLocations = markers => {
@@ -114,18 +116,23 @@ export default class WebViewLeaflet extends React.Component {
 
         switch (msgData.type) {
           case 'MARKER_CLICKED':
-            console.log('Received MARKER_CLICKED');
-            console.log(msgData);
-            this.props.onMarkerClicked(msgData.payload.id);
+            if (this.props.hasOwnProperty('onMarkerClicked')) {
+              console.log('Received MARKER_CLICKED');
+              console.log(msgData);
+              this.props.onMarkerClicked(msgData.payload.id);
+            }
             break;
 
           case 'MAP_CLICKED':
-            console.log('Received MAP_CLICKED');
-            console.log(msgData);
-            this.props.onMapClicked([
-              msgData.payload.coords.lat,
-              msgData.payload.coords.lng
-            ]);
+            if (this.props.hasOwnProperty('onMapClicked')) {
+              console.log('Received MAP_CLICKED');
+              console.log(msgData);
+
+              this.props.onMapClicked([
+                msgData.payload.coords.lat,
+                msgData.payload.coords.lng
+              ]);
+            }
             break;
           default:
             console.warn(
@@ -178,7 +185,9 @@ export default class WebViewLeaflet extends React.Component {
       this.sendShowZoomControls(this.props.showZoomControls);
     }
     // let the parent know the webview is ready
-    this.props.onWebViewReady();
+    if (this.props.hasOwnProperty('onWebViewReady')) {
+      this.props.onWebViewReady();
+    }
   };
 
   createWebViewRef = webview => {
@@ -188,17 +197,15 @@ export default class WebViewLeaflet extends React.Component {
   componentWillReceiveProps = nextProps => {
     debugger;
     if (
+      nextProps.mapCenterCoords &&
       JSON.stringify(this.state.mapCenterCoords) !==
-      JSON.stringify(nextProps.mapCenterCoords)
+        JSON.stringify(nextProps.mapCenterCoords)
     ) {
       console.log(`Update mapCenterCoords to ${nextProps.mapCenterCoords}`);
       let that = this;
-      this.setState(
-        { mapCenterCoords: nextProps.mapCenterCoords },()=>{
-          that.sendUpdatedMapCenterCoordsToHTML();
-        }
-       
-      );
+      this.setState({ mapCenterCoords: nextProps.mapCenterCoords }, () => {
+        that.sendUpdatedMapCenterCoordsToHTML();
+      });
     }
 
     if (!this.state.webViewNotLoaded) {
@@ -311,9 +318,6 @@ WebViewLeaflet.defaultProps = {
   showZoomControls: true,
   centerButton: true,
   panToLocation: false,
-  onWebviewReady: () => {
-    console.log('WebViewLeaflet webview ready');
-  }
 };
 
 const styles = StyleSheet.create({
