@@ -146,7 +146,7 @@ export default class WebViewLeaflet extends React.Component {
   sendMessage = (type, payload) => {
     // only send message when webview is loaded
     if (this.webview) {
-      console.log(`WebViewLeaflet: sending message ${type}`);
+      console.log(`WebViewLeaflet: sending message ${type}, ${payload}`);
       this.webview.postMessage(
         JSON.stringify({
           prefix: MESSAGE_PREFIX,
@@ -306,7 +306,8 @@ WebViewLeaflet.defaultProps = {
   zoom: 10,
   showZoomControls: true,
   centerButton: true,
-  panToLocation: false
+  panToLocation: false,
+  onWebviewReady=()=>{console.log('WebViewLeaflet webview ready');}
 };
 
 const styles = StyleSheet.create({
