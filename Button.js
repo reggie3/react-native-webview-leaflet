@@ -19,7 +19,7 @@ export default Button = (props) => {
                 elevation: 2
             }}
             elevation={5}
-            underlayColor={props.underlayColor || "white"}>
+            underlayColor={props.underlayColor || '#e5efff'}>
             <View
                 elevation={5}
                 style={{
