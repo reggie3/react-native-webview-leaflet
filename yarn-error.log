@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add webpack-stream
+  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add versioned-file-downloader
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Android;C:\Windows\System32;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\nodejs\;C:\Users\regin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\regin\AppData\Roaming\npm
@@ -18,7 +18,7 @@ npm manifest:
     "main": "node_modules/expo/AppEntry.js",
     "private": false,
     "name": "react-native-webview-leaflet",
-    "version": "0.1.820",
+    "version": "0.1.823",
     "scripts": {
       "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
       "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -49,19 +49,19 @@ npm manifest:
     },
     "homepage": "https://github.com/reggie3/react-native-webview-leaflet#readme",
     "dependencies": {
+      "expo": "^25.0.0",
       "glamor": "^2.20.40",
       "glamorous": "^4.11.2",
       "is-valid-coordinates": "^1.0.0",
       "leaflet": "^1.3.1",
       "leaflet.markercluster": "^1.3.0",
       "prop-types": "^15.6.0",
-      "react-native-ui-kitten": "^3.0.0",
-      "util": "^0.10.3",
-      "render-if": "^0.1.1",
-      "expo": "^24.0.0",
       "react": "16.0.0",
       "react-dom": "^16.2.0",
-      "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz"
+      "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+      "react-native-ui-kitten": "^3.0.0",
+      "render-if": "^0.1.1",
+      "util": "^0.10.3"
     },
     "devDependencies": {
       "babel-core": "^6.26.0",
@@ -76,7 +76,6 @@ npm manifest:
       "babel-preset-stage-0": "^6.24.1",
       "chai": "^4.1.2",
       "css-loader": "^0.28.8",
-      "fancy-log": "^1.3.2",
       "file-loader": "^1.1.6",
       "gulp": "^4.0.0",
       "gulp-bump": "^3.1.0",
@@ -97,6 +96,8 @@ npm manifest:
       "webpack": "^3.11.0",
       "webpack-clear-console": "^1.0.3",
       "webpack-dev-server": "^2.10.1",
+      "webpack-remove-debug": "^0.1.0",
+      "webpack-stream": "^4.0.1",
       "webpack-strip": "^0.1.0"
     }
   }
@@ -123,7 +124,7 @@ Lockfile:
       esutils "^2.0.2"
       js-tokens "^3.0.0"
   
-  "@expo/vector-icons@^6.2.2":
+  "@expo/vector-icons@^6.2.0":
     version "6.2.2"
     resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-6.2.2.tgz#441edb58a52c0f4e5b4aba1e6f8da1e87cea7e11"
     dependencies:
@@ -3489,24 +3490,25 @@ Lockfile:
       jest-message-util "^22.2.0"
       jest-regex-util "^22.1.0"
   
-  expo@^24.0.0:
-    version "24.0.2"
-    resolved "https://registry.yarnpkg.com/expo/-/expo-24.0.2.tgz#3ff9784afd9efbb8eb739289aa53290ddf31a5a5"
+  expo@^25.0.0:
+    version "25.0.0"
+    resolved "https://registry.yarnpkg.com/expo/-/expo-25.0.0.tgz#791d0052e159d56854a84d90540bf11c33abfe4d"
     dependencies:
-      "@expo/vector-icons" "^6.2.2"
+      "@expo/vector-icons" "^6.2.0"
       babel-preset-expo "^4.0.0"
       fbemitter "^2.1.1"
       invariant "^2.2.2"
       lodash.map "^4.6.0"
+      lodash.omit "^4.5.0"
       lodash.zipobject "^4.1.3"
-      lottie-react-native "2.2.7"
+      lottie-react-native "2.3.2"
       md5-file "^3.2.3"
       pretty-format "^21.2.1"
       prop-types "^15.6.0"
       qs "^6.5.0"
       react-native-branch "2.0.0-beta.3"
-      react-native-gesture-handler "1.0.0-alpha.30"
-      react-native-maps "0.17.1"
+      react-native-gesture-handler "1.0.0-alpha.39"
+      react-native-maps "0.19.0"
       react-native-svg "https://github.com/expo/react-native-svg/archive/5.5.1-exp.1.tar.gz"
       uuid-js "^0.7.5"
       websql "https://github.com/expo/node-websql/archive/18.0.0.tar.gz"
@@ -3572,7 +3574,7 @@ Lockfile:
     dependencies:
       is-extendable "^0.1.0"
   
-  extend-shallow@^3.0.0:
+  extend-shallow@^3.0.0, extend-shallow@^3.0.2:
     version "3.0.2"
     resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-3.0.2.tgz#26a71aaf073b39fb2127172746131c2704028db8"
     dependencies:
@@ -4618,7 +4620,7 @@ Lockfile:
     version "4.2.0"
     resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
   
-  hoist-non-react-statics@^2.0.0:
+  hoist-non-react-statics@^2.0.0, hoist-non-react-statics@^2.3.1:
     version "2.3.1"
     resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.3.1.tgz#343db84c6018c650778898240135a1420ee22ce0"
   
@@ -6030,6 +6032,10 @@ Lockfile:
     version "4.3.0"
     resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   
+  lodash.clone@^4.3.2:
+    version "4.5.0"
+    resolved "https://registry.yarnpkg.com/lodash.clone/-/lodash.clone-4.5.0.tgz#195870450f5a13192478df4bc3d23d2dea1907b6"
+  
   lodash.defaults@^4.0.1:
     version "4.2.0"
     resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -6068,6 +6074,10 @@ Lockfile:
     version "4.1.2"
     resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   
+  lodash.omit@^4.5.0:
+    version "4.5.0"
+    resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+  
   lodash.pad@^4.1.0:
     version "4.5.1"
     resolved "https://registry.yarnpkg.com/lodash.pad/-/lodash.pad-4.5.1.tgz#4330949a833a7c8da22cc20f6a26c4d59debba70"
@@ -6083,6 +6093,10 @@ Lockfile:
   lodash.restparam@^3.0.0:
     version "3.6.1"
     resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
+  
+  lodash.some@^4.2.2:
+    version "4.6.0"
+    resolved "https://registry.yarnpkg.com/lodash.some/-/lodash.some-4.6.0.tgz#1bb9f314ef6b8baded13b549169b2a945eb68e4d"
   
   lodash.sortby@^4.7.0:
     version "4.7.0"
@@ -6167,16 +6181,16 @@ Lockfile:
     dependencies:
       js-tokens "^3.0.0"
   
-  lottie-ios@^2.1.3:
+  lottie-ios@^2.1.5:
     version "2.5.0"
     resolved "https://registry.yarnpkg.com/lottie-ios/-/lottie-ios-2.5.0.tgz#55c808e785d4a6933b0c10b395530b17098b05de"
   
-  lottie-react-native@2.2.7:
-    version "2.2.7"
-    resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-2.2.7.tgz#d89cf6e0a093693d5fed2999a986cbcb1a090955"
+  lottie-react-native@2.3.2:
+    version "2.3.2"
+    resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-2.3.2.tgz#c9b751e1c121708cd6f50f7770cb5aa0e1042a29"
     dependencies:
       invariant "^2.2.2"
-      lottie-ios "^2.1.3"
+      lottie-ios "^2.1.5"
       prop-types "^15.5.10"
       react-native-safe-module "^1.1.0"
   
@@ -6295,7 +6309,7 @@ Lockfile:
     dependencies:
       mimic-fn "^1.0.0"
   
-  memory-fs@^0.4.0, memory-fs@~0.4.1:
+  memory-fs@^0.4.0, memory-fs@^0.4.1, memory-fs@~0.4.1:
     version "0.4.1"
     resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
     dependencies:
@@ -7307,6 +7321,15 @@ Lockfile:
       arr-union "^2.0.1"
       extend-shallow "^1.1.2"
   
+  plugin-error@^1.0.1:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/plugin-error/-/plugin-error-1.0.1.tgz#77016bd8919d0ac377fdcdd0322328953ca5781c"
+    dependencies:
+      ansi-colors "^1.0.1"
+      arr-diff "^4.0.0"
+      arr-union "^3.1.0"
+      extend-shallow "^3.0.2"
+  
   plugin-log@^0.1.0:
     version "0.1.0"
     resolved "https://registry.yarnpkg.com/plugin-log/-/plugin-log-0.1.0.tgz#86049cf6ab10833398a931f3689cbaee7b5e1333"
@@ -7850,15 +7873,17 @@ Lockfile:
     version "2.0.0-beta.3"
     resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
   
-  react-native-gesture-handler@1.0.0-alpha.30:
-    version "1.0.0-alpha.30"
-    resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.30.tgz#7f79c2da5a59cc8ce20cf04c11360409a53bef59"
+  react-native-gesture-handler@1.0.0-alpha.39:
+    version "1.0.0-alpha.39"
+    resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.39.tgz#e87851d5efc49d2d91ebf76ad59b7b5d1fd356f5"
     dependencies:
+      hoist-non-react-statics "^2.3.1"
+      invariant "^2.2.2"
       prop-types "^15.5.10"
   
-  react-native-maps@0.17.1:
-    version "0.17.1"
-    resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.17.1.tgz#ab2236341fd984dac8864202ae55331bc262f60c"
+  react-native-maps@0.19.0:
+    version "0.19.0"
+    resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.19.0.tgz#ce94fad1cf360e335cb4338a68c95f791e869074"
   
   react-native-safe-module@^1.1.0:
     version "1.2.0"
@@ -7887,6 +7912,12 @@ Lockfile:
       lodash "^4.0.0"
       prop-types "^15.5.10"
       yargs "^8.0.2"
+  
+  react-native-webview-file-downloader@^0.0.3:
+    version "0.0.3"
+    resolved "https://registry.yarnpkg.com/react-native-webview-file-downloader/-/react-native-webview-file-downloader-0.0.3.tgz#7688cecb16118613dd0c8c041a524c0f71c6e462"
+    dependencies:
+      expo "^25.0.0"
   
   "react-native@https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz":
     version "0.52.0"
@@ -9772,7 +9803,7 @@ Lockfile:
       clone-stats "^0.0.1"
       replace-ext "0.0.1"
   
-  vinyl@^2.0.0:
+  vinyl@^2.0.0, vinyl@^2.1.0:
     version "2.1.0"
     resolved "https://registry.yarnpkg.com/vinyl/-/vinyl-2.1.0.tgz#021f9c2cf951d6b939943c89eb5ee5add4fd924c"
     dependencies:
@@ -9878,6 +9909,10 @@ Lockfile:
       webpack-dev-middleware "1.12.2"
       yargs "6.6.0"
   
+  webpack-remove-debug@^0.1.0:
+    version "0.1.0"
+    resolved "https://registry.yarnpkg.com/webpack-remove-debug/-/webpack-remove-debug-0.1.0.tgz#b5f0922d0db81c6dfbe3df01ae061e6977c36b81"
+  
   webpack-sources@^1.0.1:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.1.0.tgz#a101ebae59d6507354d71d8013950a3a8b7a5a54"
@@ -9885,13 +9920,27 @@ Lockfile:
       source-list-map "^2.0.0"
       source-map "~0.6.1"
   
+  webpack-stream@^4.0.1:
+    version "4.0.1"
+    resolved "https://registry.yarnpkg.com/webpack-stream/-/webpack-stream-4.0.1.tgz#0326dbb9d0661525d3a14400f9ec87c9846041e5"
+    dependencies:
+      chalk "^2.3.0"
+      fancy-log "^1.3.2"
+      lodash.clone "^4.3.2"
+      lodash.some "^4.2.2"
+      memory-fs "^0.4.1"
+      plugin-error "^1.0.1"
+      through "^2.3.8"
+      vinyl "^2.1.0"
+      webpack "^3.4.1"
+  
   webpack-strip@^0.1.0:
     version "0.1.0"
     resolved "https://registry.yarnpkg.com/webpack-strip/-/webpack-strip-0.1.0.tgz#2737acdd5049502299156a2d6a3ab697239a3359"
     dependencies:
       loader-utils "^0.2.6"
   
-  webpack@^3.11.0:
+  webpack@^3.11.0, webpack@^3.4.1:
     version "3.11.0"
     resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.11.0.tgz#77da451b1d7b4b117adaf41a1a93b5742f24d894"
     dependencies:
@@ -10248,4 +10297,4 @@ Lockfile:
       fd-slicer "~1.0.1"
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\node_modules\@expo\vector-icons\node_modules\.bin'
+  Error: EPERM: operation not permitted, open 'C:\Users\regin\Dropbox\Expo Projects\react-native-webview-leaflet\node_modules\webpack-dev-server\node_modules\.bin\webpack'

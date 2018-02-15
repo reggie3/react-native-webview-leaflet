@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
-import * as webViewDownloadHelper from './webViewDownloadHelper';
+import versionedFileDownloader from 'versioned-file-downloader';
 import { FileSystem } from 'expo';
 import config from './config';
 import Button from './Button';
@@ -44,39 +44,44 @@ export default class WebViewLeaflet extends React.Component {
   }
 
   componentDidMount = () => {
-    this.downloadWebViewFiles(FILES_TO_DOWNLOAD);
+    if (!config.USE_LOCAL_FILES) {
+      this.downloadFilesForWebView();
+    } else {
+      this.setState({ webViewFilesNotAvailable: false });
+    }
   };
 
-  downloadWebViewFiles = async filesToDownload => {
-    if (!config.USE_LOCAL_FILES) {
-      let downloadStatus = await webViewDownloadHelper.checkForFiles(
-        config.PACKAGE_NAME,
-        config.PACKAGE_VERSION,
-        filesToDownload,
-        this.webViewDownloadStatusCallBack
-      );
-      if (downloadStatus.success) {
-        this.setState({ webViewFilesNotAvailable: false });
-      } else if (!downloadStatus.success) {
-        console.log(
-          `unable to download html files: ${JSON.stringify(downloadStatus)}`
-        );
-        Alert.alert(
-          'Error',
-          `unable to download html files: ${JSON.stringify(downloadStatus)}`,
-          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-          { cancelable: false }
-        );
-      } else {
-        this.setState({ webViewFilesNotAvailable: false });
+  downloadFilesForWebView = async () => {
+    debugger;
+    let downloadStatus = await versionedFileDownloader(
+      this.webViewDownloadStatusCallBack,
+      {
+      name: config.PACKAGE_NAME,
+      version: config.PACKAGE_VERSION,
+      files: FILES_TO_DOWNLOAD,
       }
+      
+    );
+
+    if (downloadStatus.success) {
+      this.setState({ webViewFilesNotAvailable: false });
+    } else if (!downloadStatus.success) {
+      console.log(
+        `unable to download html files: ${JSON.stringify(downloadStatus)}`
+      );
+      Alert.alert(
+        'Error',
+        `unable to download html files: ${JSON.stringify(downloadStatus)}`,
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false }
+      );
     } else {
       this.setState({ webViewFilesNotAvailable: false });
     }
   };
 
   webViewDownloadStatusCallBack = message => {
-    console.log(mesage);
+    console.log(message);
   };
 
   sendUpdatedMapCenterCoordsToHTML = () => {
@@ -95,9 +100,9 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage('SET_ZOOM', { zoom });
   };
 
-  sendShowZoomControls =(showZoomControls)=>{
-    this.sendMessage('SHOW_ZOOM_CONTROLS', {showZoomControls});
-  }
+  sendShowZoomControls = showZoomControls => {
+    this.sendMessage('SHOW_ZOOM_CONTROLS', { showZoomControls });
+  };
   handleMessage = event => {
     let msgData;
     try {
@@ -137,7 +142,7 @@ export default class WebViewLeaflet extends React.Component {
       return;
     }
   };
-  
+
   sendMessage = (type, payload) => {
     // only send message when webview is loaded
     if (this.webview) {
@@ -288,10 +293,10 @@ export default class WebViewLeaflet extends React.Component {
 WebViewLeaflet.propTypes = {
   mapCenterCoords: PropTypes.array,
   locations: PropTypes.array,
-onMapClicked: PropTypes.func,
+  onMapClicked: PropTypes.func,
   onMarkerClicked: PropTypes.func,
   onWebviewReady: PropTypes.func,
-  panToLocation: PropTypes.bool, 
+  panToLocation: PropTypes.bool,
   zoom: PropTypes.number,
   showZoomControls: PropTypes.bool,
   centerButton: PropTypes.bool

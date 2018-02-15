@@ -9584,6 +9584,12 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+versioned-file-downloader@^0.0.32:
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/versioned-file-downloader/-/versioned-file-downloader-0.0.32.tgz#47e02132b5c7d838a141119bb9ffb2ab2bb1f735"
+  dependencies:
+    expo "^25.0.0"
+
 vhost@~3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/vhost/-/vhost-3.0.2.tgz#2fb1decd4c466aa88b0f9341af33dc1aff2478d5"
