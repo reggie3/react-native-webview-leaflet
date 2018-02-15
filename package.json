@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.1.825",
+  "version": "0.1.826",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -11,7 +11,6 @@
   "files": [
     "dist",
     "WebViewLeaflet.js",
-    "webViewDownloadHelper.js",
     "config.js",
     "Button.js"
   ],

@@ -9584,9 +9584,9 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-versioned-file-downloader@^0.0.32:
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/versioned-file-downloader/-/versioned-file-downloader-0.0.32.tgz#47e02132b5c7d838a141119bb9ffb2ab2bb1f735"
+versioned-file-downloader@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/versioned-file-downloader/-/versioned-file-downloader-1.0.0.tgz#d0797a14f14425bf95bfb193d0de9aca3c01591a"
   dependencies:
     expo "^25.0.0"
 
