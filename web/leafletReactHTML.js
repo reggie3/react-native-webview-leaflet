@@ -187,6 +187,8 @@ export default class LeafletReactHTML extends React.Component {
               () => {
                  this.printElement('center set to:');
                  this.printElement(this.state.mapCenterCoords);
+                 this.printElement('this.map = ');
+                 this.printElement(this.map);
                 if (msgData.payload.panToLocation === true) {
                   this.printElement('panning map');
                   this.map.flyTo(this.state.mapCenterCoords);
