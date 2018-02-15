@@ -18,7 +18,8 @@ const npmDeps = {
   'prop-types': '^15.6.0',
   'react-native-ui-kitten': '^3.0.0',
   util: '^0.10.3',
-  'render-if': '^0.1.1'
+  'render-if': '^0.1.1',
+  "versioned-file-downloader": "^1.0.0"
 };
 // additional dependencies for expo app
 const expoDeps = {
