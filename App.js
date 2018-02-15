@@ -5,6 +5,12 @@ import WebViewLeaflet from './WebViewLeaflet';
 
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+let parkLocations = {
+  'dw': [28.417839, -81.581235],
+  'bg': [37.23416573, -76.63999744],
+  'kd': [37.837329984, -77.440331572]
+};
+
 const duration = Math.floor(Math.random() * 3) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
 const interationCount = 'infinite';
@@ -38,7 +44,7 @@ export default class App extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({});
     let locations = this.createRandomMarkers(location.coords, 20, 10000);
-    
+
     // center random markers around Washington DC
     // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
 
@@ -62,16 +68,16 @@ export default class App extends React.Component {
 
       let r = radius / 111300; // = 100 meters
 
-        let u = Math.random();
-        let v = Math.random();
-        let w = r * Math.sqrt(u);
-        let t = 2 * Math.PI * v;
-        let x = w * Math.cos(t);
-        let y1 = w * Math.sin(t);
-        let x1 = x / Math.cos(y0);
+      let u = Math.random();
+      let v = Math.random();
+      let w = r * Math.sqrt(u);
+      let t = 2 * Math.PI * v;
+      let x = w * Math.cos(t);
+      let y1 = w * Math.sin(t);
+      let x1 = x / Math.cos(y0);
 
-        let foundLatitude = y0 + y1;
-        let foundLongitude = x0 + x1;
+      let foundLatitude = y0 + y1;
+      let foundLongitude = x0 + x1;
 
       newMarkers.push({
         id: Math.floor(Math.random() * 1000),
@@ -108,24 +114,37 @@ export default class App extends React.Component {
 
   onMapClicked = coords => {
     console.log(`Map Clicked: app received: ${coords}`);
-    this.showAlert('Map Clicked', `Coordinates = ${coords}`)
+    this.showAlert('Map Clicked', `Coordinates = ${coords}`);
   };
 
   onMarkerClicked = id => {
     console.log(`Marker Clicked: ${id}`);
-    this.showAlert('Marker Clicked', `Marker ID = ${id}`)
+    this.showAlert('Marker Clicked', `Marker ID = ${id}`);
   };
 
-  showAlert=(title, body)=>{
+  showAlert = (title, body) => {
     Alert.alert(
       title,
       body,
-      [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
-    )
-  }
+    );
+  };
+
+  centerMap = (parkInitials) => {
+    console.log(parkInitials);
+    switch (parkInitials) {
+      case 'dw':
+        this.setState({ coords: parkLocations.dw });
+        break;
+      case 'bg':
+        this.setState({ coords: parkLocations.bg });
+        break;
+      case 'kd':
+        this.setState({ coords: parkLocations.kd });
+        break;
+    }
+  };
 
   render() {
     return (
@@ -150,8 +169,18 @@ export default class App extends React.Component {
           zoom={5}
           showZoomControls={false}
         />
-        <View style={{display: 'flex',
-      flexDirection: 'row'}}></View>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center'
+          }}
+        >
+          <Button onPress={()=>this.centerMap('dw')} text={'🏰'} />
+          <Button onPress={()=>this.centerMap('bg')} text={'🍺'} />
+          <Button onPress={()=>this.centerMap('kd')} text={'👑'} />
+        </View>
       </View>
     );
   }
