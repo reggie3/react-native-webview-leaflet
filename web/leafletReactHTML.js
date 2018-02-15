@@ -180,17 +180,25 @@ export default class LeafletReactHTML extends React.Component {
         switch (msgData.type) {
           // receive an event when the webview is ready
           case 'MAP_CENTER_COORD_CHANGE':
-            // this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
-            this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords });
-            // this.printElement('panning map');
-            if (msgData.payload.panToLocation === true) {
-              // this.printElement('panning map');
-              this.map.flyTo(msgData.payload.mapCenterCoords);
-            } else {
-              // this.printElement('setting map');
-              this.map.setView(msgData.payload.mapCenterCoords);
-            }
-            this.updateCurrentPostionMarker(msgData.payload.mapCenterCoords);
+            this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
+            this.printElement(msgData.payload.mapCenterCoords);
+            this.setState(
+              { mapCenterCoords: msgData.payload.mapCenterCoords },
+              () => {
+                // this.printElement('panning map');
+                if (msgData.payload.panToLocation === true) {
+                  // this.printElement('panning map');
+                  this.map.flyTo(this.state.mapCenterCoords);
+                } else {
+                  // this.printElement('setting map');
+                  this.map.setView(this.state.mapCenterCoords);
+                }
+                this.updateCurrentPostionMarker(
+                 this.state.mapCenterCoords
+                );
+              }
+            );
+
             break;
 
           case 'UPDATE_MARKERS':
@@ -211,7 +219,7 @@ export default class LeafletReactHTML extends React.Component {
             break;
 
           case 'SHOW_ZOOM_CONTROLS':
-            if (msg.payload.showZoomControls) {
+            if (msgData.payload.showZoomControls) {
               this.map.addControl(this.map.zoomControl);
             }
             {
