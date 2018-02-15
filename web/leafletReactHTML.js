@@ -182,23 +182,22 @@ export default class LeafletReactHTML extends React.Component {
           case 'MAP_CENTER_COORD_CHANGE':
             this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
             this.printElement(msgData.payload.mapCenterCoords);
+            let that = this;
             this.setState(
               { mapCenterCoords: msgData.payload.mapCenterCoords },
               () => {
-                 this.printElement('center set to:');
-                 this.printElement(this.state.mapCenterCoords);
-                 this.printElement('this.map = ');
-                 this.printElement(this.map);
+                that.printElement('center set to:');
+                that.printElement(that.state.mapCenterCoords);
+                that.printElement('that.map = ');
+                that.printElement(that.map);
                 if (msgData.payload.panToLocation === true) {
-                  this.printElement('panning map');
-                  this.map.flyTo(this.state.mapCenterCoords);
+                  that.printElement('panning map');
+                  that.map.flyTo(that.state.mapCenterCoords);
                 } else {
-                  this.printElement('setting map');
-                  this.map.setView(this.state.mapCenterCoords);
+                  that.printElement('setting map');
+                  that.map.setView(that.state.mapCenterCoords);
                 }
-                this.updateCurrentPostionMarker(
-                 this.state.mapCenterCoords
-                );
+                that.updateCurrentPostionMarker(that.state.mapCenterCoords);
               }
             );
 
