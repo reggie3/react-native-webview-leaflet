@@ -19,14 +19,6 @@ import * as markers from './markers.js';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
-/* const console = require('console');
-import * as secrets from '../secrets';
-
-const console = new console({
-  accessToken: secrets.consoleToken,
-  captureUncaught: true,
-  captureUnhandledRejections: true
-}); */
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
 const SHOW_DEBUG_INFORMATION = false;
@@ -198,6 +190,7 @@ export default class LeafletReactHTML extends React.Component {
                   that.map.setView(that.state.mapCenterCoords);
                 }
                 that.updateCurrentPostionMarker(that.state.mapCenterCoords);
+                addMessageToQueue('FORCE_RENDER');
               }
             );
 

@@ -131,6 +131,10 @@ export default class App extends React.Component {
     );
   };
 
+  forceRender=()=>{
+    this.forceUpdate();
+  }
+
   centerMap = (parkInitials) => {
     console.log(parkInitials);
     switch (parkInitials) {
@@ -168,6 +172,7 @@ export default class App extends React.Component {
           panToLocation={false}
           zoom={5}
           showZoomControls={false}
+          forceRender={this.forceRender}
         />
         <View
           style={{

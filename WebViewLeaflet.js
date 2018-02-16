@@ -115,6 +115,9 @@ export default class WebViewLeaflet extends React.Component {
         this.sendMessage('MESSAGE_ACKNOWLEDGED');
 
         switch (msgData.type) {
+          case 'FORCE_RENDER':
+            this.props.forceRender();
+          break;
           case 'MARKER_CLICKED':
             if (this.props.hasOwnProperty('onMarkerClicked')) {
               console.log('Received MARKER_CLICKED');
