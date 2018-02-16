@@ -132,7 +132,7 @@ export default class App extends React.Component {
   };
 
   forceRender=()=>{
-    this.forceUpdate();
+    // this.forceUpdate();
   }
 
   centerMap = (parkInitials) => {

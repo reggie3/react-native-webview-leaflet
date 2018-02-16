@@ -198,7 +198,6 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   componentWillReceiveProps = nextProps => {
-    debugger;
     if (
       nextProps.mapCenterCoords &&
       JSON.stringify(this.state.mapCenterCoords) !==
