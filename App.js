@@ -132,6 +132,7 @@ export default class App extends React.Component {
   };
 
   forceRender=()=>{
+    console.log('forced render');
     // this.forceUpdate();
   }
 
