@@ -190,7 +190,7 @@ export default class LeafletReactHTML extends React.Component {
                   that.map.setView(that.state.mapCenterCoords);
                 }
                 that.updateCurrentPostionMarker(that.state.mapCenterCoords);
-                addMessageToQueue('FORCE_RENDER');
+                this.addMessageToQueue('FORCE_RENDER');
               }
             );
 
