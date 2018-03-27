@@ -97,8 +97,8 @@ module.exports = {
     new HtmlWebpackInlineSourcePlugin(),
     new CopyWebpackPlugin([
 			{
-				from: './build/*.html',
-				to: path.join(__dirname, '/assets/assets/dist'),
+				from: path.join(__dirname, '/build/*.html'),
+				to: path.join(__dirname, '/assets/dist'),
 				toType: 'dir',
 				flatten: true
 			}

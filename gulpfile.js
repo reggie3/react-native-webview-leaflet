@@ -4,8 +4,6 @@ const concat = require('gulp-concat');
 const jeditor = require('gulp-json-editor');
 const bump = require('gulp-bump');
 const webpack_stream = require('webpack-stream');
-const webpackDevConfig = require('./webpack.config.dev');
-const webpackProdConfig = require('./webpack.config.prod');
 const run = require('gulp-run');
 
 // dependencies for npm publishing
@@ -99,8 +97,8 @@ gulp.task('git-push', (done) => {
 	done();
 });
 
-gulp.task('git-push-inline-javascript-3', (done) => {
-	return run('git push origin inline-javascript-3').exec();
+gulp.task('git-push-inline-javascript', (done) => {
+	return run('git push origin inline-javascript').exec();
 	done();
 });
 
@@ -133,7 +131,7 @@ gulp.task(
 	gulp.series(
 		'forNPM',
 		'webpack',
-		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push-inline-javascript-3'), 'npm-publish-beta'),
+		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push-inline-javascript'), 'npm-publish-beta'),
 		'forExpo'
 	)
 );

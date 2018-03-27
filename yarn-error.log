@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js remove glamor
+  C:\Program Files\nodejs\node.exe C:\Users\regin\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js remove webpack_stream
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Android;C:\Windows\System32;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\regin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\regin\AppData\Roaming\npm
@@ -15,10 +15,10 @@ Platform:
 
 npm manifest: 
   {
-    "main": "node_modules/expo/AppEntry.js",
+    "main": "index.js",
     "private": false,
     "name": "react-native-webview-leaflet",
-    "version": "0.1.911",
+    "version": "0.1.912",
     "scripts": {
       "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
       "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -46,16 +46,12 @@ npm manifest:
     },
     "homepage": "https://github.com/reggie3/react-native-webview-leaflet#readme",
     "dependencies": {
-      "expo": "^25.0.0",
       "is-valid-coordinates": "^1.0.0",
       "leaflet": "^1.3.1",
       "leaflet.markercluster": "^1.3.0",
       "prop-types": "^15.6.0",
-      "react": "16.0.0",
-      "react-dom": "^16.2.0",
-      "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
-      "render-if": "^0.1.1",
-      "util": "^0.10.3"
+      "util": "^0.10.3",
+      "render-if": "^0.1.1"
     },
     "devDependencies": {
       "babel-core": "^6.26.0",
