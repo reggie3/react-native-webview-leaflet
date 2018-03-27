@@ -1,23 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackClearConsole = require('webpack-clear-console')
-// const commonWebpack = require('./webpack.config.common')
-
-// console.log(commonWebpack);
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: ['babel-polyfill', './web/component.js'],
   output: {
-    path: path.join(__dirname, './dist'),
+    path: path.join(__dirname, './build'),
     filename: '[name].bundle.js'
-  },
-  devtool: 'source-map',
-  devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000
   },
   module: {
     rules: [
@@ -84,8 +76,32 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      inlineSource: '(main.bundle.js)',
       template: './web/leafletReact.html',
       inject: 'body'
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+
+      // Eliminate comments
+         comments: false,
+ 
+     // Compression specific options
+        compress: {
+          // remove warnings
+             warnings: false,
+ 
+          // Drop console statements
+             drop_console: true
+        },
+     }),
+    new HtmlWebpackInlineSourcePlugin(),
+    new CopyWebpackPlugin([
+			{
+				from: './build/*.html',
+				to: path.join(__dirname, '/assets/assets/dist'),
+				toType: 'dir',
+				flatten: true
+			}
+		])
   ]
 };
