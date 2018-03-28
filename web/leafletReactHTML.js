@@ -31,8 +31,6 @@ const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 let messageQueue = [];
 let messageCounter = 0;
 
-
-
 export default class LeafletReactHTML extends React.Component {
 	constructor() {
 		super();
@@ -89,7 +87,7 @@ export default class LeafletReactHTML extends React.Component {
 		// set up map
 		this.map = L.map('map', {
 			center: BROWSER_TESTING_ENABLED ? [ 37, -76 ] : [ 38.889931, -77.009003 ],
-			zoom: 1
+			zoom: 10
 		});
 		// Initialize the base layer
 		var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -162,7 +160,7 @@ export default class LeafletReactHTML extends React.Component {
 					// receive an event when the webview is ready
 					case 'LOAD_MAP':
 						this.printElement('LOAD_MAP event recieved');
-						this.loadMap();
+						// this.loadMap();
 						break;
 					case 'MAP_CENTER_COORD_CHANGE':
 						this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
@@ -384,15 +382,17 @@ export default class LeafletReactHTML extends React.Component {
 					right: 0,
 					display: 'flex',
 					flexDirection: 'column',
-					backgroundColor: 'yellow'
+					backgroundColor: 'red',
+					borderStyle: 'solid',
+					borderWidth: 5
 				}}
 			>
 				<div
 					id="map"
 					style={{
-						height: '100%',
-						display: 'flex',
-						flexDirection: 'column'
+						position: 'relative',
+						flex: 1,
+						backgroundColor: 'green'
 					}}
 				/>
 				{renderIf(SHOW_DEBUG_INFORMATION)(

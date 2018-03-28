@@ -98,7 +98,7 @@ module.exports = {
     new CopyWebpackPlugin([
 			{
 				from: path.join(__dirname, '/build/*.html'),
-				to: path.join(__dirname, '/assets/dist'),
+				to: path.join(__dirname, '/assets/assets/dist'),
 				toType: 'dir',
 				flatten: true
 			}

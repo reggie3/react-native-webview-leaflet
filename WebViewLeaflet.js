@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, ActivityIndicator, Text, WebView, Alert, Platform, Touchable } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
-import config from './config';
 import Button from './Button';
 
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
@@ -84,7 +83,6 @@ export default class WebViewLeaflet extends React.Component {
 		}
 	};
 
-
 	sendMessage = (type, payload) => {
 		// only send message when webview is loaded
 		if (this.webview) {
@@ -105,8 +103,7 @@ export default class WebViewLeaflet extends React.Component {
 			webViewNotLoaded: false
 		});
 		this.sendMessage('LOAD_MAP');
-		console.log('************************');
-		console.log(this.props);
+		// console.log(this.props);
 		// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
 		if (this.props.mapCenterCoords.length > 0) {
 			this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
@@ -168,10 +165,13 @@ export default class WebViewLeaflet extends React.Component {
 
 	onError = (error) => {
 		Alert.alert('WebView onError', error, [ { text: 'OK', onPress: () => console.log('OK Pressed') } ]);
+		console.log('WebView onError: ', error);
 	};
+
 
 	renderError = (error) => {
 		Alert.alert('WebView renderError', error, [ { text: 'OK', onPress: () => console.log('OK Pressed') } ]);
+		console.log('WebView renderError: ', error);
 	};
 
 	render() {
@@ -179,11 +179,12 @@ export default class WebViewLeaflet extends React.Component {
 			<View
 				style={{
 					flex: 1,
-					backgroundColor: '#e0fffb'
+					backgroundColor: 'black'
 				}}
 			>
-				<View style={{ ...StyleSheet.absoluteFillObject }}>
+				<View style={{ ...StyleSheet.absoluteFillObject}}>
 					<WebView
+						style={{ flex: 1 }}
 						ref={this.createWebViewRef}
 						source={index}
 						onLoadEnd={this.onWebViewLoaded}
@@ -193,8 +194,8 @@ export default class WebViewLeaflet extends React.Component {
 						renderError={this.renderError}
 						javaScriptEnabled={true}
 						onError={this.onError}
-            scalesPageToFit={false}
-            mixedContentMode={"always"}
+						scalesPageToFit={false}
+						mixedContentMode={'always'}
 					/>
 					{renderIf(this.props.centerButton)(
 						<View
