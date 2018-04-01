@@ -8,22 +8,22 @@ const run = require('gulp-run');
 
 // dependencies for npm publishing
 const npmDeps = {
-  'is-valid-coordinates': '^1.0.0',
-  leaflet: '^1.3.1',
-  'leaflet.markercluster': '^1.3.0',
-  'prop-types': '^15.6.0',
-  util: '^0.10.3',
-  'render-if': '^0.1.1',
+	'is-valid-coordinates': '^1.0.0',
+	leaflet: '^1.3.1',
+	'leaflet.markercluster': '^1.3.0',
+	'prop-types': '^15.6.0',
+	util: '^0.10.3',
+	'render-if': '^0.1.1',
+	glamor: '^2.20.40',
+	glamorous: '^4.11.2'
 };
 // additional dependencies for expo app
 const expoDeps = {
-  expo: '^25.0.0',
-  react: '16.0.0',
-  'react-dom': '^16.2.0',
-  'react-native':
-    'https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz'
+	expo: '^25.0.0',
+	react: '16.0.0',
+	'react-dom': '^16.2.0',
+	'react-native': 'https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz'
 };
-
 
 // main for npm publishing
 const npmMain = 'index.js';
@@ -44,8 +44,8 @@ const updatePackageJSONforNPM = (json) => {};
 // read the package.json and update it for npm publishing
 gulp.task('forNPM', (done) => {
 	gulp
-    .src('./package.json')
-    .pipe(bump())
+		.src('./package.json')
+		.pipe(bump())
 		.pipe(
 			jeditor(function(json) {
 				json.dependencies = npmDeps;
@@ -116,6 +116,12 @@ gulp.task('forExpo', (done) => {
 	done();
 });
 
+gulp.task('copy-build-files', (done) => {
+	gulp.src('./build/index.html').pipe(gulp.dest('./assets/dist/'));
+	done();
+});
+
+gulp.task('build', gulp.series('webpack', 'copy-build-files'));
 gulp.task(
 	'prod',
 	gulp.series(
@@ -136,22 +142,6 @@ gulp.task(
 	)
 );
 
-// read and bump the package version in config.js so that it
-// matches the version number about to be published
-gulp.task('editConfigForDev', (done) => {
-	gulp
-		.src('./config.js')
-		.pipe(bump({ key: 'PACKAGE_VERSION' }))
-		.pipe(
-			jeditor(function(json) {
-				USE_LOCAL_FILES: true;
-				return json;
-			})
-		)
-		.pipe(concat('config.js'))
-		.pipe(gulp.dest('./'));
-	done();
-});
 
 gulp.task(
 	'test',

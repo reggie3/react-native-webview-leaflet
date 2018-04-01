@@ -3,9 +3,11 @@ import { View, StyleSheet, ActivityIndicator, Text, WebView, Alert, Platform, To
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import Button from './Button';
+import Expo from 'expo';
 
+const INDEX_FILE = require(`./assets/dist/index.html`);
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
-const index = require(`./assets/assets/dist/index.html`);
+// const index = Expo.Asset.fromModule(require('./assets/dist/index.html')).uri
 
 export default class WebViewLeaflet extends React.Component {
 	constructor(props) {
@@ -73,6 +75,9 @@ export default class WebViewLeaflet extends React.Component {
 							this.props.onMapClicked([ msgData.payload.coords.lat, msgData.payload.coords.lng ]);
 						}
 						break;
+					case 'CONSOLE_LOG':
+						console.log('From Webview: ', msgData.payload.msg);
+						break;
 					default:
 						console.warn(`WebViewLeaflet Error: Unhandled message type received "${msgData.type}"`);
 				}
@@ -84,14 +89,15 @@ export default class WebViewLeaflet extends React.Component {
 	};
 
 	sendMessage = (type, payload) => {
+		debugger;
 		// only send message when webview is loaded
-		if (this.webview) {
+		if (!this.state.webViewNotLoaded) {
 			console.log(`WebViewLeaflet: sending message ${type}, ${JSON.stringify(payload)}`);
 			this.webview.postMessage(
 				JSON.stringify({
 					prefix: MESSAGE_PREFIX,
 					type,
-					payload
+					
 				}),
 				'*'
 			);
@@ -99,28 +105,33 @@ export default class WebViewLeaflet extends React.Component {
 	};
 
 	onWebViewLoaded = () => {
-		this.setState({
-			webViewNotLoaded: false
-		});
-		this.sendMessage('LOAD_MAP');
-		// console.log(this.props);
-		// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
-		if (this.props.mapCenterCoords.length > 0) {
-			this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
-		}
-		if (this.props.hasOwnProperty('locations')) {
-			this.sendLocations(this.props.locations);
-		}
-		if (this.props.hasOwnProperty('zoom')) {
-			this.sendZoom(this.props.zoom);
-		}
-		if (this.props.hasOwnProperty('showZoomControls')) {
-			this.sendShowZoomControls(this.props.showZoomControls);
-		}
-		// let the parent know the webview is ready
-		if (this.props.hasOwnProperty('onWebViewReady')) {
-			this.props.onWebViewReady();
-		}
+		debugger;
+		this.setState(
+			{
+				webViewNotLoaded: false
+			},
+			() => {
+				this.sendMessage('LOAD_MAP');
+				// console.log(this.props);
+				// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
+				if (this.props.mapCenterCoords.length > 0) {
+					this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
+				}
+				if (this.props.hasOwnProperty('locations')) {
+					this.sendLocations(this.props.locations);
+				}
+				if (this.props.hasOwnProperty('zoom')) {
+					this.sendZoom(this.props.zoom);
+				}
+				if (this.props.hasOwnProperty('showZoomControls')) {
+					this.sendShowZoomControls(this.props.showZoomControls);
+				}
+				// let the parent know the webview is ready
+				if (this.props.hasOwnProperty('onWebViewReady')) {
+					this.props.onWebViewReady();
+				}
+			}
+		);
 	};
 
 	createWebViewRef = (webview) => {
@@ -168,7 +179,6 @@ export default class WebViewLeaflet extends React.Component {
 		console.log('WebView onError: ', error);
 	};
 
-
 	renderError = (error) => {
 		Alert.alert('WebView renderError', error, [ { text: 'OK', onPress: () => console.log('OK Pressed') } ]);
 		console.log('WebView renderError: ', error);
@@ -179,14 +189,13 @@ export default class WebViewLeaflet extends React.Component {
 			<View
 				style={{
 					flex: 1,
-					backgroundColor: 'black'
 				}}
 			>
-				<View style={{ ...StyleSheet.absoluteFillObject}}>
+				<View style={{ ...StyleSheet.absoluteFillObject }}>
 					<WebView
-						style={{ flex: 1 }}
+						style={{ ...StyleSheet.absoluteFillObject }}
 						ref={this.createWebViewRef}
-						source={index}
+						source={INDEX_FILE}
 						onLoadEnd={this.onWebViewLoaded}
 						onMessage={this.handleMessage}
 						startInLoadingState={true}

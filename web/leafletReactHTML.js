@@ -20,7 +20,7 @@ const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = true;
+const SHOW_DEBUG_INFORMATION = false;
 
 // used for testing seperately of the react-native applicaiton
 const emoji = [ '😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇' ];
@@ -28,8 +28,29 @@ const emoji = [ '😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇' ];
 const animations = [ 'bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin' ];
 let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
-let messageQueue = [];
+
 let messageCounter = 0;
+
+const WebviewContainer = glamorous.div({
+	position: 'absolute',
+	top: 0,
+	bottom: 0,
+	left: 0,
+	right: 0,
+	display: 'flex',
+	flexDirection: 'column'
+});
+
+const MessagesDiv = glamorous.div({
+	backgroundColor: 'orange',
+	maxHeight: 200,
+	overflow: 'auto'
+});
+
+const MapDiv = glamorous.div({
+	position: 'relative',
+	flex: 1
+});
 
 export default class LeafletReactHTML extends React.Component {
 	constructor() {
@@ -39,7 +60,8 @@ export default class LeafletReactHTML extends React.Component {
 		this.mapMarkerDictionary = {};
 		this.layerMarkerCluster = null;
 		this.currentLocationMarker = null;
-
+		this.eventListenersAdded = false;
+		this.messageQueue = [];
 		this.state = {
 			locations: BROWSER_TESTING_ENABLED ? locations : [],
 			readyToSendNextMessage: true
@@ -68,11 +90,15 @@ export default class LeafletReactHTML extends React.Component {
 		this.printElement('leafletReactHTML.js componentDidMount');
 		if (document) {
 			document.addEventListener('message', this.handleMessage), false;
+			this.printElement('using document');
 		} else if (window) {
 			window.addEventListener('message', this.handleMessage), false;
+			this.printElement('using window');
 		} else {
 			console.log('unable to add event listener');
+			return;
 		}
+		this.eventListenersAdded = true;
 	};
 
 	componentWillUnmount = () => {
@@ -84,42 +110,51 @@ export default class LeafletReactHTML extends React.Component {
 	};
 
 	loadMap = () => {
-		// set up map
-		this.map = L.map('map', {
-			center: BROWSER_TESTING_ENABLED ? [ 37, -76 ] : [ 38.889931, -77.009003 ],
-			zoom: 10
-		});
-		// Initialize the base layer
-		var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 20,
-			attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-		}).addTo(this.map);
-
-		// add click event to map
-		let that = this;
-		this.map.on('click', (e) => {
-			// that.printElement(`map clicked ${e.latlng}`);
-			that.addMessageToQueue('MAP_CLICKED', {
-				coords: e.latlng
+		this.printElement('loading map');
+		try {
+			// set up map
+			this.map = L.map('map', {
+				center: BROWSER_TESTING_ENABLED ? [ 37, -76 ] : [ 38.889931, -77.009003 ],
+				zoom: 10
 			});
-		});
-		// create the marker layer
-		this.layerMarkerCluster = L.markerClusterGroup();
-		this.map.addLayer(this.layerMarkerCluster);
+			// Initialize the base layer
+			var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 20,
+				attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			}).addTo(this.map);
 
+			// add click event to map
+			let that = this;
+			this.map.on('click', (e) => {
+				// that.printElement(`map clicked ${e.latlng}`);
+				that.addMessageToQueue('MAP_CLICKED', {
+					coords: e.latlng
+				});
+			});
+			// create the marker layer
+			this.layerMarkerCluster = L.markerClusterGroup();
+			this.map.addLayer(this.layerMarkerCluster);
+
+			if (BROWSER_TESTING_ENABLED) {
+				this.updateMarkers(this.state.locations);
+				this.setuUpMarkerAlterationTest();
+			}
+		} catch (error) {
+			this.printElement('ERROR loading map: ', error);
+			// send a messaging back indicating the map has been loaded
+			that.addMessageToQueue('MAP_LOADED', {
+				type: 'error',
+				msg: error
+			});
+		}
 		// send a messaging back indicating the map has been loaded
 		that.addMessageToQueue('MAP_LOADED', {
 			type: 'success'
 		});
-
-		if (BROWSER_TESTING_ENABLED) {
-			this.updateMarkers(this.state.locations);
-			this.setuUpMarkerAlterationTest();
-		}
 	};
 
 	addMessageToQueue = (type, payload) => {
-		messageQueue.push(
+		this.messageQueue.push(
 			JSON.stringify({
 				messageID: messageCounter++,
 				prefix: MESSAGE_PREFIX,
@@ -127,23 +162,33 @@ export default class LeafletReactHTML extends React.Component {
 				payload
 			})
 		);
-		this.printElement(`adding message ${messageCounter} to queue`);
+
+		this.printElement(`adding message ${messageCounter} to queue: ${type}`);
+
 		if (this.state.readyToSendNextMessage) {
 			this.sendNextMessage();
 		}
 	};
 
 	sendNextMessage = () => {
-		if (messageQueue.length > 0) {
-			const nextMessage = messageQueue.shift();
+		this.printElement(`adding message ${messageCounter} to queue: ${type}`);
+
+		if (this.messageQueue.length > 0) {
+			const nextMessage = this.messageQueue.shift();
 			this.printElement(`sending message ${nextMessage}`);
-			window.postMessage(nextMessage, '*');
+			if (document) {
+				document.postMessage(nextMessage, '*');
+			} else if (window) {
+				window.postMessage(nextMessage, '*');
+			} else {
+				console.log('unable to add event listener');
+			}
 			this.setState({ readyToSendNextMessage: false });
 		}
 	};
 
 	handleMessage = (event) => {
-		this.printElement(`received message`);
+		this.printElement(`received message ${JSON.stringify(event)}`);
 		this.printElement(
 			util.inspect(event.data, {
 				showHidden: false,
@@ -155,12 +200,12 @@ export default class LeafletReactHTML extends React.Component {
 		try {
 			msgData = JSON.parse(event.data);
 			if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
-				// this.printElement(msgData);
+				this.printElement(msgData);
 				switch (msgData.type) {
 					// receive an event when the webview is ready
 					case 'LOAD_MAP':
 						this.printElement('LOAD_MAP event recieved');
-						// this.loadMap();
+						this.loadMap();
 						break;
 					case 'MAP_CENTER_COORD_CHANGE':
 						this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
@@ -373,7 +418,6 @@ export default class LeafletReactHTML extends React.Component {
 	render = () => {
 		return (
 			<div
-				id="Webview-Container"
 				style={{
 					position: 'absolute',
 					top: 0,
@@ -381,28 +425,27 @@ export default class LeafletReactHTML extends React.Component {
 					left: 0,
 					right: 0,
 					display: 'flex',
-					flexDirection: 'column',
-					backgroundColor: 'red',
-					borderStyle: 'solid',
-					borderWidth: 5
+					flexDirection: 'column'
+				}}
+				ref={(component) => {
+					this.webComponent = component;
 				}}
 			>
 				<div
-					id="map"
 					style={{
 						position: 'relative',
-						flex: 1,
-						backgroundColor: 'green'
+						flex: 1
 					}}
+					id="map"
 				/>
 				{renderIf(SHOW_DEBUG_INFORMATION)(
 					<div
-						id="messages"
 						style={{
 							backgroundColor: 'orange',
 							maxHeight: 200,
 							overflow: 'auto'
 						}}
+						id="messages"
 					/>
 				)}
 			</div>

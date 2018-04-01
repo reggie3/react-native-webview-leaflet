@@ -4,6 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+
+// the path(s) that should be cleaned
+let pathsToClean = [
+  'assets/dist/index.html',
+  'build'
+]
+
 
 module.exports = {
   entry: ['babel-polyfill', './web/component.js'],
@@ -11,6 +19,7 @@ module.exports = {
     path: path.join(__dirname, './build'),
     filename: '[name].bundle.js'
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -75,25 +84,13 @@ module.exports = {
     }
   },
   plugins: [
+    new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
       inlineSource: '(main.bundle.js)',
       template: './web/leafletReact.html',
       inject: 'body'
     }),
-    new webpack.optimize.UglifyJsPlugin({
-
-      // Eliminate comments
-         comments: false,
- 
-     // Compression specific options
-        compress: {
-          // remove warnings
-             warnings: false,
- 
-          // Drop console statements
-             drop_console: true
-        },
-     }),
+   
     new HtmlWebpackInlineSourcePlugin(),
     new CopyWebpackPlugin([
 			{

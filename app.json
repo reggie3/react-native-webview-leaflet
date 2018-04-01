@@ -14,14 +14,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "ios": {
+      "supportsTablet": true
+    },
     "packagerOpts": {
       "assetExts": ["html"]
     },
     "assetBundlePatterns": [
-      "assets/**"
-    ],
-    "ios": {
-      "supportsTablet": true
-    }
+      "assets/*.html"
+    ]
   }
 }
