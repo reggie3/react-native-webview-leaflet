@@ -86,20 +86,18 @@ module.exports = {
 			template: './web/leafletReact.html',
 			inject: 'body'
 		}),
-		new HtmlWebpackInlineSourcePlugin()
-		/* new CopyWebpackPlugin([
-			{
-				from: path.join(__dirname, '/build/*.html'),
-				to: path.join(__dirname, '/assets/dist'),
-				toType: 'dir',
-				flatten: true
-			},
-			{
-				from: path.join(__dirname, '/build/main.bundle.js.map'),
-				to: path.join(__dirname, '/assets/dist'),
-				toType: 'dir',
-				flatten: true
+		
+		/* new webpack.optimize.UglifyJsPlugin({
+			// Eliminate comments
+			comments: false,
+			// Compression specific options
+			compress: {
+				// remove warnings
+				warnings: false,
+				// Drop console statements
+				drop_console: true
 			}
-		]) */
+		}), */
+		new HtmlWebpackInlineSourcePlugin()
 	]
 };
