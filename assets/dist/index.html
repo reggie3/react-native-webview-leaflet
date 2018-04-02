@@ -24,7 +24,6 @@ padding: 0 !important;
 " id="root">
 
     </div>
-    html
 <script type="text/javascript">/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -113,6 +112,44 @@ module.exports = betweenRange
 function betweenRange (value, n1, n2) {
   return n1 <= value && n2 >= value
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".marker-cluster-small {\r\n\tbackground-color: rgba(181, 226, 140, 0.6);\r\n\t}\r\n.marker-cluster-small div {\r\n\tbackground-color: rgba(110, 204, 57, 0.6);\r\n\t}\r\n\r\n.marker-cluster-medium {\r\n\tbackground-color: rgba(241, 211, 87, 0.6);\r\n\t}\r\n.marker-cluster-medium div {\r\n\tbackground-color: rgba(240, 194, 12, 0.6);\r\n\t}\r\n\r\n.marker-cluster-large {\r\n\tbackground-color: rgba(253, 156, 115, 0.6);\r\n\t}\r\n.marker-cluster-large div {\r\n\tbackground-color: rgba(241, 128, 23, 0.6);\r\n\t}\r\n\r\n\t/* IE 6-8 fallback colors */\r\n.leaflet-oldie .marker-cluster-small {\r\n\tbackground-color: rgb(181, 226, 140);\r\n\t}\r\n.leaflet-oldie .marker-cluster-small div {\r\n\tbackground-color: rgb(110, 204, 57);\r\n\t}\r\n\r\n.leaflet-oldie .marker-cluster-medium {\r\n\tbackground-color: rgb(241, 211, 87);\r\n\t}\r\n.leaflet-oldie .marker-cluster-medium div {\r\n\tbackground-color: rgb(240, 194, 12);\r\n\t}\r\n\r\n.leaflet-oldie .marker-cluster-large {\r\n\tbackground-color: rgb(253, 156, 115);\r\n\t}\r\n.leaflet-oldie .marker-cluster-large div {\r\n\tbackground-color: rgb(241, 128, 23);\r\n}\r\n\r\n.marker-cluster {\r\n\tbackground-clip: padding-box;\r\n\tborder-radius: 20px;\r\n\t}\r\n.marker-cluster div {\r\n\twidth: 30px;\r\n\theight: 30px;\r\n\tmargin-left: 5px;\r\n\tmargin-top: 5px;\r\n\r\n\ttext-align: center;\r\n\tborder-radius: 15px;\r\n\tfont: 12px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\r\n\t}\r\n.marker-cluster span {\r\n\tline-height: 30px;\r\n\t}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/leaflet.markercluster/dist/MarkerCluster.css":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/leaflet.markercluster/dist/MarkerCluster.css ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {\r\n\t-webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;\r\n\t-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;\r\n\t-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;\r\n\ttransition: transform 0.3s ease-out, opacity 0.3s ease-in;\r\n}\r\n\r\n.leaflet-cluster-spider-leg {\r\n\t/* stroke-dashoffset (duration and function) should match with leaflet-marker-icon transform in order to track it exactly */\r\n\t-webkit-transition: -webkit-stroke-dashoffset 0.3s ease-out, -webkit-stroke-opacity 0.3s ease-in;\r\n\t-moz-transition: -moz-stroke-dashoffset 0.3s ease-out, -moz-stroke-opacity 0.3s ease-in;\r\n\t-o-transition: -o-stroke-dashoffset 0.3s ease-out, -o-stroke-opacity 0.3s ease-in;\r\n\ttransition: stroke-dashoffset 0.3s ease-out, stroke-opacity 0.3s ease-in;\r\n}\r\n", ""]);
+
+// exports
 
 
 /***/ }),
@@ -1098,6 +1135,56 @@ function isNumber (n) {
   return typeof n === 'number'
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css":
+/*!***************************************************************************!*\
+  !*** ./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../../css-loader!./MarkerCluster.Default.css */ "./node_modules/css-loader/index.js!./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css");
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/leaflet.markercluster/dist/MarkerCluster.css":
+/*!*******************************************************************!*\
+  !*** ./node_modules/leaflet.markercluster/dist/MarkerCluster.css ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../../css-loader!./MarkerCluster.css */ "./node_modules/css-loader/index.js!./node_modules/leaflet.markercluster/dist/MarkerCluster.css");
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {}
 
 /***/ }),
 
@@ -36777,14 +36864,14 @@ var util = __webpack_require__(/*! util */ "./node_modules/util/util.js");
 // require('leaflet_search')
 // require('leaflet_search_css')
 __webpack_require__(/*! leaflet.markercluster */ "./node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js");
-/*require('marker_cluster_css');
-require('marker_cluster_default_css');
-require('leaflet_css'); */
+__webpack_require__(/*! marker_cluster_css */ "./node_modules/leaflet.markercluster/dist/MarkerCluster.css");
+__webpack_require__(/*! marker_cluster_default_css */ "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css");
+__webpack_require__(/*! leaflet_css */ "./node_modules/leaflet/dist/leaflet.css");
 
 var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node_modules/is-valid-coordinates/index.js");
 
 
-var BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+var BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
 var SHOW_DEBUG_INFORMATION = true;
 
 // used for testing seperately of the react-native applicaiton
@@ -36966,8 +37053,8 @@ var LeafletReactHTML = function (_React$Component) {
 							break;
 
 						case 'UPDATE_MARKERS':
-							/* this.printElement('UPDATE_MARKERS event recieved');
-       this.printElement('markers 0: ' + JSON.stringify(msgData.payload.markers[0])); */
+							_this.printElement('UPDATE_MARKERS event recieved');
+							_this.printElement('markers 0: ' + JSON.stringify(msgData));
 							_this.updateMarkers(msgData.payload.markers);
 							break;
 

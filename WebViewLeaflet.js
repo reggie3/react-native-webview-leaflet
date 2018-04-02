@@ -104,7 +104,8 @@ export default class WebViewLeaflet extends React.Component {
 			this.webview.postMessage(
 				JSON.stringify({
 					prefix: MESSAGE_PREFIX,
-					type
+					type,
+					payload
 				}),
 				'*'
 			);

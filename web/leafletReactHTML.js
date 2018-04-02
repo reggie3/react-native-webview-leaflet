@@ -5,9 +5,9 @@ const util = require('util');
 // require('leaflet_search')
 // require('leaflet_search_css')
 require('leaflet.markercluster');
-/*require('marker_cluster_css');
+require('marker_cluster_css');
 require('marker_cluster_default_css');
-require('leaflet_css'); */
+require('leaflet_css');
 
 
 import 'leaflet/dist/leaflet.css';
@@ -20,8 +20,8 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = true;
+const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+const SHOW_DEBUG_INFORMATION = false;
 
 // used for testing seperately of the react-native applicaiton
 const emoji = [ '😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇' ];
@@ -216,8 +216,8 @@ export default class LeafletReactHTML extends React.Component {
 						break;
 
 					case 'UPDATE_MARKERS':
-						/* this.printElement('UPDATE_MARKERS event recieved');
-						this.printElement('markers 0: ' + JSON.stringify(msgData.payload.markers[0])); */
+						this.printElement('UPDATE_MARKERS event recieved');
+						this.printElement('markers 0: ' + JSON.stringify(msgData));
 						this.updateMarkers(msgData.payload.markers);
 						break;
 
