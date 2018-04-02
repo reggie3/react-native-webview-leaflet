@@ -2,17 +2,13 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
     "clean": "rimraf ./dist",
     "test": "jest"
   },
-  "files": [
-    "WebViewLeaflet.js",
-    "Button.js"
-  ],
   "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
   "repository": {
     "type": "git",
