@@ -5,11 +5,12 @@ const util = require('util');
 // require('leaflet_search')
 // require('leaflet_search_css')
 require('leaflet.markercluster');
-require('marker_cluster_css');
+/*require('marker_cluster_css');
 require('marker_cluster_default_css');
-require('leaflet_css');
+require('leaflet_css'); */
 
-// import 'leaflet/dist/leaflet.css';
+
+import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import React from 'react';
@@ -19,8 +20,8 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
+const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+const SHOW_DEBUG_INFORMATION = true;
 
 // used for testing seperately of the react-native applicaiton
 const emoji = [ '😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇' ];
@@ -30,27 +31,6 @@ let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 let messageCounter = 0;
-
-const WebviewContainer = glamorous.div({
-	position: 'absolute',
-	top: 0,
-	bottom: 0,
-	left: 0,
-	right: 0,
-	display: 'flex',
-	flexDirection: 'column'
-});
-
-const MessagesDiv = glamorous.div({
-	backgroundColor: 'orange',
-	maxHeight: 200,
-	overflow: 'auto'
-});
-
-const MapDiv = glamorous.div({
-	position: 'relative',
-	flex: 1
-});
 
 export default class LeafletReactHTML extends React.Component {
 	constructor() {
@@ -99,6 +79,9 @@ export default class LeafletReactHTML extends React.Component {
 			return;
 		}
 		this.eventListenersAdded = true;
+		if(BROWSER_TESTING_ENABLED){
+			this.loadMap();
+		}
 	};
 
 	componentWillUnmount = () => {
@@ -111,46 +94,49 @@ export default class LeafletReactHTML extends React.Component {
 
 	loadMap = () => {
 		this.printElement('loading map');
-		try {
-			// set up map
-			this.map = L.map('map', {
-				center: BROWSER_TESTING_ENABLED ? [ 37, -76 ] : [ 38.889931, -77.009003 ],
-				zoom: 10
-			});
-			// Initialize the base layer
-			var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				maxZoom: 20,
-				attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			}).addTo(this.map);
-
-			// add click event to map
-			let that = this;
-			this.map.on('click', (e) => {
-				// that.printElement(`map clicked ${e.latlng}`);
-				that.addMessageToQueue('MAP_CLICKED', {
-					coords: e.latlng
+		if (!this.map) {
+			try {
+				// set up map
+				this.map = L.map('map', {
+					center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
+					zoom: 10
 				});
-			});
-			// create the marker layer
-			this.layerMarkerCluster = L.markerClusterGroup();
-			this.map.addLayer(this.layerMarkerCluster);
+				// Initialize the base layer
+				var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 20,
+					attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+				}).addTo(this.map);
 
-			if (BROWSER_TESTING_ENABLED) {
-				this.updateMarkers(this.state.locations);
-				this.setuUpMarkerAlterationTest();
+				// add click event to map
+				let that = this;
+				this.map.on('click', (e) => {
+					// that.printElement(`map clicked ${e.latlng}`);
+					that.addMessageToQueue('MAP_CLICKED', {
+						coords: e.latlng
+					});
+				});
+				// create the marker layer
+				this.layerMarkerCluster = L.markerClusterGroup();
+				this.map.addLayer(this.layerMarkerCluster);
+
+				if (BROWSER_TESTING_ENABLED) {
+					this.updateMarkers(this.state.locations);
+					this.setuUpMarkerAlterationTest();
+				}
+			} catch (error) {
+				debugger;
+				this.printElement('ERROR loading map: ', error);
+				// send a messaging back indicating the map has been loaded
+				this.addMessageToQueue('MAP_LOADED', {
+					type: 'error',
+					msg: error
+				});
 			}
-		} catch (error) {
-			this.printElement('ERROR loading map: ', error);
 			// send a messaging back indicating the map has been loaded
-			that.addMessageToQueue('MAP_LOADED', {
-				type: 'error',
-				msg: error
+			this.addMessageToQueue('MAP_LOADED', {
+				type: 'success'
 			});
 		}
-		// send a messaging back indicating the map has been loaded
-		that.addMessageToQueue('MAP_LOADED', {
-			type: 'success'
-		});
 	};
 
 	addMessageToQueue = (type, payload) => {
@@ -171,17 +157,15 @@ export default class LeafletReactHTML extends React.Component {
 	};
 
 	sendNextMessage = () => {
-		this.printElement(`adding message ${messageCounter} to queue: ${type}`);
-
 		if (this.messageQueue.length > 0) {
 			const nextMessage = this.messageQueue.shift();
 			this.printElement(`sending message ${nextMessage}`);
-			if (document) {
+			if (document.hasOwnProperty('postMessage')) {
 				document.postMessage(nextMessage, '*');
-			} else if (window) {
+			} else if (window.hasOwnProperty('postMessage')) {
 				window.postMessage(nextMessage, '*');
 			} else {
-				console.log('unable to add event listener');
+				console.log('unable to find postMessage');
 			}
 			this.setState({ readyToSendNextMessage: false });
 		}
@@ -207,15 +191,18 @@ export default class LeafletReactHTML extends React.Component {
 						this.printElement('LOAD_MAP event recieved');
 						this.loadMap();
 						break;
+					case 'GET_MAP':
+						this.addMessageToQueue('MAP_SENT', {map: this.map})
+						break;
 					case 'MAP_CENTER_COORD_CHANGE':
 						this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
 						this.printElement(msgData.payload.mapCenterCoords);
 						let that = this;
 						this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords }, () => {
-							that.printElement('center set to:');
+							/* that.printElement('center set to:');
 							that.printElement(that.state.mapCenterCoords);
 							that.printElement('that.map = ');
-							that.printElement(that.map);
+							that.printElement(that.map); */
 							if (msgData.payload.panToLocation === true) {
 								that.printElement('panning map');
 								that.map.flyTo(that.state.mapCenterCoords);
@@ -230,9 +217,7 @@ export default class LeafletReactHTML extends React.Component {
 
 					case 'UPDATE_MARKERS':
 						/* this.printElement('UPDATE_MARKERS event recieved');
-            this.printElement(
-              'markers 0: ' + JSON.stringify(msgData.payload.markers[0])
-            ); */
+						this.printElement('markers 0: ' + JSON.stringify(msgData.payload.markers[0])); */
 						this.updateMarkers(msgData.payload.markers);
 						break;
 
@@ -348,7 +333,7 @@ export default class LeafletReactHTML extends React.Component {
 
 	updateMarker = (marker, markerInfo) => {
 		try {
-			this.printElement(`updateMarker ${marker.getElement()}`);
+			// this.printElement(`updateMarker ${marker.getElement()}`);
 			// remove this marker
 			marker.removeFrom(this.layerMarkerCluster);
 			// create a new marker with correct properties
@@ -383,8 +368,8 @@ export default class LeafletReactHTML extends React.Component {
 				),
 				id: markerInfo.id ? markerInfo.id : null
 			});
-			this.printElement(`new mapMarker`);
-			this.printElement(mapMarker);
+			/* this.printElement(`new mapMarker`);
+			this.printElement(mapMarker); */
 			// bind a click event to this marker with the marker id
 			// click event is for use by the parent of this html file's
 			// WebView

@@ -45,6 +45,11 @@ export default class WebViewLeaflet extends React.Component {
 	sendShowZoomControls = (showZoomControls) => {
 		this.sendMessage('SHOW_ZOOM_CONTROLS', { showZoomControls });
 	};
+
+	sendGetMap = () => {
+		this.sendMessage('GET_MAP');
+	};
+	
 	handleMessage = (event) => {
 		let msgData;
 		try {
@@ -58,6 +63,10 @@ export default class WebViewLeaflet extends React.Component {
 						console.log('MAP_LOADED');
 						this.setState({ mapNotLoaded: false });
 						this.sendUpdatedMapCenterCoordsToHTML();
+						break;
+					case 'MAP_SENT':
+					debugger;
+						this.props.getMapCallback(msgData.payload.map);
 						break;
 					case 'MARKER_CLICKED':
 						if (this.props.hasOwnProperty('onMarkerClicked')) {
@@ -89,15 +98,13 @@ export default class WebViewLeaflet extends React.Component {
 	};
 
 	sendMessage = (type, payload) => {
-		debugger;
 		// only send message when webview is loaded
 		if (!this.state.webViewNotLoaded) {
 			console.log(`WebViewLeaflet: sending message ${type}, ${JSON.stringify(payload)}`);
 			this.webview.postMessage(
 				JSON.stringify({
 					prefix: MESSAGE_PREFIX,
-					type,
-					
+					type
 				}),
 				'*'
 			);
@@ -105,7 +112,6 @@ export default class WebViewLeaflet extends React.Component {
 	};
 
 	onWebViewLoaded = () => {
-		debugger;
 		this.setState(
 			{
 				webViewNotLoaded: false
@@ -129,6 +135,9 @@ export default class WebViewLeaflet extends React.Component {
 				// let the parent know the webview is ready
 				if (this.props.hasOwnProperty('onWebViewReady')) {
 					this.props.onWebViewReady();
+				}
+				if (this.props.hasOwnProperty('getMapCallback')) {
+					this.sendGetMap();
 				}
 			}
 		);
@@ -188,7 +197,7 @@ export default class WebViewLeaflet extends React.Component {
 		return (
 			<View
 				style={{
-					flex: 1,
+					flex: 1
 				}}
 			>
 				<View style={{ ...StyleSheet.absoluteFillObject }}>

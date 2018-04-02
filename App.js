@@ -131,7 +131,10 @@ export default class App extends React.Component {
     );
   };
 
-
+  getMapCallback=(map)=>{
+    console.log('getMapCallback received : ', map)
+    debugger;
+  }
 
   centerMap = (parkInitials) => {
     console.log(parkInitials);
@@ -170,6 +173,7 @@ export default class App extends React.Component {
           panToLocation={false}
           zoom={5}
           showZoomControls={false}
+          getMapCallback={this.getMapCallback}
         />
         <View
           style={{

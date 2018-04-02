@@ -5,6 +5,9 @@ const jeditor = require('gulp-json-editor');
 const bump = require('gulp-bump');
 const webpack_stream = require('webpack-stream');
 const run = require('gulp-run');
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config.js');
+const gutil = require('gulp-util');
 
 // dependencies for npm publishing
 const npmDeps = {
@@ -13,9 +16,7 @@ const npmDeps = {
 	'leaflet.markercluster': '^1.3.0',
 	'prop-types': '^15.6.0',
 	util: '^0.10.3',
-	'render-if': '^0.1.1',
-	glamor: '^2.20.40',
-	glamorous: '^4.11.2'
+	'render-if': '^0.1.1'
 };
 // additional dependencies for expo app
 const expoDeps = {
@@ -67,8 +68,22 @@ gulp.task('editConfigForProd', (done) => {
 
 // pack the files
 gulp.task('webpack', (done) => {
-	return run('webpack').exec();
-	done();
+	webpack(webpackConfig, function(err, stats) {
+		if (err) throw new gutil.PluginError('webpack:build', err);
+		gutil.log(
+			'[webpack:build] Completed\n' +
+				stats.toString({
+					assets: true,
+					chunks: false,
+					chunkModules: false,
+					colors: true,
+					hash: false,
+					timings: false,
+					version: false
+				})
+		);
+		done();
+	});
 });
 
 gulp.task('npm-publish', (done) => {
@@ -118,6 +133,7 @@ gulp.task('forExpo', (done) => {
 
 gulp.task('copy-build-files', (done) => {
 	gulp.src('./build/index.html').pipe(gulp.dest('./assets/dist/'));
+	gulp.src('./build/main.bundle.js.map').pipe(gulp.dest('./assets/dist/'));
 	done();
 });
 
@@ -141,7 +157,6 @@ gulp.task(
 		'forExpo'
 	)
 );
-
 
 gulp.task(
 	'test',
