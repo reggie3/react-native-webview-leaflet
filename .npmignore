@@ -5,7 +5,6 @@ npm-debug.*
 build/**/*
 dist/**/*
 web
-assets/*.png
 .babelrc
 .watchmanconfig
 App.js
@@ -17,3 +16,6 @@ yarn*
 gulpfile.js
 __tests__
 __mocks__
+secrets
+locations.js
+lib
