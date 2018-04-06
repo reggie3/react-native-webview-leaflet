@@ -2,13 +2,11 @@ import renderIf from 'render-if';
 // Initialize leaflet.js
 const L = require('leaflet');
 const util = require('util');
-// require('leaflet_search')
-// require('leaflet_search_css')
 require('leaflet.markercluster');
-require('marker_cluster_css');
-require('marker_cluster_default_css');
-require('leaflet_css');
 
+
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
@@ -20,8 +18,8 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
+const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
+const SHOW_DEBUG_INFORMATION = true;
 
 // used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
@@ -44,7 +42,8 @@ export default class LeafletReactHTML extends React.Component {
 		this.messageQueue = [];
 		this.state = {
 			locations: BROWSER_TESTING_ENABLED ? locations : [],
-			readyToSendNextMessage: true
+			readyToSendNextMessage: true,
+			debugMessages: []
 		};
 	}
 
@@ -52,17 +51,17 @@ export default class LeafletReactHTML extends React.Component {
 	// since console.log and debug statements won't work in a conventional way
 	printElement = (data) => {
 		if (SHOW_DEBUG_INFORMATION) {
+			let message = '';
 			if (typeof data === 'object') {
-				let el = document.createElement('pre');
-				el.innerHTML = util.inspect(data, { showHidden: false, depth: null });
-				document.getElementById('messages').appendChild(el);
-				console.log(JSON.stringify(data));
+				message = util.inspect(data, { showHidden: false, depth: null })
 			} else if (typeof data === 'string') {
-				let el = document.createElement('pre');
-				el.innerHTML = data;
-				document.getElementById('messages').appendChild(el);
-				console.log(data);
+				message = data;
 			}
+			this.setState({
+				debugMessages:
+					this.state.debugMessages.concat([message])
+			});
+			console.log(message)
 		}
 	};
 
@@ -489,10 +488,17 @@ export default class LeafletReactHTML extends React.Component {
 						style={{
 							backgroundColor: 'orange',
 							maxHeight: 200,
-							overflow: 'auto'
+							overflow: 'auto',
+							padding: 5
 						}}
 						id="messages"
-					/>
+					>
+					<ul>
+						{this.state.debugMessages.map((message, index)=>{
+							return(<li key={index}>{message}</li>)
+						})}
+						</ul>
+					</div>
 				)}
 			</div>
 		);

@@ -1,12 +1,22 @@
+// setup file
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
+// test file
+import { shallow, mount, render } from 'enzyme';
+import assert from 'assert';
 import LeafletReactHTML from '../web/leafletReactHTML.js';
 import React from 'react';
-import {render, Simulate, wait} from 'react-testing-library';
+import ReactDom from 'react-dom';
+
+const component = mount(
+    <LeafletReactHTML />
+)
+
 
 describe('leafletReactHTML', () => {
-	it('runs a test', () => {
-		expect(2 + 2).toEqual(4);
-	});
-	it('renders a messages div when directed', () => {
-		const rendered = render(<LeafletReactHTML />);
-	});
+	it('should render without crashing', () => {
+		assert(component.length, 'rendered');
+	  });
 });
