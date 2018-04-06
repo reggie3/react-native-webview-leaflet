@@ -12,7 +12,7 @@ import ReactDom from 'react-dom';
 
 
 
-const component = shallow(<LeafletReactHTML />);
+const component = mount(<LeafletReactHTML />);
 
 describe('leafletReactHTML', () => {
 	it('should render without crashing', () => {
@@ -33,7 +33,7 @@ describe('leafletReactHTML', () => {
 
 		}),
 		it('should render text over the Atlantic Ocean', ()=>{
-			
+
 		})
 	})
 });
