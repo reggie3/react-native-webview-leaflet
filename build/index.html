@@ -37036,8 +37036,17 @@ var LeafletReactHTML = function (_React$Component) {
 						case 'GET_MAP':
 							_this.addMessageToQueue('MAP_SENT', { map: _this.map });
 							break;
+						case 'ADD_MOVE_LISTENER':
+							_this.addMoveListener();
+							break;
 						case 'ADD_MOVE_END_LISTENER':
 							_this.addMoveEndListener();
+							break;
+						case 'ADD_ZOOM_LISTENER':
+							_this.addZoomListener();
+							break;
+						case 'ADD_ZOOM_END_LISTENER':
+							_this.addZoomEndListener();
 							break;
 						case 'MAP_CENTER_COORD_CHANGE':
 							_this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
@@ -37057,7 +37066,6 @@ var LeafletReactHTML = function (_React$Component) {
 								}
 								that.updateCurrentPostionMarker(that.state.mapCenterCoords);
 							});
-
 							break;
 
 						case 'UPDATE_MARKERS':
@@ -37097,7 +37105,7 @@ var LeafletReactHTML = function (_React$Component) {
 		_this.addZoomListener = function () {
 			var that = _this;
 			_this.map.on('zoom', function (e) {
-				that.printElement('zoom');
+				// that.printElement(`zoom`);
 				that.addMessageToQueue('ZOOM', {
 					center: that.map.getCenter(),
 					bounds: that.map.getBounds()
@@ -37108,8 +37116,7 @@ var LeafletReactHTML = function (_React$Component) {
 		_this.addMoveListener = function () {
 			var that = _this;
 			_this.map.on('move', function (e) {
-				debugger;
-				that.printElement('move');
+				// that.printElement(`move`);
 				that.addMessageToQueue('MOVE', {
 					center: that.map.getCenter(),
 					bounds: that.map.getBounds()
@@ -37120,7 +37127,7 @@ var LeafletReactHTML = function (_React$Component) {
 		_this.addZoomEndListener = function () {
 			var that = _this;
 			_this.map.on('zoomend', function (e) {
-				that.printElement('zoomend');
+				// that.printElement(`zoomend`);
 				that.addMessageToQueue('ZOOM_END', {
 					center: that.map.getCenter(),
 					bounds: that.map.getBounds()
@@ -37131,8 +37138,7 @@ var LeafletReactHTML = function (_React$Component) {
 		_this.addMoveEndListener = function () {
 			var that = _this;
 			_this.map.on('moveend', function (e) {
-				debugger;
-				that.printElement('moveend');
+				// that.printElement(`moveend`);
 				that.addMessageToQueue('MOVE_END', {
 					center: that.map.getCenter(),
 					bounds: that.map.getBounds()
