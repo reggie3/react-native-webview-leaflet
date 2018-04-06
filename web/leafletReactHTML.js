@@ -18,8 +18,7 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = true;
+
 
 // used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
@@ -41,16 +40,18 @@ export default class LeafletReactHTML extends React.Component {
 		this.eventListenersAdded = false;
 		this.messageQueue = [];
 		this.state = {
-			locations: BROWSER_TESTING_ENABLED ? locations : [],
+			locations: [],
 			readyToSendNextMessage: true,
-			debugMessages: []
+			debugMessages: [],
+			SHOW_DEBUG_INFORMATION: true,
+			BROWSER_TESTING_ENABLED: true // flag to enable testing directly in browser
 		};
 	}
 
 	// print passed information in an html element; useful for debugging
 	// since console.log and debug statements won't work in a conventional way
 	printElement = (data) => {
-		if (SHOW_DEBUG_INFORMATION) {
+		if (this.state.SHOW_DEBUG_INFORMATION) {
 			let message = '';
 			if (typeof data === 'object') {
 				message = util.inspect(data, { showHidden: false, depth: null })
@@ -78,7 +79,8 @@ export default class LeafletReactHTML extends React.Component {
 			return;
 		}
 		this.eventListenersAdded = true;
-		if (BROWSER_TESTING_ENABLED) {
+		if (this.state.BROWSER_TESTING_ENABLED) {
+			this.setState({locations: this.state.BROWSER_TESTING_ENABLED ? locations : []})
 			this.loadMap();
 		}
 	};
@@ -97,7 +99,7 @@ export default class LeafletReactHTML extends React.Component {
 			try {
 				// set up map
 				this.map = L.map('map', {
-					center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
+					center: this.state.BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
 					zoom: 10
 				});
 				// Initialize the base layer
@@ -120,7 +122,7 @@ export default class LeafletReactHTML extends React.Component {
 				this.layerMarkerCluster = L.markerClusterGroup();
 				this.map.addLayer(this.layerMarkerCluster);
 
-				if (BROWSER_TESTING_ENABLED) {
+				if (this.state.BROWSER_TESTING_ENABLED) {
 					this.updateMarkers(this.state.locations);
 					// this.setUpMarkerAlterationTest();
 					// this.addMoveEndListener();
@@ -483,7 +485,7 @@ export default class LeafletReactHTML extends React.Component {
 					}}
 					id="map"
 				/>
-				{renderIf(SHOW_DEBUG_INFORMATION)(
+				{renderIf(this.state.SHOW_DEBUG_INFORMATION)(
 					<div
 						style={{
 							backgroundColor: 'orange',
