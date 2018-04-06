@@ -36956,16 +36956,21 @@ var LeafletReactHTML = function (_React$Component) {
 							coords: e.latlng
 						});
 					});
+
 					// create the marker layer
 					_this.layerMarkerCluster = L.markerClusterGroup();
 					_this.map.addLayer(_this.layerMarkerCluster);
 
 					if (BROWSER_TESTING_ENABLED) {
 						_this.updateMarkers(_this.state.locations);
-						_this.setuUpMarkerAlterationTest();
+						// this.setUpMarkerAlterationTest();
+						// this.addMoveEndListener();
+						// this.addZoomEndListener();
+						// this.addZoomListener();
+						// this.addMoveListener();
+						// this.addMoveEndListener();
 					}
 				} catch (error) {
-					debugger;
 					_this.printElement('ERROR loading map: ', error);
 					// send a messaging back indicating the map has been loaded
 					_this.addMessageToQueue('MAP_LOADED', {
@@ -37011,7 +37016,7 @@ var LeafletReactHTML = function (_React$Component) {
 		};
 
 		_this.handleMessage = function (event) {
-			_this.printElement('received message ' + JSON.stringify(event));
+			// this.printElement(`received message ${JSON.stringify(event)}`);
 			_this.printElement(util.inspect(event.data, {
 				showHidden: false,
 				depth: null
@@ -37021,7 +37026,7 @@ var LeafletReactHTML = function (_React$Component) {
 			try {
 				msgData = JSON.parse(event.data);
 				if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
-					_this.printElement(msgData);
+					// this.printElement(msgData);
 					switch (msgData.type) {
 						// receive an event when the webview is ready
 						case 'LOAD_MAP':
@@ -37030,6 +37035,9 @@ var LeafletReactHTML = function (_React$Component) {
 							break;
 						case 'GET_MAP':
 							_this.addMessageToQueue('MAP_SENT', { map: _this.map });
+							break;
+						case 'ADD_MOVE_END_LISTENER':
+							_this.addMoveEndListener();
 							break;
 						case 'MAP_CENTER_COORD_CHANGE':
 							_this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
@@ -37053,8 +37061,8 @@ var LeafletReactHTML = function (_React$Component) {
 							break;
 
 						case 'UPDATE_MARKERS':
-							_this.printElement('UPDATE_MARKERS event recieved');
-							_this.printElement('markers 0: ' + JSON.stringify(msgData));
+							// this.printElement('UPDATE_MARKERS event recieved');
+							// this.printElement('markers 0: ' + JSON.stringify(msgData));
 							_this.updateMarkers(msgData.payload.markers);
 							break;
 
@@ -37084,6 +37092,52 @@ var LeafletReactHTML = function (_React$Component) {
 				_this.printElement('leafletReactHTML error: ' + err);
 				return;
 			}
+		};
+
+		_this.addZoomListener = function () {
+			var that = _this;
+			_this.map.on('zoom', function (e) {
+				that.printElement('zoom');
+				that.addMessageToQueue('ZOOM', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addMoveListener = function () {
+			var that = _this;
+			_this.map.on('move', function (e) {
+				debugger;
+				that.printElement('move');
+				that.addMessageToQueue('MOVE', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addZoomEndListener = function () {
+			var that = _this;
+			_this.map.on('zoomend', function (e) {
+				that.printElement('zoomend');
+				that.addMessageToQueue('ZOOM_END', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addMoveEndListener = function () {
+			var that = _this;
+			_this.map.on('moveend', function (e) {
+				debugger;
+				that.printElement('moveend');
+				that.addMessageToQueue('MOVE_END', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
 		};
 
 		_this.updateCurrentPostionMarker = function (currentPos) {
@@ -37133,21 +37187,23 @@ var LeafletReactHTML = function (_React$Component) {
 			// take the markers that were sent and check to see if thy are already in the dictionary
 			// if not, create new marker; then add to map layer and dictionary
 			// if so, update it's dictionary item
-			try {
-				markerInfos.forEach(function (markerInfo) {
-					if (_this.mapMarkerDictionary.hasOwnProperty(markerInfo.id)) {
-						_this.updateMarker(_this.mapMarkerDictionary[markerInfo.id], markerInfo);
-					} else {
-						var newMarker = _this.createNewMarker(markerInfo);
-						_this.printElement('adding markerInfo:');
-						_this.printElement(newMarker);
+			if (markerInfos) {
+				try {
+					markerInfos.forEach(function (markerInfo) {
+						if (_this.mapMarkerDictionary.hasOwnProperty(markerInfo.id)) {
+							_this.updateMarker(_this.mapMarkerDictionary[markerInfo.id], markerInfo);
+						} else {
+							var newMarker = _this.createNewMarker(markerInfo);
+							// this.printElement(`adding markerInfo:`);
+							// this.printElement(newMarker);
 
-						_this.addMarkerToMakerLayer(newMarker);
-					}
-				});
-				// this.printElement(this.mapMarkerDictionary);
-			} catch (error) {
-				_this.printElement('Error in updateMarkers ' + error);
+							_this.addMarkerToMakerLayer(newMarker);
+						}
+					});
+					// this.printElement(this.mapMarkerDictionary);
+				} catch (error) {
+					_this.printElement('Error in updateMarkers ' + error);
+				}
 			}
 		};
 
@@ -37245,7 +37301,7 @@ var LeafletReactHTML = function (_React$Component) {
 			);
 		};
 
-		_this.setuUpMarkerAlterationTest = function () {
+		_this.setUpMarkerAlterationTest = function () {
 			setInterval(_this.updateMarkerSpeed.bind(_this), 5000);
 		};
 
@@ -37374,181 +37430,6 @@ var locations = [{
 }, {
   id: Math.floor(Math.random() * 1000),
   coords: [36.46410354, -75.6432701],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.60061515, -76.48888338],
-  icon: emoji[Math.floor(Math.random() * emoji.length)]
-
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.0580835, -75.82318747],
-  icon: 'Fish',
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.23310632, -76.23518332],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.94994253, -76.64318409],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.19810239, -76.28058546],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.02416165, -76.56052521],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.91541467, -75.49279245],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.70503123, -76.32755185],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.31605891, -76.45141618],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.59436803, -76.89486842],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.35740877, -75.77910112],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.31509182, -76.76693784],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.91815909, -76.06707072],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.611917, -75.76758822],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.79520769, -76.3959497],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.42854666, -75.95883052],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [36.78673099, -76.90459724],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
-  animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() * 3) + 1,
-    delay: Math.floor(Math.random()) * 0.5,
-    interationCount: interationCount
-  }
-}, {
-  id: Math.floor(Math.random() * 1000),
-  coords: [37.20966767, -75.58799685],
-  icon: emoji[Math.floor(Math.random() * emoji.length)],
   animation: {
     name: animations[Math.floor(Math.random() * animations.length)],
     duration: Math.floor(Math.random() * 3) + 1,

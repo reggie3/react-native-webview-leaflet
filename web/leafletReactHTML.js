@@ -24,9 +24,9 @@ const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in bro
 const SHOW_DEBUG_INFORMATION = false;
 
 // used for testing seperately of the react-native applicaiton
-const emoji = [ '😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇' ];
+const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 // used for testing seperately of the react-native applicaiton
-const animations = [ 'bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin' ];
+const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let updateCounter = 0;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
@@ -79,7 +79,7 @@ export default class LeafletReactHTML extends React.Component {
 			return;
 		}
 		this.eventListenersAdded = true;
-		if(BROWSER_TESTING_ENABLED){
+		if (BROWSER_TESTING_ENABLED) {
 			this.loadMap();
 		}
 	};
@@ -115,16 +115,22 @@ export default class LeafletReactHTML extends React.Component {
 						coords: e.latlng
 					});
 				});
+
+
 				// create the marker layer
 				this.layerMarkerCluster = L.markerClusterGroup();
 				this.map.addLayer(this.layerMarkerCluster);
 
 				if (BROWSER_TESTING_ENABLED) {
 					this.updateMarkers(this.state.locations);
-					this.setuUpMarkerAlterationTest();
+					// this.setUpMarkerAlterationTest();
+					// this.addMoveEndListener();
+					// this.addZoomEndListener();
+					// this.addZoomListener();
+					// this.addMoveListener();
+					// this.addMoveEndListener();
 				}
 			} catch (error) {
-				debugger;
 				this.printElement('ERROR loading map: ', error);
 				// send a messaging back indicating the map has been loaded
 				this.addMessageToQueue('MAP_LOADED', {
@@ -172,7 +178,7 @@ export default class LeafletReactHTML extends React.Component {
 	};
 
 	handleMessage = (event) => {
-		this.printElement(`received message ${JSON.stringify(event)}`);
+		// this.printElement(`received message ${JSON.stringify(event)}`);
 		this.printElement(
 			util.inspect(event.data, {
 				showHidden: false,
@@ -184,7 +190,7 @@ export default class LeafletReactHTML extends React.Component {
 		try {
 			msgData = JSON.parse(event.data);
 			if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
-				this.printElement(msgData);
+				// this.printElement(msgData);
 				switch (msgData.type) {
 					// receive an event when the webview is ready
 					case 'LOAD_MAP':
@@ -192,7 +198,19 @@ export default class LeafletReactHTML extends React.Component {
 						this.loadMap();
 						break;
 					case 'GET_MAP':
-						this.addMessageToQueue('MAP_SENT', {map: this.map})
+						this.addMessageToQueue('MAP_SENT', { map: this.map })
+						break;
+					case 'ADD_MOVE_LISTENER':
+						this.addMoveListener();
+						break;
+					case 'ADD_MOVE_END_LISTENER':
+						this.addMoveEndListener();
+						break;
+					case 'ADD_ZOOM_LISTENER':
+						this.addZoomListener();
+						break;
+					case 'ADD_ZOOM_END_LISTENER':
+						this.addZoomEndListener();
 						break;
 					case 'MAP_CENTER_COORD_CHANGE':
 						this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
@@ -212,12 +230,11 @@ export default class LeafletReactHTML extends React.Component {
 							}
 							that.updateCurrentPostionMarker(that.state.mapCenterCoords);
 						});
-
 						break;
 
 					case 'UPDATE_MARKERS':
-						this.printElement('UPDATE_MARKERS event recieved');
-						this.printElement('markers 0: ' + JSON.stringify(msgData));
+						// this.printElement('UPDATE_MARKERS event recieved');
+						// this.printElement('markers 0: ' + JSON.stringify(msgData));
 						this.updateMarkers(msgData.payload.markers);
 						break;
 
@@ -248,6 +265,48 @@ export default class LeafletReactHTML extends React.Component {
 			return;
 		}
 	};
+
+	addZoomListener = () => {
+		const that = this;
+		this.map.on('zoom', (e) => {
+			// that.printElement(`zoom`);
+			that.addMessageToQueue('ZOOM', {
+				center: that.map.getCenter(),
+				bounds: that.map.getBounds()
+			});
+		});
+	}
+	addMoveListener = () => {
+		const that = this;
+		this.map.on('move', (e) => {
+			// that.printElement(`move`);
+			that.addMessageToQueue('MOVE', {
+				center: that.map.getCenter(),
+				bounds: that.map.getBounds()
+			});
+		});
+	}
+	addZoomEndListener = () => {
+		const that = this;
+		this.map.on('zoomend', (e) => {
+			// that.printElement(`zoomend`);
+			that.addMessageToQueue('ZOOM_END', {
+				center: that.map.getCenter(),
+				bounds: that.map.getBounds()
+			});
+		});
+	}
+	addMoveEndListener = () => {
+		const that = this;
+		this.map.on('moveend', (e) => {
+			// that.printElement(`moveend`);
+			that.addMessageToQueue('MOVE_END', {
+				center: that.map.getCenter(),
+				bounds: that.map.getBounds()
+			});
+		});
+
+	}
 
 	updateCurrentPostionMarker = (currentPos) => {
 		// this.printElement(`leafletReactHTML: currentPos: ${currentPos}`);
@@ -313,21 +372,23 @@ export default class LeafletReactHTML extends React.Component {
 		// take the markers that were sent and check to see if thy are already in the dictionary
 		// if not, create new marker; then add to map layer and dictionary
 		// if so, update it's dictionary item
-		try {
-			markerInfos.forEach((markerInfo) => {
-				if (this.mapMarkerDictionary.hasOwnProperty(markerInfo.id)) {
-					this.updateMarker(this.mapMarkerDictionary[markerInfo.id], markerInfo);
-				} else {
-					let newMarker = this.createNewMarker(markerInfo);
-					this.printElement(`adding markerInfo:`);
-					this.printElement(newMarker);
+		if (markerInfos) {
+			try {
+				markerInfos.forEach((markerInfo) => {
+					if (this.mapMarkerDictionary.hasOwnProperty(markerInfo.id)) {
+						this.updateMarker(this.mapMarkerDictionary[markerInfo.id], markerInfo);
+					} else {
+						let newMarker = this.createNewMarker(markerInfo);
+						// this.printElement(`adding markerInfo:`);
+						// this.printElement(newMarker);
 
-					this.addMarkerToMakerLayer(newMarker);
-				}
-			});
-			// this.printElement(this.mapMarkerDictionary);
-		} catch (error) {
-			this.printElement(`Error in updateMarkers ${error}`);
+						this.addMarkerToMakerLayer(newMarker);
+					}
+				});
+				// this.printElement(this.mapMarkerDictionary);
+			} catch (error) {
+				this.printElement(`Error in updateMarkers ${error}`);
+			}
 		}
 	};
 
@@ -437,7 +498,7 @@ export default class LeafletReactHTML extends React.Component {
 		);
 	};
 
-	setuUpMarkerAlterationTest = () => {
+	setUpMarkerAlterationTest = () => {
 		setInterval(this.updateMarkerSpeed.bind(this), 5000);
 	};
 

@@ -25,7 +25,8 @@ const locations = [
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
-  }, 
+  },
+  /* 
    {
     id: Math.floor(Math.random() * 1000),
     coords: [36.60061515, -76.48888338],
@@ -88,7 +89,7 @@ const locations = [
       interationCount
     }
   },
-  {
+  /* {
     id: Math.floor(Math.random() * 1000),
     coords: [36.91541467, -75.49279245],
     icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -219,6 +220,6 @@ const locations = [
       delay: Math.floor(Math.random()) * 0.5,
       interationCount
     }
-  } 
+  }  */
 ];
 export default locations;

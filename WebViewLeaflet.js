@@ -24,6 +24,55 @@ export default class WebViewLeaflet extends React.Component {
 		};
 	}
 
+	onWebViewLoaded = () => {
+		this.setState(
+			{
+				webViewNotLoaded: false
+			},
+			() => {
+				this.sendMessage('LOAD_MAP');
+				// console.log(this.props);
+				// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
+				if (this.props.mapCenterCoords.length > 0) {
+					this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
+				}
+				if (this.props.hasOwnProperty('locations')) {
+					this.sendLocations(this.props.locations);
+				}
+				if (this.props.hasOwnProperty('zoom')) {
+					this.sendZoom(this.props.zoom);
+				}
+				if (this.props.hasOwnProperty('showZoomControls')) {
+					this.sendShowZoomControls(this.props.showZoomControls);
+				}
+				// let the parent know the webview is ready
+				if (this.props.hasOwnProperty('onWebViewReady')) {
+					this.props.onWebViewReady();
+				}
+
+			}
+		);
+	};
+
+	// called after the map is loaded
+	initializeMapAfterLoading=()=>{
+		if(this.props.hasOwnProperty('onMove')){
+			this.sendAddMoveListener();
+		}
+		if(this.props.hasOwnProperty('onMoveEnd')){
+			this.sendAddMoveEndListener();
+		}
+		if(this.props.hasOwnProperty('onZoom')){
+			this.sendAddZoomListener();
+		}
+		if(this.props.hasOwnProperty('onZoomEnd')){
+			this.sendAddZoomEndListener();
+		}
+		if (this.props.hasOwnProperty('getMapCallback')) {
+			this.sendGetMap();
+		}
+	}
+
 	sendUpdatedMapCenterCoordsToHTML = () => {
 		console.log(`updating coords ${this.state.mapCenterCoords}`);
 		if (this.state.mapCenterCoords) {
@@ -46,12 +95,29 @@ export default class WebViewLeaflet extends React.Component {
 		this.sendMessage('SHOW_ZOOM_CONTROLS', { showZoomControls });
 	};
 
+	// sent after the map is loaded
 	sendGetMap = () => {
 		this.sendMessage('GET_MAP');
 	};
-	
+
+	sendAddMoveListener =() =>{
+		this.sendMessage('ADD_MOVE_LISTENER');
+	}
+	sendAddMoveEndListener =() =>{
+		this.sendMessage('ADD_MOVE_END_LISTENER');
+	}
+	sendAddZoomListener =() =>{
+		this.sendMessage('ADD_ZOOM_LISTENER');
+	}
+	sendAddZoomEndListener =() =>{
+		this.sendMessage('ADD_ZOOM_END_LISTENER');
+	}
+
+	// 
 	handleMessage = (event) => {
 		let msgData;
+		console.log(`WebViewLeaflet: handleMessage called: `, event);
+
 		try {
 			msgData = JSON.parse(event.nativeEvent.data);
 			if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
@@ -63,9 +129,9 @@ export default class WebViewLeaflet extends React.Component {
 						console.log('MAP_LOADED');
 						this.setState({ mapNotLoaded: false });
 						this.sendUpdatedMapCenterCoordsToHTML();
+						this.initializeMapAfterLoading();
 						break;
 					case 'MAP_SENT':
-					debugger;
 						this.props.getMapCallback(msgData.payload.map);
 						break;
 					case 'MARKER_CLICKED':
@@ -81,11 +147,21 @@ export default class WebViewLeaflet extends React.Component {
 							console.log('Received MAP_CLICKED');
 							console.log(msgData);
 
-							this.props.onMapClicked([ msgData.payload.coords.lat, msgData.payload.coords.lng ]);
+							this.props.onMapClicked([msgData.payload.coords.lat, msgData.payload.coords.lng]);
 						}
 						break;
 					case 'CONSOLE_LOG':
 						console.log('From Webview: ', msgData.payload.msg);
+						break;
+					case 'ZOOM_END':
+						if (this.props.hasOwnProperty('onZoomEnd')) {
+							this.props.onZoomEnd(msgData.payload);
+						}
+						break;
+					case 'MOVE_END':
+						if (this.props.hasOwnProperty('onMoveEnd')) {
+							this.props.onMoveEnd(msgData.payload);
+						};
 						break;
 					default:
 						console.warn(`WebViewLeaflet Error: Unhandled message type received "${msgData.type}"`);
@@ -112,37 +188,7 @@ export default class WebViewLeaflet extends React.Component {
 		}
 	};
 
-	onWebViewLoaded = () => {
-		this.setState(
-			{
-				webViewNotLoaded: false
-			},
-			() => {
-				this.sendMessage('LOAD_MAP');
-				// console.log(this.props);
-				// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
-				if (this.props.mapCenterCoords.length > 0) {
-					this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
-				}
-				if (this.props.hasOwnProperty('locations')) {
-					this.sendLocations(this.props.locations);
-				}
-				if (this.props.hasOwnProperty('zoom')) {
-					this.sendZoom(this.props.zoom);
-				}
-				if (this.props.hasOwnProperty('showZoomControls')) {
-					this.sendShowZoomControls(this.props.showZoomControls);
-				}
-				// let the parent know the webview is ready
-				if (this.props.hasOwnProperty('onWebViewReady')) {
-					this.props.onWebViewReady();
-				}
-				if (this.props.hasOwnProperty('getMapCallback')) {
-					this.sendGetMap();
-				}
-			}
-		);
-	};
+
 
 	createWebViewRef = (webview) => {
 		this.webview = webview;
@@ -169,7 +215,7 @@ export default class WebViewLeaflet extends React.Component {
 					return JSON.stringify(location) !== JSON.stringify(this.state.locations[index]);
 				});
 				this.sendLocations(nextProps.locations);
-				this.setState({ locations: [ ...nextProps.locations ] });
+				this.setState({ locations: [...nextProps.locations] });
 			}
 		}
 	};
@@ -185,12 +231,12 @@ export default class WebViewLeaflet extends React.Component {
 	};
 
 	onError = (error) => {
-		Alert.alert('WebView onError', error, [ { text: 'OK', onPress: () => console.log('OK Pressed') } ]);
+		Alert.alert('WebView onError', error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
 		console.log('WebView onError: ', error);
 	};
 
 	renderError = (error) => {
-		Alert.alert('WebView renderError', error, [ { text: 'OK', onPress: () => console.log('OK Pressed') } ]);
+		Alert.alert('WebView renderError', error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
 		console.log('WebView renderError: ', error);
 	};
 

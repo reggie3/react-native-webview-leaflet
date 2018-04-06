@@ -136,6 +136,16 @@ export default class App extends React.Component {
     debugger;
   }
 
+  onZoomEnd=(event)=>{
+    console.log('onZoomEnd received : ', event)
+    debugger;
+  }
+
+  onMoveEnd=(event)=>{
+    console.log('onMoveEnd received : ', event)
+    debugger;
+  }
+
   centerMap = (parkInitials) => {
     console.log(parkInitials);
     switch (parkInitials) {
@@ -173,7 +183,9 @@ export default class App extends React.Component {
           panToLocation={false}
           zoom={5}
           showZoomControls={false}
-          getMapCallback={this.getMapCallback}
+/*           getMapCallback={this.getMapCallback}*/
+          onMoveEnd={this.onMoveEnd}
+          onZoomEnd={this.onZoomEnd}
         />
         <View
           style={{
