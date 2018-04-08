@@ -19145,7 +19145,7 @@ var LeafletReactHTML = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (LeafletReactHTML.__proto__ || Object.getPrototypeOf(LeafletReactHTML)).call(this));
 
 		_this.printElement = function (data) {
-			if (SHOW_DEBUG_INFORMATION) {
+			if (_this.state.SHOW_DEBUG_INFORMATION) {
 				var message = '';
 				if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
 					message = util.inspect(data, { showHidden: false, depth: null });
@@ -19548,7 +19548,7 @@ var LeafletReactHTML = function (_React$Component) {
 					},
 					id: 'map'
 				}),
-				(0, _renderIf2.default)(SHOW_DEBUG_INFORMATION)(_react2.default.createElement(
+				(0, _renderIf2.default)(_this.state.SHOW_DEBUG_INFORMATION)(_react2.default.createElement(
 					'div',
 					{
 						style: {
@@ -19603,9 +19603,9 @@ var LeafletReactHTML = function (_React$Component) {
 		_this.eventListenersAdded = false;
 		_this.messageQueue = [];
 		_this.state = {
+			debugMessages: [],
 			locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
-			readyToSendNextMessage: true,
-			debugMessages: []
+			readyToSendNextMessage: true
 		};
 		return _this;
 	}
@@ -20669,6 +20669,7 @@ var locations = [{
 }, {
   id: Math.floor(Math.random() * 1000),
   coords: [36.46410354, -75.6432701],
+  icon: "Hello",
   animation: {
     name: animations[Math.floor(Math.random() * animations.length)],
     duration: Math.floor(Math.random() * 3) + 1,

@@ -1,4 +1,7 @@
-const { JSDOM } = require('jsdom');
+
+import 'jest-enzyme';
+
+/* const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 const { window } = jsdom;
@@ -18,4 +21,4 @@ global.document = window.document;
 global.navigator = {
   userAgent: 'node.js',
 };
-copyProps(window, global);
+copyProps(window, global); */

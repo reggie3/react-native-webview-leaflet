@@ -75,6 +75,7 @@
     "jasmine-es6": "^0.4.3",
     "jest": "^22.4.3",
     "jest-css-modules": "^1.1.0",
+    "jest-enzyme": "^6.0.0",
     "jsdom": "^11.7.0",
     "mocha": "^4.1.0",
     "react-addons-test-utils": "^15.6.2",
@@ -88,6 +89,7 @@
     "webpack-strip": "^0.1.0"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"

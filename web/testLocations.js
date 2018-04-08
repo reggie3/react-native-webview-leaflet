@@ -19,6 +19,7 @@ const locations = [
   {
     id: Math.floor(Math.random() * 1000),
     coords: [36.46410354, -75.6432701],
+    icon: "Hello",
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
       duration: Math.floor(Math.random() * 3) + 1,
