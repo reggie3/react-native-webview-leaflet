@@ -3,7 +3,6 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 const jeditor = require('gulp-json-editor');
 const bump = require('gulp-bump');
-const webpack_stream = require('webpack-stream');
 const run = require('gulp-run');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
@@ -20,10 +19,10 @@ const npmDeps = {
 };
 // additional dependencies for expo app
 const expoDeps = {
-	expo: '^25.0.0',
-	react: '16.0.0',
-	'react-dom': '^16.2.0',
-	'react-native': 'https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz'
+	"expo": "^26.0.0",
+	"react": "16.3.0-alpha.1",
+    "react-dom": "^16.3.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
 };
 
 // main for npm publishing
@@ -74,8 +73,8 @@ gulp.task('webpack', (done) => {
 			'[webpack:build] Completed\n' +
 				stats.toString({
 					assets: true,
-					chunks: false,
-					chunkModules: false,
+					chunks: true,
+					chunkModules: true,
 					colors: true,
 					hash: false,
 					timings: false,

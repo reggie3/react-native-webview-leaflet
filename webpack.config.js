@@ -1,14 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 // the path(s) that should be cleaned
-let pathsToClean = [ 'assets/dist/index.html', 
-'assets/dist/main.bundle.js.map', 'build/*.*' ];
+let pathsToClean = [
+	'assets/dist/*.*',
+	'assets/dist/main.bundle.js.map',
+	'build/*.*'
+];
 
 module.exports = {
 	// entry: ['babel-polyfill', './web/component.js'],
@@ -38,11 +40,11 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				use: [ 'style-loader', 'css-loader' ]
+				use: ['style-loader', 'css-loader']
 			},
 			{
 				test: /\.js$/,
-				include: [ path.resolve(__dirname, 'web') ],
+				include: [path.resolve(__dirname, 'web')],
 				exclude: /(node_modules|bower_components)/,
 				use: [
 					{
@@ -53,14 +55,14 @@ module.exports = {
 									'env',
 									{
 										targets: {
-											browsers: [ 'last 2 versions', 'safari >= 7' ]
+											browsers: ['last 2 versions', 'safari >= 7']
 										}
 									}
 								],
 								'react',
 								'stage-2'
 							],
-							plugins: [ 'babel-plugin-transform-object-rest-spread' ],
+							plugins: ['babel-plugin-transform-object-rest-spread'],
 							babelrc: false
 						}
 					}
@@ -69,7 +71,7 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: [ '.js', '.jsx', '.scss', '.css' ],
+		extensions: ['.js', '.jsx', '.scss', '.css'],
 		alias: {
 			leaflet_search: __dirname + '/node_modules/leaflet-search/dist/leaflet-search.min.js',
 			leaflet_search_css: __dirname + '/node_modules/leaflet-search/dist/leaflet-search.min.css',
@@ -86,7 +88,7 @@ module.exports = {
 			template: './web/leafletReact.html',
 			inject: 'body'
 		}),
-		
+
 		/* new webpack.optimize.UglifyJsPlugin({
 			// Eliminate comments
 			comments: false,

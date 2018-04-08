@@ -50,7 +50,7 @@ export default class LeafletReactHTML extends React.Component {
 	// print passed information in an html element; useful for debugging
 	// since console.log and debug statements won't work in a conventional way
 	printElement = (data) => {
-		if (this.state.SHOW_DEBUG_INFORMATION) {
+		if (SHOW_DEBUG_INFORMATION) {
 			let message = '';
 			if (typeof data === 'object') {
 				message = util.inspect(data, { showHidden: false, depth: null })
@@ -483,7 +483,7 @@ export default class LeafletReactHTML extends React.Component {
 					}}
 					id="map"
 				/>
-				{renderIf(this.state.SHOW_DEBUG_INFORMATION)(
+				{renderIf(SHOW_DEBUG_INFORMATION)(
 					<div
 						style={{
 							backgroundColor: 'orange',
