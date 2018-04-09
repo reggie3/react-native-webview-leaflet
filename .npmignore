@@ -19,3 +19,4 @@ __mocks__
 secrets
 locations.js
 lib
+secrets.js
