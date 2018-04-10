@@ -18,8 +18,8 @@ import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 
-const BROWSER_TESTING_ENABLED = true; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = true;
+const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
+const SHOW_DEBUG_INFORMATION = false;
 
 // used for testing seperately of the react-native applicaiton
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];

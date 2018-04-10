@@ -20,3 +20,4 @@ secrets
 locations.js
 lib
 secrets.js
+setupTests.js
