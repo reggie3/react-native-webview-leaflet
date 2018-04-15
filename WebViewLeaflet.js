@@ -34,7 +34,7 @@ export default class WebViewLeaflet extends React.Component {
 				// console.log(this.props);
 				// this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
 				if (this.props.mapCenterCoords.length > 0) {
-					this.sendUpdatedMapCenterCoordsToHTML(this.state.mapCenterCoords);
+					this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
 				}
 				if (this.props.hasOwnProperty('locations')) {
 					this.sendLocations(this.props.locations);
@@ -73,14 +73,11 @@ export default class WebViewLeaflet extends React.Component {
 		}
 	}
 
-	sendUpdatedMapCenterCoordsToHTML = () => {
-		console.log(`updating coords ${this.state.mapCenterCoords}`);
-		if (this.state.mapCenterCoords) {
-			this.sendMessage('MAP_CENTER_COORD_CHANGE', {
-				mapCenterCoords: this.state.mapCenterCoords,
-				panToLocation: this.props.panToLocation
-			});
-		}
+	sendUpdatedMapCenterCoordsToHTML = (mapCenterCoords) => {
+		this.sendMessage('MAP_CENTER_COORD_CHANGE', {
+			mapCenterCoords,
+			panToLocation: this.props.panToLocation
+		});
 	};
 
 	sendLocations = (markers) => {
@@ -128,7 +125,6 @@ export default class WebViewLeaflet extends React.Component {
 					case 'MAP_LOADED':
 						console.log('MAP_LOADED');
 						this.setState({ mapNotLoaded: false });
-						this.sendUpdatedMapCenterCoordsToHTML();
 						this.initializeMapAfterLoading();
 						break;
 					case 'MAP_SENT':
