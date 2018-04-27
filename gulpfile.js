@@ -19,10 +19,10 @@ const npmDeps = {
 };
 // additional dependencies for expo app
 const expoDeps = {
-	"expo": "^26.0.0",
-	"react": "16.3.0-alpha.1",
+	"expo": "^27.0.0",
+	"react": "16.3.1",
     "react-dom": "^16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-26.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.tar.gz",
 };
 
 // main for npm publishing
@@ -58,12 +58,6 @@ gulp.task('forNPM', (done) => {
 	done();
 });
 
-// read and bump the package version in config.js so that it
-// matches the version number about to be published
-gulp.task('editConfigForProd', (done) => {
-	gulp.src('./config.js').pipe(bump({ key: 'PACKAGE_VERSION' })).pipe(concat('config.js')).pipe(gulp.dest('./'));
-	done();
-});
 
 // pack the files
 gulp.task('webpack', (done) => {
@@ -112,7 +106,7 @@ gulp.task('git-push', (done) => {
 });
 
 gulp.task('git-push-inline-javascript', (done) => {
-	return run('git push origin inline-javascript').exec();
+	return run('git push origin inline-javascript-2').exec();
 	done();
 });
 
@@ -144,7 +138,8 @@ gulp.task(
 		'forNPM',
 		'build',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
-		'forExpo'
+		'forExpo',
+	'copy-build-files'
 	)
 );
 
@@ -154,7 +149,8 @@ gulp.task(
 		'forNPM',
 		'webpack',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push-inline-javascript'), 'npm-publish-beta'),
-		'forExpo'
+		'forExpo',
+		'copy-build-files'
 	)
 );
 
@@ -162,9 +158,9 @@ gulp.task(
 	'test',
 	gulp.series(
 		'forNPM',
-		'editConfigForProd',
 		'webpack',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
-		'forExpo'
+		'forExpo',
+		'copy-build-files'
 	)
 );

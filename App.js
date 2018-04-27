@@ -2,11 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View, Platform, Alert } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
+import testLocations from './web/testLocations';
 
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let parkLocations = {
-  'dw': [28.417839, -81.581235],
+  'dw': [28.417839, "dog"],
   'bg': [37.23416573, -76.63999744],
   'kd': [37.837329984, -77.440331572]
 };
@@ -19,7 +20,7 @@ export default class App extends React.Component {
   state = {
     location: null,
     errorMessage: null,
-    locations: null,
+    locations: [...testLocations],
     coords: []
   };
 
@@ -43,13 +44,13 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    let locations = this.createRandomMarkers(location.coords, 20, 10000);
+    let locations = this.createRandomMarkers(location.coords, 5, 10000);
 
     // center random markers around Washington DC
     // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
 
     this.setState({
-      locations,
+      locations: [...this.state.locations, ...locations] ,
       location,
 
       // center around Washington DC
@@ -80,7 +81,7 @@ export default class App extends React.Component {
       let foundLongitude = x0 + x1;
 
       newMarkers.push({
-        id: Math.floor(Math.random() * 1000),
+        id: i,
         // coords: [33.946, -91.000],
         coords: [foundLatitude, foundLongitude],
         icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -133,17 +134,14 @@ export default class App extends React.Component {
 
   getMapCallback=(map)=>{
     console.log('getMapCallback received : ', map)
-    debugger;
   }
 
   onZoomEnd=(event)=>{
     console.log('onZoomEnd received : ', event)
-    debugger;
   }
 
   onMoveEnd=(event)=>{
     console.log('onMoveEnd received : ', event)
-    debugger;
   }
 
   centerMap = (parkInitials) => {
