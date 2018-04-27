@@ -34,7 +34,7 @@ describe('leafletReactHTML', () => {
 
 		assert(component.length, 'rendered');
 	});
-	it('registers an eventlistener to receive messages', async () => {
+/* 	it('registers an eventlistener to receive messages', async () => {
 		//const wrapper = shallow(<LeafletReactHTML />)
 		const wrapper = await shallow(<LeafletReactHTML />).instance().componentDidMount()
 
@@ -69,7 +69,7 @@ describe('leafletReactHTML', () => {
 			component.setState({ SHOW_DEBUG_INFORMATION: false });
 			expect(component.find('#messages').exists()).toEqual(false);
 		});
-	});
+	}); */
 	/* describe('rendering elements on map', ()=>{
 		it('should render a smiley face over Washington DC', ()=>{
 			component.setState({locations: [DCSmileEmoji]});
