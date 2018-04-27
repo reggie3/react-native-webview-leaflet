@@ -112,7 +112,7 @@ gulp.task('git-push', (done) => {
 });
 
 gulp.task('git-push-inline-javascript', (done) => {
-	return run('git push origin inline-javascript').exec();
+	return run('git push origin inline-javascript-2').exec();
 	done();
 });
 
