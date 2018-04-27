@@ -47,11 +47,16 @@ export default class WebViewLeaflet extends React.Component {
           this.props.mapCenterCoords.length > 0 &&
           isValidCoordinates(
             this.props.mapCenterCoords[0],
-            ths.props.mapCenterCoords[1]
+            this.props.mapCenterCoords[1]
           )
         ) {
           debugger;
-          this.sendUpdatedMapCenterCoordsToHTML(this.props.mapCenterCoords);
+          this.setState(
+            { mapCenterCoords: this.props.mapCenterCoords },
+            () => {
+              this.sendUpdatedMapCenterCoordsToHTML();
+            }
+          );
         }
         if (this.props.hasOwnProperty("locations")) {
           debugger;
@@ -90,9 +95,9 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  sendUpdatedMapCenterCoordsToHTML = mapCenterCoords => {
+  sendUpdatedMapCenterCoordsToHTML = () => {
     this.sendMessage("MAP_CENTER_COORD_CHANGE", {
-      mapCenterCoords,
+      mapCenterCoords: this.state.mapCenterCoords,
       panToLocation: this.props.panToLocation
     });
   };
@@ -225,9 +230,21 @@ export default class WebViewLeaflet extends React.Component {
     ) {
       console.log(`Update mapCenterCoords to ${nextProps.mapCenterCoords}`);
       let that = this;
-      this.setState({ mapCenterCoords: nextProps.mapCenterCoords }, () => {
-        that.sendUpdatedMapCenterCoordsToHTML();
-      });
+      if (
+        this.props.mapCenterCoords.length > 0 &&
+        isValidCoordinates(
+          this.props.mapCenterCoords[0],
+          this.props.mapCenterCoords[1]
+        )
+      ) {
+        debugger;
+        this.setState(
+          { mapCenterCoords: nextProps.mapCenterCoords },
+          () => {
+            this.sendUpdatedMapCenterCoordsToHTML();
+          }
+        );
+      }
     }
 
     if (!this.state.webViewNotLoaded) {
