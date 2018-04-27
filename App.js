@@ -176,7 +176,8 @@ export default class App extends React.Component {
         </Text>
         <WebViewLeaflet
           mapCenterCoords={this.state.coords}
-          locations={this.state.locations}
+          /* locations={this.state.locations} */
+          locations={[]}
           onMapClicked={this.onMapClicked}
           onMarkerClicked={this.onMarkerClicked}
           onWebViewReady={this.onWebViewReady}

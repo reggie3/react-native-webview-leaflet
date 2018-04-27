@@ -88,18 +88,6 @@ module.exports = {
 			template: './web/leafletReact.html',
 			inject: 'body'
 		}),
-
-		/* new webpack.optimize.UglifyJsPlugin({
-			// Eliminate comments
-			comments: false,
-			// Compression specific options
-			compress: {
-				// remove warnings
-				warnings: false,
-				// Drop console statements
-				drop_console: true
-			}
-		}), */
 		new HtmlWebpackInlineSourcePlugin()
 	]
 };
