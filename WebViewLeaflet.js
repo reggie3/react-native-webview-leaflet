@@ -75,17 +75,38 @@ export default class WebViewLeaflet extends React.Component {
 
   // called after the map is loaded
   initializeMapAfterLoading = () => {
-    if (this.props.hasOwnProperty("onMove")) {
-      this.sendAddMoveListener();
+    if (this.props.hasOwnProperty("onZoomLevelsChange")) {
+      this.sendAddZoomLevelsChangeListener();
     }
-    if (this.props.hasOwnProperty("onMoveEnd")) {
-      this.sendAddMoveEndListener();
+    if (this.props.hasOwnProperty("onResize")) {
+      this.sendResizeListener();
+    }
+    if (this.props.hasOwnProperty("onUnload")) {
+      this.sendUnloadListener();
+    }
+    if (this.props.hasOwnProperty("onViewReset")) {
+      this.sendAddViewResetListener();
+    }
+    if (this.props.hasOwnProperty("onLoad")) {
+      this.sendLoadListener();
+    }
+    if (this.props.hasOwnProperty("onZoomStart")) {
+      this.sendZoomStartListener();
+    }
+    if (this.props.hasOwnProperty("onMoveStart")) {
+      this.sendMoveStartListener();
     }
     if (this.props.hasOwnProperty("onZoom")) {
       this.sendAddZoomListener();
     }
+    if (this.props.hasOwnProperty("onMove")) {
+      this.sendAddMoveListener();
+    }
     if (this.props.hasOwnProperty("onZoomEnd")) {
       this.sendAddZoomEndListener();
+    }
+    if (this.props.hasOwnProperty("onMoveEnd")) {
+      this.sendAddMoveEndListener();
     }
     if (this.props.hasOwnProperty("getMapCallback")) {
       this.sendGetMap();
@@ -116,19 +137,40 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage("GET_MAP");
   };
 
-  sendAddMoveListener = () => {
-    this.sendMessage("ADD_MOVE_LISTENER");
+  sendAddZoomLevelsChangeListener = () => {
+    this.sendMessage("ADD_ZOOM_LEVELS_CHANGE_LISTENER");
   };
-  sendAddMoveEndListener = () => {
-    this.sendMessage("ADD_MOVE_END_LISTENER");
+  sendResizeListener = () => {
+    this.sendMessage("ADD_RESIZE_LISTENER");
+  };
+  sendUnloadListener = () => {
+    this.sendMessage("ADD_UNLOAD_LISTENER");
+  };
+  sendAddViewResetListener = () => {
+    this.sendMessage("ADD_VIEW_RESET_LISTENER");
+  };
+  sendLoadListener = () => {
+    this.sendMessage("ADD_LOAD_LISTENER");
+  };
+  sendZoomStartListener = () => {
+    this.sendMessage("ADD_ZOOM_START_LISTENER");
+  };
+  sendMoveStartListener = () => {
+    this.sendMessage("ADD_MOVE_START_LISTENER");
   };
   sendAddZoomListener = () => {
     this.sendMessage("ADD_ZOOM_LISTENER");
   };
+  sendAddMoveListener = () => {
+    this.sendMessage("ADD_MOVE_LISTENER");
+  };
   sendAddZoomEndListener = () => {
     this.sendMessage("ADD_ZOOM_END_LISTENER");
   };
-
+  sendAddMoveEndListener = () => {
+    this.sendMessage("ADD_MOVE_END_LISTENER");
+  };
+ 
   //
   handleMessage = event => {
     let msgData;
@@ -141,7 +183,7 @@ export default class WebViewLeaflet extends React.Component {
         msgData.prefix === MESSAGE_PREFIX
       ) {
         console.log(`WebViewLeaflet: received message ${msgData.type}`);
-        this.sendMessage("MESSAGE_ACKNOWLEDGED");
+        // this.sendMessage("MESSAGE_ACKNOWLEDGED");
 
         switch (msgData.type) {
           case "MAP_LOADED":
@@ -174,6 +216,52 @@ export default class WebViewLeaflet extends React.Component {
           case "CONSOLE_LOG":
             console.log("From Webview: ", msgData.payload.msg);
             break;
+            
+          case "ZOOM_LEVELS_CHANGE":
+            if (this.props.hasOwnProperty("onZoomLevelsChange")) {
+              this.props.onZoomLevelsChange(msgData.payload);
+            }
+            break;
+          case "RESIZE":
+            if (this.props.hasOwnProperty("onResize")) {
+              this.props.onResize(msgData.payload);
+            }
+            break;
+            case "UNLOAD":
+            if (this.props.hasOwnProperty("onUnload")) {
+              this.props.onUnload(msgData.payload);
+            }
+            break;
+          case "VIEW_RESET":
+            if (this.props.hasOwnProperty("onViewReset")) {
+              this.props.onViewReset(msgData.payload);
+            }
+            break;
+            case "LOAD":
+            if (this.props.hasOwnProperty("onLoad")) {
+              this.props.onLoad(msgData.payload);
+            }
+            break;
+          case "MOVE_START":
+            if (this.props.hasOwnProperty("onMoveStart")) {
+              this.props.onMoveStart(msgData.payload);
+            }
+            break;
+            case "ZOOM_START":
+            if (this.props.hasOwnProperty("onZoomStart")) {
+              this.props.onZoomStart(msgData.payload);
+            }
+            break;
+            case "ZOOM":
+            if (this.props.hasOwnProperty("onZoom")) {
+              this.props.onZoom(msgData.payload);
+            }
+            break;
+          case "MOVE":
+            if (this.props.hasOwnProperty("onMove")) {
+              this.props.onMove(msgData.payload);
+            }
+            break;          
           case "ZOOM_END":
             if (this.props.hasOwnProperty("onZoomEnd")) {
               this.props.onZoomEnd(msgData.payload);
@@ -187,7 +275,7 @@ export default class WebViewLeaflet extends React.Component {
           default:
             console.warn(
               `WebViewLeaflet Error: Unhandled message type received "${
-                msgData.type
+                JSON.stringify(msgData)
               }"`
             );
         }
@@ -202,7 +290,7 @@ export default class WebViewLeaflet extends React.Component {
     // only send message when webview is loaded
     if (!this.state.webViewNotLoaded) {
       console.log(
-        `WebViewLeaflet: sending message ${type}, ${JSON.stringify(payload)}`
+        `WebViewLeaflet: sending message ${type}, ${payload?JSON.stringify(payload):""}`
       );
       this.webview.postMessage(
         JSON.stringify({
@@ -262,13 +350,11 @@ export default class WebViewLeaflet extends React.Component {
     const validCoordLocations = locations.filter((location) => {
       return this.coordinateValidation(location.coords[0], location.coords[1])
     });
-      debugger;
     // remove any locations that are already in the component state's "locations"
     // create a new array containing all the locations
     let combinedArray = [...this.state.locations, ...validCoordLocations]
-    // 
+    // remove duplicate locations
     const deDupedLocations = uniqby (combinedArray, 'id');
-    debugger;
     this.sendLocations(deDupedLocations);
     this.setState({ locations: deDupedLocations });
   }
