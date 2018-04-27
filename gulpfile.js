@@ -155,9 +155,9 @@ gulp.task(
 		'forNPM',
 		'webpack',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push-inline-javascript'), 'npm-publish-beta'),
-		'forExpo'
-	),
-	'copy-build-files'
+		'forExpo',
+		'copy-build-files'
+	)
 );
 
 gulp.task(
