@@ -35,6 +35,7 @@ export default class WebViewLeaflet extends React.Component {
   }
 
   onWebViewLoaded = () => {
+    debugger;
     this.setState(
       {
         webViewNotLoaded: false
@@ -203,6 +204,7 @@ export default class WebViewLeaflet extends React.Component {
 
   sendMessage = (type, payload) => {
     // only send message when webview is loaded
+    debugger;
     if (!this.state.webViewNotLoaded) {
       console.log(
         `WebViewLeaflet: sending message ${type}, ${JSON.stringify(payload)}`
@@ -223,6 +225,7 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   componentWillReceiveProps = nextProps => {
+    debugger;
     if (
       nextProps.mapCenterCoords &&
       JSON.stringify(this.state.mapCenterCoords) !==
