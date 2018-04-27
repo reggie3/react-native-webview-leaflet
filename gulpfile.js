@@ -145,7 +145,8 @@ gulp.task(
 		'build',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
 		'forExpo'
-	)
+	),
+	'copy-build-files'
 );
 
 gulp.task(
@@ -155,7 +156,8 @@ gulp.task(
 		'webpack',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push-inline-javascript'), 'npm-publish-beta'),
 		'forExpo'
-	)
+	),
+	'copy-build-files'
 );
 
 gulp.task(
@@ -166,5 +168,6 @@ gulp.task(
 		'webpack',
 		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
 		'forExpo'
-	)
+	),
+	'copy-build-files'
 );
