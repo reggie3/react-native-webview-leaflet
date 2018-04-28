@@ -192,6 +192,7 @@ export default class WebViewLeaflet extends React.Component {
             this.initializeMapAfterLoading();
             break;
           case "MAP_SENT":
+            debugger;
             this.props.getMapCallback(msgData.payload.map);
             break;
           case "MARKER_CLICKED":

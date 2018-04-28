@@ -267,7 +267,8 @@ export default class LeafletReactHTML extends React.Component {
             this.printElement('LOAD_MAP event recieved');
             this.loadMap();
             break;
-          case 'GET_MAP':
+		  case 'GET_MAP':
+		  	this.printElement(`Sending Map`);
             this.addMessageToQueue('MAP_SENT', { map: this.map });
             break;
           case 'MAP_CENTER_COORD_CHANGE':

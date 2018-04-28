@@ -38238,6 +38238,7 @@ var LeafletReactHTML = function (_React$Component) {
               _this.loadMap();
               break;
             case 'GET_MAP':
+              _this.printElement('Sending Map');
               _this.addMessageToQueue('MAP_SENT', { map: _this.map });
               break;
             case 'MAP_CENTER_COORD_CHANGE':

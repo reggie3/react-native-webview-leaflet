@@ -44,7 +44,7 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    let locations = this.createRandomMarkers(location.coords, 100, 50000);
+    let locations = this.createRandomMarkers(location.coords, 0, 50000);
 
     // center random markers around Washington DC
     // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
@@ -206,7 +206,6 @@ export default class App extends React.Component {
           panToLocation={false}
           zoom={5}
           showZoomControls={false}
-          /*           getMapCallback={this.getMapCallback}*/
           onZoomLevelsChange={this.onZoomLevelsChange}
           onResize={this.onResize}
           onUnload={this.onUnload}
