@@ -17,7 +17,7 @@ const delay = Math.floor(Math.random()) * 0.5;
 const interationCount = "infinite";
 
 export default class App extends React.Component {
-  state = {
+  this.state = {
     location: null,
     errorMessage: null,
     locations: [...testLocations],
