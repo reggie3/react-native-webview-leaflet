@@ -379,6 +379,7 @@ export default class LeafletReactHTML extends React.Component {
       // print non animated markers
       return L.divIcon({
         iconSize: null,
+        iconAnchor: [18,18],
         className: 'clearMarkerContainer',
         html: `<div style='font-size: 36px'>
         ${icon}
