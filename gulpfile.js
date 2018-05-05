@@ -16,6 +16,7 @@ const npmDeps = {
   "prop-types": "^15.6.0",
   "util": "^0.10.3",
   "render-if": "^0.1.1",
+  "lodash.uniqby": "^4.7.0",
 };
 // additional dependencies for expo app
 const expoDeps = {

@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "0.3.36",
+  "version": "0.3.37",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -28,7 +28,8 @@
     "leaflet.markercluster": "^1.3.0",
     "prop-types": "^15.6.0",
     "util": "^0.10.3",
-    "render-if": "^0.1.1"
+    "render-if": "^0.1.1",
+    "lodash.uniqby": "^4.7.0"
   },
   "devDependencies": {
     "assert": "^1.4.1",

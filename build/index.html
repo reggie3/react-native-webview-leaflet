@@ -38127,7 +38127,10 @@ var LeafletReactHTML = function (_React$Component) {
       }
     };
 
-    _this.loadMap = function (mapConfig) {
+    _this.loadMap = function () {
+      var mapConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { showMapAttribution: true };
+
+
       _this.printElement('loading map: ', mapConfig);
       if (!_this.map) {
         try {
@@ -38135,7 +38138,6 @@ var LeafletReactHTML = function (_React$Component) {
           _this.map = L.map('map', {
             center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
             zoom: 10,
-
             // removing the attribution control prevents accidentally clicking on it
             attributionControl: mapConfig.showMapAttribution
           });
@@ -38181,6 +38183,7 @@ var LeafletReactHTML = function (_React$Component) {
             type: 'error',
             msg: error
           });
+          console.log(error);
         }
         // send a messaging back indicating the map has been loaded
         _this.addMessageToQueue('MAP_LOADED', {
@@ -38761,9 +38764,42 @@ var circleMarker = exports.circleMarker = "<svg version=\"1.1\"\nfill-opacity=\"
   !*** ./web/testLocations.js ***!
   \******************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: SyntaxError: C:/Users/regin/Dropbox/react-native-webview-leaflet/web/testLocations.js: Unexpected token (8:1)\n\n\u001b[0m \u001b[90m  6 | \u001b[39m\n \u001b[90m  7 | \u001b[39m\u001b[36mconst\u001b[39m locations \u001b[33m=\u001b[39m [\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\n \u001b[90m    | \u001b[39m \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 | \u001b[39m\t{\n \u001b[90m 10 | \u001b[39m\t\tid\u001b[33m:\u001b[39m \u001b[35m2\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 11 | \u001b[39m\t\tcoords\u001b[33m:\u001b[39m [\u001b[35m37.06452161\u001b[39m\u001b[33m,\u001b[39m \u001b[33m-\u001b[39m\u001b[35m75.67364786\u001b[39m]\u001b[33m,\u001b[39m\u001b[0m\n");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+var duration = Math.floor(Math.random() * 3) + 1;
+var delay = Math.floor(Math.random()) * 0.5;
+var interationCount = 'infinite';
+
+var locations = [{
+	id: 2,
+	coords: [37.06452161, -75.67364786],
+	icon: emoji[Math.floor(Math.random() * emoji.length)],
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: Math.floor(Math.random() * 3) + 1,
+		delay: Math.floor(Math.random()) * 0.5,
+		interationCount: interationCount
+	}
+}, {
+	id: 1,
+	coords: [36.46410354, -75.6432701],
+	icon: 'Hello',
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: Math.floor(Math.random() * 3) + 1,
+		delay: Math.floor(Math.random()) * 0.5,
+		interationCount: interationCount
+	}
+}];
+exports.default = locations;
 
 /***/ })
 

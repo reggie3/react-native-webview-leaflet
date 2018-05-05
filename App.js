@@ -7,7 +7,7 @@ import testLocations from './web/testLocations';
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 let parkLocations = {
-  dw: [28.417839, 'dog'],
+  dw: [28.417839, -81.563808],
   bg: [37.23416573, -76.63999744],
   kd: [37.837329984, -77.440331572]
 };

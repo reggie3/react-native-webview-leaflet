@@ -90,7 +90,8 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
-  loadMap = (mapConfig) => {
+  loadMap = (mapConfig ={showMapAttribution: true}) => {
+
     this.printElement('loading map: ', mapConfig);
     if (!this.map) {
       try {
@@ -98,7 +99,6 @@ export default class LeafletReactHTML extends React.Component {
         this.map = L.map('map', {
           center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
           zoom: 10,
-
           // removing the attribution control prevents accidentally clicking on it
           attributionControl: mapConfig.showMapAttribution
         });
@@ -148,6 +148,7 @@ export default class LeafletReactHTML extends React.Component {
           type: 'error',
           msg: error
         });
+        console.log(error)
       }
       // send a messaging back indicating the map has been loaded
       this.addMessageToQueue('MAP_LOADED', {
