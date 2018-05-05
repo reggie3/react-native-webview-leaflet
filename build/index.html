@@ -18644,7 +18644,11 @@ module.exports = ReactPropTypesSecret;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /** @license React v16.3.2
+=======
+/** @license React v16.3.1
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
  * react-dom.development.js
  *
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -18661,8 +18665,13 @@ if (true) {
   (function() {
 'use strict';
 
+<<<<<<< HEAD
 var invariant = __webpack_require__(/*! fbjs/lib/invariant */ "./node_modules/fbjs/lib/invariant.js");
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+=======
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+var invariant = __webpack_require__(/*! fbjs/lib/invariant */ "./node_modules/fbjs/lib/invariant.js");
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 var warning = __webpack_require__(/*! fbjs/lib/warning */ "./node_modules/fbjs/lib/warning.js");
 var ExecutionEnvironment = __webpack_require__(/*! fbjs/lib/ExecutionEnvironment */ "./node_modules/fbjs/lib/ExecutionEnvironment.js");
 var _assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
@@ -18675,8 +18684,17 @@ var emptyObject = __webpack_require__(/*! fbjs/lib/emptyObject */ "./node_module
 var hyphenateStyleName = __webpack_require__(/*! fbjs/lib/hyphenateStyleName */ "./node_modules/fbjs/lib/hyphenateStyleName.js");
 var camelizeStyleName = __webpack_require__(/*! fbjs/lib/camelizeStyleName */ "./node_modules/fbjs/lib/camelizeStyleName.js");
 
+<<<<<<< HEAD
 // Relying on the `invariant()` implementation lets us
 // have preserve the format and params in the www builds.
+=======
+/**
+ * WARNING: DO NOT manually require this module.
+ * This is a replacement for `invariant(...)` used by the error code system
+ * and will _only_ be required by the corresponding babel pass.
+ * It always throws.
+ */
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
 !React ? invariant(false, 'ReactDOM was loaded before React. Make sure you load the React package before loading ReactDOM.') : void 0;
 
@@ -19073,7 +19091,11 @@ var injection$1 = {
     getNodeFromInstance = Injected.getNodeFromInstance;
 
     {
+<<<<<<< HEAD
       !(getNodeFromInstance && getInstanceFromNode) ? warning(false, 'EventPluginUtils.injection.injectComponentTree(...): Injected ' + 'module is missing getNodeFromInstance or getInstanceFromNode.') : void 0;
+=======
+      warning(getNodeFromInstance && getInstanceFromNode, 'EventPluginUtils.injection.injectComponentTree(...): Injected ' + 'module is missing getNodeFromInstance or getInstanceFromNode.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     }
   }
 };
@@ -19095,7 +19117,11 @@ var validateEventDispatches = void 0;
     var instancesIsArr = Array.isArray(dispatchInstances);
     var instancesLen = instancesIsArr ? dispatchInstances.length : dispatchInstances ? 1 : 0;
 
+<<<<<<< HEAD
     !(instancesIsArr === listenersIsArr && instancesLen === listenersLen) ? warning(false, 'EventPluginUtils: Invalid `event`.') : void 0;
+=======
+    warning(instancesIsArr === listenersIsArr && instancesLen === listenersLen, 'EventPluginUtils: Invalid `event`.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   };
 }
 
@@ -19648,7 +19674,11 @@ function listenerAtPhase(inst, event, propagationPhase) {
  */
 function accumulateDirectionalDispatches(inst, phase, event) {
   {
+<<<<<<< HEAD
     !inst ? warning(false, 'Dispatching inst must not be null') : void 0;
+=======
+    warning(inst, 'Dispatching inst must not be null');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   }
   var listener = listenerAtPhase(inst, event, phase);
   if (listener) {
@@ -20018,7 +20048,11 @@ SyntheticEvent.extend = function (Interface) {
         return new Proxy(constructor.apply(that, args), {
           set: function (target, prop, value) {
             if (prop !== 'isPersistent' && !target.constructor.Interface.hasOwnProperty(prop) && shouldBeReleasedProperties.indexOf(prop) === -1) {
+<<<<<<< HEAD
               !(didWarnForAddedNewProperty || target.isPersistent()) ? warning(false, "This synthetic event is reused for performance reasons. If you're " + "seeing this, you're adding a new property in the synthetic event object. " + 'The property is never released. See ' + 'https://fb.me/react-event-pooling for more information.') : void 0;
+=======
+              warning(didWarnForAddedNewProperty || target.isPersistent(), "This synthetic event is reused for performance reasons. If you're " + "seeing this, you're adding a new property in the synthetic event object. " + 'The property is never released. See ' + 'https://fb.me/react-event-pooling for more information.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
               didWarnForAddedNewProperty = true;
             }
             target[prop] = value;
@@ -20063,7 +20097,11 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 
   function warn(action, result) {
     var warningCondition = false;
+<<<<<<< HEAD
     !warningCondition ? warning(false, "This synthetic event is reused for performance reasons. If you're seeing this, " + "you're %s `%s` on a released/nullified synthetic event. %s. " + 'If you must keep the original synthetic event around, use event.persist(). ' + 'See https://fb.me/react-event-pooling for more information.', action, propName, result) : void 0;
+=======
+    warning(warningCondition, "This synthetic event is reused for performance reasons. If you're seeing this, " + "you're %s `%s` on a released/nullified synthetic event. %s. " + 'If you must keep the original synthetic event around, use event.persist(). ' + 'See https://fb.me/react-event-pooling for more information.', action, propName, result);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   }
 }
 
@@ -20873,6 +20911,7 @@ function getComponentName(fiber) {
     case REACT_RETURN_TYPE:
       return 'ReactReturn';
   }
+<<<<<<< HEAD
   if (typeof type === 'object' && type !== null) {
     switch (type.$$typeof) {
       case REACT_FORWARD_REF_TYPE:
@@ -20880,6 +20919,8 @@ function getComponentName(fiber) {
         return functionName !== '' ? 'ForwardRef(' + functionName + ')' : 'ForwardRef';
     }
   }
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   return null;
 }
 
@@ -22138,7 +22179,11 @@ function isMounted(component) {
     if (owner !== null && owner.tag === ClassComponent) {
       var ownerFiber = owner;
       var instance = ownerFiber.stateNode;
+<<<<<<< HEAD
       !instance._warnedAboutRefsInRender ? warning(false, '%s is accessing isMounted inside its render() function. ' + 'render() should be a pure function of props and state. It should ' + 'never access something that requires stale data from the previous ' + 'render, such as refs. Move this logic to componentDidMount and ' + 'componentDidUpdate instead.', getComponentName(ownerFiber) || 'A component') : void 0;
+=======
+      warning(instance._warnedAboutRefsInRender, '%s is accessing isMounted inside its render() function. ' + 'render() should be a pure function of props and state. It should ' + 'never access something that requires stale data from the previous ' + 'render, such as refs. Move this logic to componentDidMount and ' + 'componentDidUpdate instead.', getComponentName(ownerFiber) || 'A component');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       instance._warnedAboutRefsInRender = true;
     }
   }
@@ -24278,6 +24323,7 @@ var ReactStrictModeWarnings = {
   var didWarnAboutDeprecatedLifecycles = new Set();
   var didWarnAboutUnsafeLifecycles = new Set();
 
+<<<<<<< HEAD
   var setToSortedString = function (set) {
     var array = [];
     set.forEach(function (value) {
@@ -24286,6 +24332,8 @@ var ReactStrictModeWarnings = {
     return array.sort().join(', ');
   };
 
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   ReactStrictModeWarnings.discardPendingWarnings = function () {
     pendingComponentWillMountWarnings = [];
     pendingComponentWillReceivePropsWarnings = [];
@@ -24308,7 +24356,11 @@ var ReactStrictModeWarnings = {
 
           var formatted = lifecycle.replace('UNSAFE_', '');
           var suggestion = LIFECYCLE_SUGGESTIONS[lifecycle];
+<<<<<<< HEAD
           var sortedComponentNames = setToSortedString(componentNames);
+=======
+          var sortedComponentNames = Array.from(componentNames).sort().join(', ');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
           lifecyclesWarningMesages.push(formatted + ': Please update the following components to use ' + (suggestion + ' instead: ' + sortedComponentNames));
         }
@@ -24346,7 +24398,11 @@ var ReactStrictModeWarnings = {
         didWarnAboutDeprecatedLifecycles.add(fiber.type);
       });
 
+<<<<<<< HEAD
       var sortedNames = setToSortedString(uniqueNames);
+=======
+      var sortedNames = Array.from(uniqueNames).sort().join(', ');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
       lowPriorityWarning$1(false, 'componentWillMount is deprecated and will be removed in the next major version. ' + 'Use componentDidMount instead. As a temporary workaround, ' + 'you can rename to UNSAFE_componentWillMount.' + '\n\nPlease update the following components: %s' + '\n\nLearn more about this warning here:' + '\nhttps://fb.me/react-async-component-lifecycle-hooks', sortedNames);
 
@@ -24360,7 +24416,11 @@ var ReactStrictModeWarnings = {
         didWarnAboutDeprecatedLifecycles.add(fiber.type);
       });
 
+<<<<<<< HEAD
       var _sortedNames = setToSortedString(_uniqueNames);
+=======
+      var _sortedNames = Array.from(_uniqueNames).sort().join(', ');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
       lowPriorityWarning$1(false, 'componentWillReceiveProps is deprecated and will be removed in the next major version. ' + 'Use static getDerivedStateFromProps instead.' + '\n\nPlease update the following components: %s' + '\n\nLearn more about this warning here:' + '\nhttps://fb.me/react-async-component-lifecycle-hooks', _sortedNames);
 
@@ -24374,7 +24434,11 @@ var ReactStrictModeWarnings = {
         didWarnAboutDeprecatedLifecycles.add(fiber.type);
       });
 
+<<<<<<< HEAD
       var _sortedNames2 = setToSortedString(_uniqueNames2);
+=======
+      var _sortedNames2 = Array.from(_uniqueNames2).sort().join(', ');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
       lowPriorityWarning$1(false, 'componentWillUpdate is deprecated and will be removed in the next major version. ' + 'Use componentDidUpdate instead. As a temporary workaround, ' + 'you can rename to UNSAFE_componentWillUpdate.' + '\n\nPlease update the following components: %s' + '\n\nLearn more about this warning here:' + '\nhttps://fb.me/react-async-component-lifecycle-hooks', _sortedNames2);
 
@@ -24608,7 +24672,10 @@ var shouldIgnoreFiber = function (fiber) {
     case Fragment:
     case ContextProvider:
     case ContextConsumer:
+<<<<<<< HEAD
     case Mode:
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       return true;
     default:
       return false;
@@ -25343,7 +25410,11 @@ var ReactFiberClassComponent = function (legacyContext, scheduleWork, computeExp
       stopPhaseTimer();
 
       {
+<<<<<<< HEAD
         !(shouldUpdate !== undefined) ? warning(false, '%s.shouldComponentUpdate(): Returned undefined instead of a ' + 'boolean value. Make sure to return true or false.', getComponentName(workInProgress) || 'Component') : void 0;
+=======
+        warning(shouldUpdate !== undefined, '%s.shouldComponentUpdate(): Returned undefined instead of a ' + 'boolean value. Make sure to return true or false.', getComponentName(workInProgress) || 'Component');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       }
 
       return shouldUpdate;
@@ -25372,6 +25443,7 @@ var ReactFiberClassComponent = function (legacyContext, scheduleWork, computeExp
       }
 
       var noGetInitialStateOnES6 = !instance.getInitialState || instance.getInitialState.isReactClassApproved || instance.state;
+<<<<<<< HEAD
       !noGetInitialStateOnES6 ? warning(false, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', name) : void 0;
       var noGetDefaultPropsOnES6 = !instance.getDefaultProps || instance.getDefaultProps.isReactClassApproved;
       !noGetDefaultPropsOnES6 ? warning(false, 'getDefaultProps was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Use a static property to define defaultProps instead.', name) : void 0;
@@ -25381,10 +25453,22 @@ var ReactFiberClassComponent = function (legacyContext, scheduleWork, computeExp
       !noInstanceContextTypes ? warning(false, 'contextTypes was defined as an instance property on %s. Use a static ' + 'property to define contextTypes instead.', name) : void 0;
       var noComponentShouldUpdate = typeof instance.componentShouldUpdate !== 'function';
       !noComponentShouldUpdate ? warning(false, '%s has a method called ' + 'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' + 'The name is phrased as a question because the function is ' + 'expected to return a value.', name) : void 0;
+=======
+      warning(noGetInitialStateOnES6, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', name);
+      var noGetDefaultPropsOnES6 = !instance.getDefaultProps || instance.getDefaultProps.isReactClassApproved;
+      warning(noGetDefaultPropsOnES6, 'getDefaultProps was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Use a static property to define defaultProps instead.', name);
+      var noInstancePropTypes = !instance.propTypes;
+      warning(noInstancePropTypes, 'propTypes was defined as an instance property on %s. Use a static ' + 'property to define propTypes instead.', name);
+      var noInstanceContextTypes = !instance.contextTypes;
+      warning(noInstanceContextTypes, 'contextTypes was defined as an instance property on %s. Use a static ' + 'property to define contextTypes instead.', name);
+      var noComponentShouldUpdate = typeof instance.componentShouldUpdate !== 'function';
+      warning(noComponentShouldUpdate, '%s has a method called ' + 'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' + 'The name is phrased as a question because the function is ' + 'expected to return a value.', name);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       if (type.prototype && type.prototype.isPureReactComponent && typeof instance.shouldComponentUpdate !== 'undefined') {
         warning(false, '%s has a method called shouldComponentUpdate(). ' + 'shouldComponentUpdate should not be used when extending React.PureComponent. ' + 'Please extend React.Component if shouldComponentUpdate is used.', getComponentName(workInProgress) || 'A pure component');
       }
       var noComponentDidUnmount = typeof instance.componentDidUnmount !== 'function';
+<<<<<<< HEAD
       !noComponentDidUnmount ? warning(false, '%s has a method called ' + 'componentDidUnmount(). But there is no such lifecycle method. ' + 'Did you mean componentWillUnmount()?', name) : void 0;
       var noComponentDidReceiveProps = typeof instance.componentDidReceiveProps !== 'function';
       !noComponentDidReceiveProps ? warning(false, '%s has a method called ' + 'componentDidReceiveProps(). But there is no such lifecycle method. ' + 'If you meant to update the state in response to changing props, ' + 'use componentWillReceiveProps(). If you meant to fetch data or ' + 'run side-effects or mutations after React has updated the UI, use componentDidUpdate().', name) : void 0;
@@ -25398,22 +25482,49 @@ var ReactFiberClassComponent = function (legacyContext, scheduleWork, computeExp
       !noInstanceDefaultProps ? warning(false, 'Setting defaultProps as an instance property on %s is not supported and will be ignored.' + ' Instead, define defaultProps as a static property on %s.', name, name) : void 0;
 
       if (typeof instance.getSnapshotBeforeUpdate === 'function' && typeof instance.componentDidUpdate !== 'function' && !didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type)) {
+=======
+      warning(noComponentDidUnmount, '%s has a method called ' + 'componentDidUnmount(). But there is no such lifecycle method. ' + 'Did you mean componentWillUnmount()?', name);
+      var noComponentDidReceiveProps = typeof instance.componentDidReceiveProps !== 'function';
+      warning(noComponentDidReceiveProps, '%s has a method called ' + 'componentDidReceiveProps(). But there is no such lifecycle method. ' + 'If you meant to update the state in response to changing props, ' + 'use componentWillReceiveProps(). If you meant to fetch data or ' + 'run side-effects or mutations after React has updated the UI, use componentDidUpdate().', name);
+      var noComponentWillRecieveProps = typeof instance.componentWillRecieveProps !== 'function';
+      warning(noComponentWillRecieveProps, '%s has a method called ' + 'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?', name);
+      var noUnsafeComponentWillRecieveProps = typeof instance.UNSAFE_componentWillRecieveProps !== 'function';
+      warning(noUnsafeComponentWillRecieveProps, '%s has a method called ' + 'UNSAFE_componentWillRecieveProps(). Did you mean UNSAFE_componentWillReceiveProps()?', name);
+      var hasMutatedProps = instance.props !== workInProgress.pendingProps;
+      warning(instance.props === undefined || !hasMutatedProps, '%s(...): When calling super() in `%s`, make sure to pass ' + "up the same props that your component's constructor was passed.", name, name);
+      var noInstanceDefaultProps = !instance.defaultProps;
+      warning(noInstanceDefaultProps, 'Setting defaultProps as an instance property on %s is not supported and will be ignored.' + ' Instead, define defaultProps as a static property on %s.', name, name);
+
+      if (typeof instance.getSnapshotBeforeUpdate === 'function' && typeof instance.componentDidUpdate !== 'function' && typeof instance.componentDidUpdate !== 'function' && !didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(type)) {
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
         didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(type);
         warning(false, '%s: getSnapshotBeforeUpdate() should be used with componentDidUpdate(). ' + 'This component defines getSnapshotBeforeUpdate() only.', getComponentName(workInProgress));
       }
 
       var noInstanceGetDerivedStateFromProps = typeof instance.getDerivedStateFromProps !== 'function';
+<<<<<<< HEAD
       !noInstanceGetDerivedStateFromProps ? warning(false, '%s: getDerivedStateFromProps() is defined as an instance method ' + 'and will be ignored. Instead, declare it as a static method.', name) : void 0;
       var noInstanceGetDerivedStateFromCatch = typeof instance.getDerivedStateFromCatch !== 'function';
       !noInstanceGetDerivedStateFromCatch ? warning(false, '%s: getDerivedStateFromCatch() is defined as an instance method ' + 'and will be ignored. Instead, declare it as a static method.', name) : void 0;
       var noStaticGetSnapshotBeforeUpdate = typeof type.getSnapshotBeforeUpdate !== 'function';
       !noStaticGetSnapshotBeforeUpdate ? warning(false, '%s: getSnapshotBeforeUpdate() is defined as a static method ' + 'and will be ignored. Instead, declare it as an instance method.', name) : void 0;
+=======
+      warning(noInstanceGetDerivedStateFromProps, '%s: getDerivedStateFromProps() is defined as an instance method ' + 'and will be ignored. Instead, declare it as a static method.', name);
+      var noInstanceGetDerivedStateFromCatch = typeof instance.getDerivedStateFromCatch !== 'function';
+      warning(noInstanceGetDerivedStateFromCatch, '%s: getDerivedStateFromCatch() is defined as an instance method ' + 'and will be ignored. Instead, declare it as a static method.', name);
+      var noStaticGetSnapshotBeforeUpdate = typeof type.getSnapshotBeforeUpdate !== 'function';
+      warning(noStaticGetSnapshotBeforeUpdate, '%s: getSnapshotBeforeUpdate() is defined as a static method ' + 'and will be ignored. Instead, declare it as an instance method.', name);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       var _state = instance.state;
       if (_state && (typeof _state !== 'object' || isArray(_state))) {
         warning(false, '%s.state: must be set to an object or null', name);
       }
       if (typeof instance.getChildContext === 'function') {
+<<<<<<< HEAD
         !(typeof type.childContextTypes === 'object') ? warning(false, '%s.getChildContext(): childContextTypes must be defined in order to ' + 'use getChildContext().', name) : void 0;
+=======
+        warning(typeof type.childContextTypes === 'object', '%s.getChildContext(): childContextTypes must be defined in order to ' + 'use getChildContext().', name);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       }
     }
   }
@@ -26513,7 +26624,11 @@ function ChildReconciler(shouldTrackSideEffects) {
       if (typeof newChildrenIterable.entries === 'function') {
         var possibleMap = newChildrenIterable;
         if (possibleMap.entries === iteratorFn) {
+<<<<<<< HEAD
           !didWarnAboutMaps ? warning(false, 'Using Maps as children is unsupported and will likely yield ' + 'unexpected results. Convert it to a sequence/iterable of keyed ' + 'ReactElements instead.%s', getCurrentFiberStackAddendum$2()) : void 0;
+=======
+          warning(didWarnAboutMaps, 'Using Maps as children is unsupported and will likely yield ' + 'unexpected results. Convert it to a sequence/iterable of keyed ' + 'ReactElements instead.%s', getCurrentFiberStackAddendum$2());
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
           didWarnAboutMaps = true;
         }
       }
@@ -27252,7 +27367,11 @@ var ReactFiberBeginWork = function (config, hostContext, legacyContext, newConte
         var _Component = workInProgress.type;
 
         if (_Component) {
+<<<<<<< HEAD
           !!_Component.childContextTypes ? warning(false, '%s(...): childContextTypes cannot be defined on a functional component.', _Component.displayName || _Component.name || 'Component') : void 0;
+=======
+          warning(!_Component.childContextTypes, '%s(...): childContextTypes cannot be defined on a functional component.', _Component.displayName || _Component.name || 'Component');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
         }
         if (workInProgress.ref !== null) {
           var info = '';
@@ -27465,7 +27584,11 @@ var ReactFiberBeginWork = function (config, hostContext, legacyContext, newConte
           } else {
           changedBits = typeof context._calculateChangedBits === 'function' ? context._calculateChangedBits(oldValue, newValue) : MAX_SIGNED_31_BIT_INT;
           {
+<<<<<<< HEAD
             !((changedBits & MAX_SIGNED_31_BIT_INT) === changedBits) ? warning(false, 'calculateChangedBits: Expected the return value to be a ' + '31-bit integer. Instead received: %s', changedBits) : void 0;
+=======
+            warning((changedBits & MAX_SIGNED_31_BIT_INT) === changedBits, 'calculateChangedBits: Expected the return value to be a ' + '31-bit integer. Instead received: %s', changedBits);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
           }
           changedBits |= 0;
 
@@ -27519,10 +27642,13 @@ var ReactFiberBeginWork = function (config, hostContext, legacyContext, newConte
       // Context change propagation stops at matching consumers, for time-
       // slicing. Continue the propagation here.
       propagateContextChange(workInProgress, context, changedBits, renderExpirationTime);
+<<<<<<< HEAD
     } else if (oldProps === newProps) {
       // Skip over a memoized parent with a bitmask bailout even
       // if we began working on it because of a deeper matching child.
       return bailoutOnAlreadyFinishedWork(current, workInProgress);
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     }
     // There is no bailout on `children` equality because we expect people
     // to often pass a bound method as a child, but it may reference
@@ -27531,7 +27657,11 @@ var ReactFiberBeginWork = function (config, hostContext, legacyContext, newConte
     var render = newProps.children;
 
     {
+<<<<<<< HEAD
       !(typeof render === 'function') ? warning(false, 'A context consumer was rendered with multiple children, or a child ' + "that isn't a function. A context consumer expects a single child " + 'that is a function. If you did pass a function, make sure there ' + 'is no trailing or leading whitespace around it.') : void 0;
+=======
+      warning(typeof render === 'function', 'A context consumer was rendered with multiple children, or a child ' + "that isn't a function. A context consumer expects a single child " + 'that is a function. If you did pass a function, make sure there ' + 'is no trailing or leading whitespace around it.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     }
 
     var newChildren = render(newValue);
@@ -27686,7 +27816,11 @@ var ReactFiberCompleteWork = function (config, hostContext, legacyContext, newCo
 
   function markUpdate(workInProgress) {
     // Tag the fiber with an update effect. This turns a Placement into
+<<<<<<< HEAD
     // a PlacementAndUpdate.
+=======
+    // an UpdateAndPlacement.
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     workInProgress.effectTag |= Update;
   }
 
@@ -29699,7 +29833,11 @@ var ReactFiberNewContext = function (stack) {
     context._changedBits = providerFiber.stateNode;
 
     {
+<<<<<<< HEAD
       !(context._currentRenderer === null || context._currentRenderer === rendererSigil) ? warning(false, 'Detected multiple renderers concurrently rendering the ' + 'same context provider. This is currently unsupported.') : void 0;
+=======
+      warning(context._currentRenderer === null || context._currentRenderer === rendererSigil, 'Detected multiple renderers concurrently rendering the ' + 'same context provider. This is currently unsupported.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       context._currentRenderer = rendererSigil;
     }
   }
@@ -30649,6 +30787,7 @@ var ReactFiberScheduler = function (config) {
   }
 
   function computeInteractiveExpiration(currentTime) {
+<<<<<<< HEAD
     var expirationMs = void 0;
     // We intentionally set a higher expiration time for interactive updates in
     // dev than in production.
@@ -30662,6 +30801,10 @@ var ReactFiberScheduler = function (config) {
       // Should complete within ~500ms. 600ms max.
       expirationMs = 500;
     }
+=======
+    // Should complete within ~500ms. 600ms max.
+    var expirationMs = 500;
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     var bucketSizeMs = 100;
     return computeExpirationBucket(currentTime, expirationMs, bucketSizeMs);
   }
@@ -31340,7 +31483,11 @@ var ReactFiberReconciler$1 = function (config) {
 
     callback = callback === undefined ? null : callback;
     {
+<<<<<<< HEAD
       !(callback === null || typeof callback === 'function') ? warning(false, 'render(...): Expected the last optional `callback` argument to be a ' + 'function. Instead received: %s.', callback) : void 0;
+=======
+      warning(callback === null || typeof callback === 'function', 'render(...): Expected the last optional `callback` argument to be a ' + 'function. Instead received: %s.', callback);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     }
 
     var update = {
@@ -31384,6 +31531,7 @@ var ReactFiberReconciler$1 = function (config) {
     return scheduleRootUpdate(current, element, currentTime, expirationTime, callback);
   }
 
+<<<<<<< HEAD
   function findHostInstance(component) {
     var fiber = get(component);
     if (fiber === undefined) {
@@ -31393,6 +31541,9 @@ var ReactFiberReconciler$1 = function (config) {
         invariant(false, 'Argument appears to not be a ReactComponent. Keys: %s', Object.keys(component));
       }
     }
+=======
+  function findHostInstance(fiber) {
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     var hostFiber = findCurrentHostFiber(fiber);
     if (hostFiber === null) {
       return null;
@@ -31466,11 +31617,15 @@ var ReactFiberReconciler$1 = function (config) {
 
       return injectInternals(_assign({}, devToolsConfig, {
         findHostInstanceByFiber: function (fiber) {
+<<<<<<< HEAD
           var hostFiber = findCurrentHostFiber(fiber);
           if (hostFiber === null) {
             return null;
           }
           return hostFiber.stateNode;
+=======
+          return findHostInstance(fiber);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
         },
         findFiberByHostInstance: function (instance) {
           if (!findFiberByHostInstance) {
@@ -31515,7 +31670,11 @@ implementation) {
 
 // TODO: this is special because it gets imported during build.
 
+<<<<<<< HEAD
 var ReactVersion = '16.3.2';
+=======
+var ReactVersion = '16.3.1';
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
 // a requestAnimationFrame, storing the time for the start of the frame, then
 // scheduling a postMessage which gets scheduled after paint. Within the
@@ -32433,7 +32592,11 @@ function assertValidProps(tag, props, getStack) {
     !(typeof props.dangerouslySetInnerHTML === 'object' && HTML$1 in props.dangerouslySetInnerHTML) ? invariant(false, '`props.dangerouslySetInnerHTML` must be in the form `{__html: ...}`. Please visit https://fb.me/react-invariant-dangerously-set-inner-html for more information.') : void 0;
   }
   {
+<<<<<<< HEAD
     !(props.suppressContentEditableWarning || !props.contentEditable || props.children == null) ? warning(false, 'A component is `contentEditable` and contains `children` managed by ' + 'React. It is now your responsibility to guarantee that none of ' + 'those nodes are unexpectedly modified or duplicated. This is ' + 'probably not intentional.%s', getStack()) : void 0;
+=======
+    warning(props.suppressContentEditableWarning || !props.contentEditable || props.children == null, 'A component is `contentEditable` and contains `children` managed by ' + 'React. It is now your responsibility to guarantee that none of ' + 'those nodes are unexpectedly modified or duplicated. This is ' + 'probably not intentional.%s', getStack());
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   }
   !(props.style == null || typeof props.style === 'object') ? invariant(false, 'The `style` prop expects a mapping from style properties to values, not a string. For example, style={{marginRight: spacing + \'em\'}} when using JSX.%s', getStack()) : void 0;
 }
@@ -33496,7 +33659,11 @@ function createElement$1(type, props, rootContainerElement, parentNamespace) {
       isCustomComponentTag = isCustomComponent(type, props);
       // Should this check be gated by parent namespace? Not sure we want to
       // allow <SVG> or <mATH>.
+<<<<<<< HEAD
       !(isCustomComponentTag || type === type.toLowerCase()) ? warning(false, '<%s /> is using incorrect casing. ' + 'Use PascalCase for React components, ' + 'or lowercase for HTML elements.', type) : void 0;
+=======
+      warning(isCustomComponentTag || type === type.toLowerCase(), '<%s /> is using uppercase HTML. Always use lowercase HTML tags ' + 'in React.', type);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     }
 
     if (type === 'script') {
@@ -34449,7 +34616,11 @@ var validateDOMNesting = emptyFunction;
     var parentTag = parentInfo && parentInfo.tag;
 
     if (childText != null) {
+<<<<<<< HEAD
       !(childTag == null) ? warning(false, 'validateDOMNesting: when childText is passed, childTag should be null') : void 0;
+=======
+      warning(childTag == null, 'validateDOMNesting: when childText is passed, childTag should be null');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       childTag = '#text';
     }
 
@@ -34535,7 +34706,11 @@ var didWarnAboutUnstableCreatePortal = false;
     if (container._reactRootContainer && container.nodeType !== COMMENT_NODE) {
       var hostInstance = DOMRenderer.findHostInstanceWithNoPortals(container._reactRootContainer._internalRoot.current);
       if (hostInstance) {
+<<<<<<< HEAD
         !(hostInstance.parentNode === container) ? warning(false, 'render(...): It looks like the React-rendered content of this ' + 'container was removed without using React. This is not ' + 'supported and will cause errors. Instead, call ' + 'ReactDOM.unmountComponentAtNode to empty a container.') : void 0;
+=======
+        warning(hostInstance.parentNode === container, 'render(...): It looks like the React-rendered content of this ' + 'container was removed without using React. This is not ' + 'supported and will cause errors. Instead, call ' + 'ReactDOM.unmountComponentAtNode to empty a container.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       }
     }
 
@@ -34543,6 +34718,7 @@ var didWarnAboutUnstableCreatePortal = false;
     var rootEl = getReactRootElementInContainer(container);
     var hasNonRootReactChild = !!(rootEl && getInstanceFromNode$1(rootEl));
 
+<<<<<<< HEAD
     !(!hasNonRootReactChild || isRootRenderedBySomeReact) ? warning(false, 'render(...): Replacing React-rendered children with a new root ' + 'component. If you intended to update the children of this node, ' + 'you should instead have the existing children update their state ' + 'and render the new components instead of calling ReactDOM.render.') : void 0;
 
     !(container.nodeType !== ELEMENT_NODE || !container.tagName || container.tagName.toUpperCase() !== 'BODY') ? warning(false, 'render(): Rendering components directly into document.body is ' + 'discouraged, since its children are often manipulated by third-party ' + 'scripts and browser extensions. This may lead to subtle ' + 'reconciliation issues. Try rendering into a container element created ' + 'for your app.') : void 0;
@@ -34550,6 +34726,15 @@ var didWarnAboutUnstableCreatePortal = false;
 
   warnOnInvalidCallback = function (callback, callerName) {
     !(callback === null || typeof callback === 'function') ? warning(false, '%s(...): Expected the last optional `callback` argument to be a ' + 'function. Instead received: %s.', callerName, callback) : void 0;
+=======
+    warning(!hasNonRootReactChild || isRootRenderedBySomeReact, 'render(...): Replacing React-rendered children with a new root ' + 'component. If you intended to update the children of this node, ' + 'you should instead have the existing children update their state ' + 'and render the new components instead of calling ReactDOM.render.');
+
+    warning(container.nodeType !== ELEMENT_NODE || !container.tagName || container.tagName.toUpperCase() !== 'BODY', 'render(): Rendering components directly into document.body is ' + 'discouraged, since its children are often manipulated by third-party ' + 'scripts and browser extensions. This may lead to subtle ' + 'reconciliation issues. Try rendering into a container element created ' + 'for your app.');
+  };
+
+  warnOnInvalidCallback = function (callback, callerName) {
+    warning(callback === null || typeof callback === 'function', '%s(...): Expected the last optional `callback` argument to be a ' + 'function. Instead received: %s.', callerName, callback);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   };
 }
 
@@ -35168,7 +35353,11 @@ var ReactDOM = {
       var owner = ReactCurrentOwner.current;
       if (owner !== null && owner.stateNode !== null) {
         var warnedAboutRefsInRender = owner.stateNode._warnedAboutRefsInRender;
+<<<<<<< HEAD
         !warnedAboutRefsInRender ? warning(false, '%s is accessing findDOMNode inside its render(). ' + 'render() should be a pure function of props and state. It should ' + 'never access something that requires stale data from the previous ' + 'render, such as refs. Move this logic to componentDidMount and ' + 'componentDidUpdate instead.', getComponentName(owner) || 'A component') : void 0;
+=======
+        warning(warnedAboutRefsInRender, '%s is accessing findDOMNode inside its render(). ' + 'render() should be a pure function of props and state. It should ' + 'never access something that requires stale data from the previous ' + 'render, such as refs. Move this logic to componentDidMount and ' + 'componentDidUpdate instead.', getComponentName(owner) || 'A component');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
         owner.stateNode._warnedAboutRefsInRender = true;
       }
     }
@@ -35179,7 +35368,20 @@ var ReactDOM = {
       return componentOrElement;
     }
 
+<<<<<<< HEAD
     return DOMRenderer.findHostInstance(componentOrElement);
+=======
+    var inst = get(componentOrElement);
+    if (inst) {
+      return DOMRenderer.findHostInstance(inst);
+    }
+
+    if (typeof componentOrElement.render === 'function') {
+      invariant(false, 'Unable to find node on an unmounted component.');
+    } else {
+      invariant(false, 'Element appears to be neither ReactComponent nor DOMNode. Keys: %s', Object.keys(componentOrElement));
+    }
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   },
   hydrate: function (element, container, callback) {
     // TODO: throw or warn if we couldn't hydrate?
@@ -35199,7 +35401,11 @@ var ReactDOM = {
       {
         var rootEl = getReactRootElementInContainer(container);
         var renderedByDifferentReact = rootEl && !getInstanceFromNode$1(rootEl);
+<<<<<<< HEAD
         !!renderedByDifferentReact ? warning(false, "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by another copy of React.') : void 0;
+=======
+        warning(!renderedByDifferentReact, "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by another copy of React.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       }
 
       // Unmount should not be batched.
@@ -35219,7 +35425,11 @@ var ReactDOM = {
         // Check if the container itself is a React root node.
         var isContainerReactRoot = container.nodeType === 1 && isValidContainer(container.parentNode) && !!container.parentNode._reactRootContainer;
 
+<<<<<<< HEAD
         !!hasNonRootReactChild ? warning(false, "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by React and is not a top-level container. %s', isContainerReactRoot ? 'You may have accidentally passed in a React root node instead ' + 'of its container.' : 'Instead, have the parent component update its state and ' + 'rerender in order to remove this component.') : void 0;
+=======
+        warning(!hasNonRootReactChild, "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by React and is not a top-level container. %s', isContainerReactRoot ? 'You may have accidentally passed in a React root node instead ' + 'of its container.' : 'Instead, have the parent component update its state and ' + 'rerender in order to remove this component.');
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       }
 
       return false;
@@ -35355,7 +35565,11 @@ if (false) {} else {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /** @license React v16.3.1
+=======
+/** @license React v16.3.0-alpha.1
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
  * react.development.js
  *
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -35381,7 +35595,11 @@ var checkPropTypes = __webpack_require__(/*! prop-types/checkPropTypes */ "./nod
 
 // TODO: this is special because it gets imported during build.
 
+<<<<<<< HEAD
 var ReactVersion = '16.3.1';
+=======
+var ReactVersion = '16.3.0-alpha.1';
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
 // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
 // nor polyfill, then a plain number is used for performance.
@@ -35396,7 +35614,10 @@ var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol['for']('react.strict_mode') : 0x
 var REACT_PROVIDER_TYPE = hasSymbol ? Symbol['for']('react.provider') : 0xeacd;
 var REACT_CONTEXT_TYPE = hasSymbol ? Symbol['for']('react.context') : 0xeace;
 var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol['for']('react.async_mode') : 0xeacf;
+<<<<<<< HEAD
 var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol['for']('react.forward_ref') : 0xead0;
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
 var MAYBE_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
 var FAUX_ITERATOR_SYMBOL = '@@iterator';
@@ -35482,7 +35703,11 @@ function warnNoop(publicInstance, callerName) {
     if (didWarnStateUpdateForUnmountedComponent[warningKey]) {
       return;
     }
+<<<<<<< HEAD
     warning(false, "Can't call %s on a component that is not yet mounted. " + 'This is a no-op, but it might indicate a bug in your application. ' + 'Instead, assign to `this.state` directly or define a `state = {};` ' + 'class property with the desired state in the %s component.', callerName, componentName);
+=======
+    warning(false, '%s(...): Can only update a mounted or mounting component. ' + 'This usually means you called %s() on an unmounted component. ' + 'This is a no-op.\n\nPlease check the code for the %s component.', callerName, callerName, componentName);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     didWarnStateUpdateForUnmountedComponent[warningKey] = true;
   }
 }
@@ -35664,7 +35889,11 @@ pureComponentPrototype.isPureReactComponent = true;
 // an immutable object with a single mutable value
 function createRef() {
   var refObject = {
+<<<<<<< HEAD
     current: null
+=======
+    value: null
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   };
   {
     Object.seal(refObject);
@@ -35772,7 +36001,11 @@ function defineRefPropWarningGetter(props, displayName) {
  */
 var ReactElement = function (type, key, ref, self, source, owner, props) {
   var element = {
+<<<<<<< HEAD
     // This tag allows us to uniquely identify this as a React Element
+=======
+    // This tag allow us to uniquely identify this as a React Element
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     $$typeof: REACT_ELEMENT_TYPE,
 
     // Built-in properties that belong on the element
@@ -36337,10 +36570,17 @@ function createContext(defaultValue, calculateChangedBits) {
 
   var context = {
     $$typeof: REACT_CONTEXT_TYPE,
+<<<<<<< HEAD
     _calculateChangedBits: calculateChangedBits,
     _defaultValue: defaultValue,
     _currentValue: defaultValue,
     _changedBits: 0,
+=======
+    calculateChangedBits: calculateChangedBits,
+    defaultValue: defaultValue,
+    currentValue: defaultValue,
+    changedBits: 0,
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
     // These are circular
     Provider: null,
     Consumer: null
@@ -36348,7 +36588,11 @@ function createContext(defaultValue, calculateChangedBits) {
 
   context.Provider = {
     $$typeof: REACT_PROVIDER_TYPE,
+<<<<<<< HEAD
     _context: context
+=======
+    context: context
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
   };
   context.Consumer = context;
 
@@ -36359,6 +36603,7 @@ function createContext(defaultValue, calculateChangedBits) {
   return context;
 }
 
+<<<<<<< HEAD
 function forwardRef(render) {
   {
     warning(typeof render === 'function', 'forwardRef requires a render function but was given %s.', render === null ? 'null' : typeof render);
@@ -36370,16 +36615,21 @@ function forwardRef(render) {
   };
 }
 
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 var describeComponentFrame = function (name, source, ownerName) {
   return '\n    in ' + (name || 'Unknown') + (source ? ' (at ' + source.fileName.replace(/^.*[\\\/]/, '') + ':' + source.lineNumber + ')' : ownerName ? ' (created by ' + ownerName + ')' : '');
 };
 
+<<<<<<< HEAD
 function isValidElementType(type) {
   return typeof type === 'string' || typeof type === 'function' ||
   // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
   type === REACT_FRAGMENT_TYPE || type === REACT_ASYNC_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE);
 }
 
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 function getComponentName(fiber) {
   var type = fiber.type;
 
@@ -36415,6 +36665,11 @@ var propTypesMisspellWarningShown = void 0;
 var getDisplayName = function () {};
 var getStackAddendum = function () {};
 
+<<<<<<< HEAD
+=======
+var VALID_FRAGMENT_PROPS = void 0;
+
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 {
   currentlyValidatingElement = null;
 
@@ -36444,6 +36699,11 @@ var getStackAddendum = function () {};
     stack += ReactDebugCurrentFrame.getStackAddendum() || '';
     return stack;
   };
+<<<<<<< HEAD
+=======
+
+  VALID_FRAGMENT_PROPS = new Map([['children', true], ['key', true]]);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 }
 
 function getDeclarationErrorAddendum() {
@@ -36603,7 +36863,11 @@ function validateFragmentProps(fragment) {
   var keys = Object.keys(fragment.props);
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
+<<<<<<< HEAD
     if (key !== 'children' && key !== 'key') {
+=======
+    if (!VALID_FRAGMENT_PROPS.has(key)) {
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
       warning(false, 'Invalid prop `%s` supplied to `React.Fragment`. ' + 'React.Fragment can only have `key` and `children` props.%s', key, getStackAddendum());
       break;
     }
@@ -36617,7 +36881,13 @@ function validateFragmentProps(fragment) {
 }
 
 function createElementWithValidation(type, props, children) {
+<<<<<<< HEAD
   var validType = isValidElementType(type);
+=======
+  var validType = typeof type === 'string' || typeof type === 'function' ||
+  // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_ASYNC_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE);
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
   // We warn in this case but don't throw. We expect the element creation to
   // succeed and there will likely be errors in render.
@@ -36719,7 +36989,10 @@ var React = {
   PureComponent: PureComponent,
 
   createContext: createContext,
+<<<<<<< HEAD
   forwardRef: forwardRef,
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 
   Fragment: REACT_FRAGMENT_TYPE,
   StrictMode: REACT_STRICT_MODE_TYPE,
@@ -38007,7 +38280,11 @@ _reactDom2.default.render(_react2.default.createElement(_leafletReactHTML2.defau
 
 
 Object.defineProperty(exports, "__esModule", {
+<<<<<<< HEAD
   value: true
+=======
+	value: true
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 });
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -38044,10 +38321,13 @@ var _testLocations = __webpack_require__(/*! ./testLocations */ "./web/testLocat
 
 var _testLocations2 = _interopRequireDefault(_testLocations);
 
+<<<<<<< HEAD
 var _mapEventListeners = __webpack_require__(/*! ./mapEventListeners */ "./web/mapEventListeners.js");
 
 var mapEventListeners = _interopRequireWildcard(_mapEventListeners);
 
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -38079,6 +38359,7 @@ var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 var messageCounter = 0;
 
 var LeafletReactHTML = function (_React$Component) {
+<<<<<<< HEAD
   _inherits(LeafletReactHTML, _React$Component);
 
   function LeafletReactHTML() {
@@ -38575,18 +38856,503 @@ var LeafletReactHTML = function (_React$Component) {
   /*******************************
    *
    * TODO: removing the layer of map marers does not work
+=======
+	_inherits(LeafletReactHTML, _React$Component);
+
+	function LeafletReactHTML() {
+		_classCallCheck(this, LeafletReactHTML);
+
+		var _this = _possibleConstructorReturn(this, (LeafletReactHTML.__proto__ || Object.getPrototypeOf(LeafletReactHTML)).call(this));
+
+		_this.printElement = function (data) {
+			if (SHOW_DEBUG_INFORMATION) {
+				var message = '';
+				if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+					message = util.inspect(data, { showHidden: false, depth: null });
+				} else if (typeof data === 'string') {
+					message = data;
+				}
+				_this.setState({
+					debugMessages: _this.state.debugMessages.concat([message])
+				});
+				console.log(message);
+			}
+		};
+
+		_this.componentDidMount = function () {
+			_this.printElement('leafletReactHTML.js componentDidMount');
+			if (document) {
+				document.addEventListener('message', _this.handleMessage), false;
+				_this.printElement('using document');
+			} else if (window) {
+				window.addEventListener('message', _this.handleMessage), false;
+				_this.printElement('using window');
+			} else {
+				console.log('unable to add event listener');
+				return;
+			}
+			_this.eventListenersAdded = true;
+			if (BROWSER_TESTING_ENABLED) {
+				_this.loadMap();
+			}
+		};
+
+		_this.componentWillUnmount = function () {
+			if (document) {
+				document.removeEventListener('message', _this.handleMessage);
+			} else if (window) {
+				window.removeEventListener('message', _this.handleMessage);
+			}
+		};
+
+		_this.loadMap = function () {
+			_this.printElement('loading map');
+			if (!_this.map) {
+				try {
+					// set up map
+					_this.map = L.map('map', {
+						center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
+						zoom: 10
+					});
+					// Initialize the base layer
+					var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+						maxZoom: 20,
+						attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+					}).addTo(_this.map);
+
+					// add click event to map
+					var that = _this;
+					_this.map.on('click', function (e) {
+						// that.printElement(`map clicked ${e.latlng}`);
+						that.addMessageToQueue('MAP_CLICKED', {
+							coords: e.latlng
+						});
+					});
+
+					// create the marker layer
+					_this.layerMarkerCluster = L.markerClusterGroup();
+					_this.map.addLayer(_this.layerMarkerCluster);
+
+					if (BROWSER_TESTING_ENABLED) {
+						_this.updateMarkers(_this.state.locations);
+						// this.setUpMarkerAlterationTest();
+						// this.addMoveEndListener();
+						// this.addZoomEndListener();
+						// this.addZoomListener();
+						// this.addMoveListener();
+						// this.addMoveEndListener();
+					}
+				} catch (error) {
+					_this.printElement('ERROR loading map: ', error);
+					// send a messaging back indicating the map has been loaded
+					_this.addMessageToQueue('MAP_LOADED', {
+						type: 'error',
+						msg: error
+					});
+				}
+				// send a messaging back indicating the map has been loaded
+				_this.addMessageToQueue('MAP_LOADED', {
+					type: 'success'
+				});
+			}
+		};
+
+		_this.addMessageToQueue = function (type, payload) {
+			_this.messageQueue.push(JSON.stringify({
+				messageID: messageCounter++,
+				prefix: MESSAGE_PREFIX,
+				type: type,
+				payload: payload
+			}));
+
+			_this.printElement('adding message ' + messageCounter + ' to queue: ' + type);
+
+			if (_this.state.readyToSendNextMessage) {
+				_this.sendNextMessage();
+			}
+		};
+
+		_this.sendNextMessage = function () {
+			if (_this.messageQueue.length > 0) {
+				var nextMessage = _this.messageQueue.shift();
+				_this.printElement('sending message ' + nextMessage);
+				if (document.hasOwnProperty('postMessage')) {
+					document.postMessage(nextMessage, '*');
+				} else if (window.hasOwnProperty('postMessage')) {
+					window.postMessage(nextMessage, '*');
+				} else {
+					console.log('unable to find postMessage');
+				}
+				_this.setState({ readyToSendNextMessage: false });
+			}
+		};
+
+		_this.handleMessage = function (event) {
+			// this.printElement(`received message ${JSON.stringify(event)}`);
+			_this.printElement(util.inspect(event.data, {
+				showHidden: false,
+				depth: null
+			}));
+
+			var msgData = void 0;
+			try {
+				msgData = JSON.parse(event.data);
+				if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
+					// this.printElement(msgData);
+					switch (msgData.type) {
+						// receive an event when the webview is ready
+						case 'LOAD_MAP':
+							_this.printElement('LOAD_MAP event recieved');
+							_this.loadMap();
+							break;
+						case 'GET_MAP':
+							_this.addMessageToQueue('MAP_SENT', { map: _this.map });
+							break;
+						case 'ADD_MOVE_LISTENER':
+							_this.addMoveListener();
+							break;
+						case 'ADD_MOVE_END_LISTENER':
+							_this.addMoveEndListener();
+							break;
+						case 'ADD_ZOOM_LISTENER':
+							_this.addZoomListener();
+							break;
+						case 'ADD_ZOOM_END_LISTENER':
+							_this.addZoomEndListener();
+							break;
+						case 'MAP_CENTER_COORD_CHANGE':
+							_this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
+							_this.printElement(msgData.payload.mapCenterCoords);
+							var that = _this;
+							_this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords }, function () {
+								/* that.printElement('center set to:');
+        that.printElement(that.state.mapCenterCoords);
+        that.printElement('that.map = ');
+        that.printElement(that.map); */
+								if (msgData.payload.panToLocation === true) {
+									that.printElement('panning map');
+									that.map.flyTo(that.state.mapCenterCoords);
+								} else {
+									that.printElement('setting map');
+									that.map.setView(that.state.mapCenterCoords);
+								}
+								that.updateCurrentPostionMarker(that.state.mapCenterCoords);
+							});
+							break;
+
+						case 'UPDATE_MARKERS':
+							// this.printElement('UPDATE_MARKERS event recieved');
+							// this.printElement('markers 0: ' + JSON.stringify(msgData));
+							_this.updateMarkers(msgData.payload.markers);
+							break;
+
+						case 'MESSAGE_ACKNOWLEDGED':
+							_this.setState({ readyToSendNextMessage: true });
+							_this.sendNextMessage();
+							break;
+
+						case 'SET_ZOOM':
+							_this.map.setZoom(msgData.payload.zoom);
+							break;
+
+						case 'SHOW_ZOOM_CONTROLS':
+							if (msgData.payload.showZoomControls) {
+								_this.map.addControl(_this.map.zoomControl);
+							}
+							{
+								_this.map.removeControl(_this.map.zoomControl);
+							}
+							break;
+
+						default:
+							printElement('leafletReactHTML Error: Unhandled message type received "' + msgData.type + '"');
+					}
+				}
+			} catch (err) {
+				_this.printElement('leafletReactHTML error: ' + err);
+				return;
+			}
+		};
+
+		_this.addZoomListener = function () {
+			var that = _this;
+			_this.map.on('zoom', function (e) {
+				// that.printElement(`zoom`);
+				that.addMessageToQueue('ZOOM', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addMoveListener = function () {
+			var that = _this;
+			_this.map.on('move', function (e) {
+				// that.printElement(`move`);
+				that.addMessageToQueue('MOVE', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addZoomEndListener = function () {
+			var that = _this;
+			_this.map.on('zoomend', function (e) {
+				// that.printElement(`zoomend`);
+				that.addMessageToQueue('ZOOM_END', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.addMoveEndListener = function () {
+			var that = _this;
+			_this.map.on('moveend', function (e) {
+				// that.printElement(`moveend`);
+				that.addMessageToQueue('MOVE_END', {
+					center: that.map.getCenter(),
+					bounds: that.map.getBounds()
+				});
+			});
+		};
+
+		_this.updateCurrentPostionMarker = function (currentPos) {
+			// this.printElement(`leafletReactHTML: currentPos: ${currentPos}`);
+			if (_this.currentLocationMarker) {
+				_this.currentLocationMarker.removeFrom(_this.map);
+			}
+			_this.currentLocationMarker = L.marker(currentPos, {
+				icon: _this.getIcon('❤️', {
+					name: 'beat',
+					duration: 0.25,
+					delay: 0,
+					interationCount: 'infinite',
+					direction: 'alternate'
+				})
+			});
+			_this.currentLocationMarker.addTo(_this.map);
+		};
+
+		_this.getAnimatedHTMLString = function (icon, animation) {
+			return '<div class=\'animationContainer\' style="\n\t\t\tanimation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n\t\t\tanimation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n\t\t\tanimation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n\t\t\tanimation-direction: ' + (animation.direction ? animation.direction : 'normal') + ';\n\t\t\tanimation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n\t\t\t<div style=\'font-size: 36px; marginLeft: -50%; marginTop: -50%;\'>\n\t\t\t' + icon + '\n\t\t\t</div>\n\t\t\t</div>';
+		};
+
+		_this.getIcon = function (icon, animation) {
+			// this.printElement(icon);
+			// print animated markers
+			if (animation) {
+				return L.divIcon({
+					className: 'clearMarkerContainer',
+					html: _this.getAnimatedHTMLString(icon, animation)
+				});
+			} else {
+				// print non animated markers
+				return L.divIcon({
+					className: 'clearMarkerContainer',
+					html: '<div style=\'font-size: 36px; marginLeft: -50%; marginTop: -50%;\'>\n\t\t\t\t' + icon + '\n\t\t\t\t</div>'
+				});
+			}
+		};
+
+		_this.updateMarkers = function (markerInfos) {
+			// this.printElement(`in updateMarkers: ${updateCounter++}`);
+			// this.printElement(markerInfos[0]);
+
+			// take the markers that were sent and check to see if thy are already in the dictionary
+			// if not, create new marker; then add to map layer and dictionary
+			// if so, update it's dictionary item
+			if (markerInfos) {
+				try {
+					markerInfos.forEach(function (markerInfo) {
+						if (_this.mapMarkerDictionary.hasOwnProperty(markerInfo.id)) {
+							_this.updateMarker(_this.mapMarkerDictionary[markerInfo.id], markerInfo);
+						} else {
+							var newMarker = _this.createNewMarker(markerInfo);
+							// this.printElement(`adding markerInfo:`);
+							// this.printElement(newMarker);
+
+							_this.addMarkerToMakerLayer(newMarker);
+						}
+					});
+					// this.printElement(this.mapMarkerDictionary);
+				} catch (error) {
+					_this.printElement('Error in updateMarkers ' + error);
+				}
+			}
+		};
+
+		_this.updateMarker = function (marker, markerInfo) {
+			try {
+				// this.printElement(`updateMarker ${marker.getElement()}`);
+				// remove this marker
+				marker.removeFrom(_this.layerMarkerCluster);
+				// create a new marker with correct properties
+				var newMarker = _this.createNewMarker(markerInfo);
+				_this.addMarkerToMakerLayer(newMarker);
+			} catch (error) {
+				_this.printElement('Error updating marker ' + error);
+			}
+		};
+
+		_this.createNewMarker = function (markerInfo) {
+			// validate the marker
+			// id and coords are required
+			// this.printElement(`creating new marker`)
+			// this.printElement(markerInfo);
+			if (!markerInfo.hasOwnProperty('id') || !markerInfo.hasOwnProperty('coords') || !isValidCoordinates(markerInfo.coords[1], markerInfo.coords[0])) {
+				console.log('Invalid map marker received.\n         Map markers require an id value and and valid lat/long coordinates value');
+				return;
+			}
+			try {
+				var mapMarker = L.marker(markerInfo.coords, {
+					icon: _this.getIcon(markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍', markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null),
+					id: markerInfo.id ? markerInfo.id : null
+				});
+				/* this.printElement(`new mapMarker`);
+    this.printElement(mapMarker); */
+				// bind a click event to this marker with the marker id
+				// click event is for use by the parent of this html file's
+				// WebView
+				var that = _this;
+				mapMarker.on('click', function (e) {
+					// const markerID = this.options.id;
+					that.printElement('leafletReactHTML: marker clicked ' + markerInfo.id);
+					that.addMessageToQueue('MARKER_CLICKED', {
+						id: markerInfo.id
+					});
+				});
+
+				// create a dictionary to access the mapMarkers by ID
+				_this.mapMarkerDictionary[markerInfo.id] = mapMarker;
+
+				return mapMarker;
+			} catch (error) {
+				_this.printElement('error creating maker: ' + error);
+			}
+		};
+
+		_this.addMarkerToMakerLayer = function (marker) {
+			// this.printElement(`adding marker: ${marker}`);
+			try {
+				marker.addTo(_this.layerMarkerCluster);
+			} catch (error) {
+				_this.printElement('error adding maker to layer: ' + error);
+			}
+		};
+
+		_this.render = function () {
+			return _react2.default.createElement(
+				'div',
+				{
+					style: {
+						position: 'absolute',
+						top: 0,
+						bottom: 0,
+						left: 0,
+						right: 0,
+						display: 'flex',
+						flexDirection: 'column'
+					},
+					ref: function ref(component) {
+						_this.webComponent = component;
+					}
+				},
+				_react2.default.createElement('div', {
+					style: {
+						position: 'relative',
+						flex: 1
+					},
+					id: 'map'
+				}),
+				(0, _renderIf2.default)(SHOW_DEBUG_INFORMATION)(_react2.default.createElement(
+					'div',
+					{
+						style: {
+							backgroundColor: 'orange',
+							maxHeight: 200,
+							overflow: 'auto',
+							padding: 5
+						},
+						id: 'messages'
+					},
+					_react2.default.createElement(
+						'ul',
+						null,
+						_this.state.debugMessages.map(function (message, index) {
+							return _react2.default.createElement(
+								'li',
+								{ key: index },
+								message
+							);
+						})
+					)
+				))
+			);
+		};
+
+		_this.setUpMarkerAlterationTest = function () {
+			setInterval(_this.updateMarkerSpeed.bind(_this), 5000);
+		};
+
+		_this.updateMarkerSpeed = function () {
+			console.log('altering markers');
+			var updatedLocations = _this.state.locations.map(function (location) {
+				if (!location.animation) {
+					return location;
+				}
+				var updatedLocation = Object.assign({}, location, {
+					animation: Object.assign({}, location.animation, {
+						duration: location.animation.duration + 0.5
+					})
+				});
+				return updatedLocation;
+			});
+			_this.setState({ locations: updatedLocations });
+			_this.updateMarkers(_this.state.locations);
+		};
+
+		_this.map = null;
+		_this.remote = null;
+		_this.mapMarkerDictionary = {};
+		_this.layerMarkerCluster = null;
+		_this.currentLocationMarker = null;
+		_this.eventListenersAdded = false;
+		_this.messageQueue = [];
+		_this.state = {
+			debugMessages: [],
+			locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
+			readyToSendNextMessage: true
+		};
+		return _this;
+	}
+
+	// print passed information in an html element; useful for debugging
+	// since console.log and debug statements won't work in a conventional way
+
+
+	/*******************************
+   *
+   * TODO: removing the layer of map markers does not work
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
    * need to maintain reference to each marker, and individually update it
    * by having it call getIcon with the updated date to get a new icon
    */
 
 
+<<<<<<< HEAD
   return LeafletReactHTML;
+=======
+	return LeafletReactHTML;
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 }(_react2.default.Component);
 
 exports.default = LeafletReactHTML;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./web/mapEventListeners.js":
 /*!**********************************!*\
   !*** ./web/mapEventListeners.js ***!
@@ -38713,6 +39479,8 @@ var addMoveEndListener = exports.addMoveEndListener = function addMoveEndListene
 
 /***/ }),
 
+=======
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 /***/ "./web/markers.css":
 /*!*************************!*\
   !*** ./web/markers.css ***!
@@ -38767,7 +39535,11 @@ var circleMarker = exports.circleMarker = "<svg version=\"1.1\"\nfill-opacity=\"
 
 
 Object.defineProperty(exports, "__esModule", {
+<<<<<<< HEAD
 	value: true
+=======
+  value: true
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 });
 var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
@@ -38776,6 +39548,7 @@ var delay = Math.floor(Math.random()) * 0.5;
 var interationCount = 'infinite';
 
 var locations = [{
+<<<<<<< HEAD
 	id: 2,
 	coords: [37.06452161, -75.67364786],
 	icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -38795,6 +39568,27 @@ var locations = [{
 		delay: Math.floor(Math.random()) * 0.5,
 		interationCount: interationCount
 	}
+=======
+  id: Math.floor(Math.random() * 1000),
+  coords: [37.06452161, -75.67364786],
+  icon: emoji[Math.floor(Math.random() * emoji.length)],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration: Math.floor(Math.random() * 3) + 1,
+    delay: Math.floor(Math.random()) * 0.5,
+    interationCount: interationCount
+  }
+}, {
+  id: Math.floor(Math.random() * 1000),
+  coords: [36.46410354, -75.6432701],
+  icon: "Hello",
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration: Math.floor(Math.random() * 3) + 1,
+    delay: Math.floor(Math.random()) * 0.5,
+    interationCount: interationCount
+  }
+>>>>>>> 7d8129328c4781737592cd05b2b33bf594c64fd7
 }];
 exports.default = locations;
 
