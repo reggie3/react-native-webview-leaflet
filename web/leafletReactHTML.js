@@ -90,14 +90,17 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
-  loadMap = () => {
-    this.printElement('loading map');
+  loadMap = (mapConfig) => {
+    this.printElement('loading map: ', mapConfig);
     if (!this.map) {
       try {
         // set up map
         this.map = L.map('map', {
           center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
-          zoom: 10
+          zoom: 10,
+
+          // removing the attribution control prevents accidentally clicking on it
+          attributionControl: mapConfig.showMapAttribution
         });
         // Initialize the base layer
         var osm_mapnik = L.tileLayer(
@@ -190,24 +193,23 @@ export default class LeafletReactHTML extends React.Component {
   };
 
   sendNextMessage = (type, payload) => {
+    if (type) {
+      const nextMessage = JSON.stringify({
+        messageID: messageCounter++,
+        prefix: MESSAGE_PREFIX,
+        type,
+        payload
+      });
 
-	if(type){
-		const nextMessage = JSON.stringify({
-			messageID: messageCounter++,
-			prefix: MESSAGE_PREFIX,
-			type,
-			payload
-		});
-
-		this.printElement(`sending message: ${nextMessage}`);
-		if (document.hasOwnProperty('postMessage')) {
-		document.postMessage(nextMessage, '*');
-		} else if (window.hasOwnProperty('postMessage')) {
-		window.postMessage(nextMessage, '*');
-		} else {
-		console.log('unable to find postMessage');
-		}
-	}
+      this.printElement(`sending message: ${nextMessage}`);
+      if (document.hasOwnProperty('postMessage')) {
+        document.postMessage(nextMessage, '*');
+      } else if (window.hasOwnProperty('postMessage')) {
+        window.postMessage(nextMessage, '*');
+      } else {
+        console.log('unable to find postMessage');
+      }
+    }
   };
 
   handleMessage = (event) => {
@@ -229,7 +231,7 @@ export default class LeafletReactHTML extends React.Component {
         // this.printElement(msgData);
         switch (msgData.type) {
           // receive an event when the webview is ready
-          
+
           case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
             mapEventListeners.addZoomLevelsChangeListener(this);
             break;
@@ -262,13 +264,16 @@ export default class LeafletReactHTML extends React.Component {
             break;
           case 'ADD_MOVE_END_LISTENER':
             mapEventListeners.addMoveEndListener(this);
-			break;
-		case 'LOAD_MAP':
-            this.printElement('LOAD_MAP event recieved');
-            this.loadMap();
             break;
-		  case 'GET_MAP':
-		  	this.printElement(`Sending Map`);
+          case 'LOAD_MAP':
+            this.printElement(`LOAD_MAP event recieved: $msgData.payload`);
+            this.loadMap(msgData.payload);
+            break;
+          case 'SHOW_MAP_ATTRIBUTION':
+            this.showMapAttribution();
+            break;
+          case 'GET_MAP':
+            this.printElement(`Sending Map`);
             this.addMessageToQueue('MAP_SENT', { map: this.map });
             break;
           case 'MAP_CENTER_COORD_CHANGE':
@@ -379,7 +384,7 @@ export default class LeafletReactHTML extends React.Component {
       // print non animated markers
       return L.divIcon({
         iconSize: null,
-        iconAnchor: [18,18],
+        iconAnchor: [18, 18],
         className: 'clearMarkerContainer',
         html: `<div style='font-size: 36px'>
         ${icon}

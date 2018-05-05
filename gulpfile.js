@@ -10,19 +10,19 @@ const gutil = require('gulp-util');
 
 // dependencies for npm publishing
 const npmDeps = {
-  'is-valid-coordinates': '^1.0.0',
-  leaflet: '^1.3.1',
-  'leaflet.markercluster': '^1.3.0',
-  'prop-types': '^15.6.0',
-  util: '^0.10.3',
-  'render-if': '^0.1.1'
+  "is-valid-coordinates": "^1.0.0",
+  "leaflet": "^1.3.1",
+  "leaflet.markercluster": "^1.3.0",
+  "prop-types": "^15.6.0",
+  "util": "^0.10.3",
+  "render-if": "^0.1.1",
 };
 // additional dependencies for expo app
 const expoDeps = {
-  expo: '^27.0.0',
-  react: '16.3.1',
-  'react-dom': '^16.3.1',
-  'react-native': 'https://github.com/expo/react-native/archive/sdk-27.0.tar.gz'
+  "expo": "^27.0.0",
+  "react": "16.3.1",
+  "react-dom": "^16.3.1",
+  "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz"
 };
 
 // main for npm publishing

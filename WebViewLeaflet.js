@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   StyleSheet,
@@ -8,15 +8,15 @@ import {
   Alert,
   Platform,
   Touchable
-} from "react-native";
-import PropTypes from "prop-types";
-import renderIf from "render-if";
-import Button from "./Button";
-import Expo from "expo";
-const isValidCoordinates = require("is-valid-coordinates");
+} from 'react-native';
+import PropTypes from 'prop-types';
+import renderIf from 'render-if';
+import Button from './Button';
+import Expo from 'expo';
+const isValidCoordinates = require('is-valid-coordinates');
 const uniqby = require('lodash.uniqby');
 const INDEX_FILE = require(`./assets/dist/index.html`);
-const MESSAGE_PREFIX = "react-native-webview-leaflet";
+const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 // const index = Expo.Asset.fromModule(require('./assets/dist/index.html')).uri
 
 export default class WebViewLeaflet extends React.Component {
@@ -40,8 +40,11 @@ export default class WebViewLeaflet extends React.Component {
         webViewNotLoaded: false
       },
       () => {
-        this.sendMessage("LOAD_MAP");
-        // console.log(this.props);
+
+        this.sendMessage('LOAD_MAP', {
+          showMapAttribution: this.props.showMapAttribution
+        });
+        // // console.log(this.props);
         // this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
         if (this.props.mapCenterCoords.length > 0) {
           const lat = this.props.mapCenterCoords[0];
@@ -54,19 +57,19 @@ export default class WebViewLeaflet extends React.Component {
           }
         }
 
-        if (this.props.hasOwnProperty("locations")) {
+        if (this.props.hasOwnProperty('locations')) {
           // validate the location coordinates
           const newLocations = this.props.locations;
           this.validateLocations(newLocations);
         }
-        if (this.props.hasOwnProperty("zoom")) {
+        if (this.props.hasOwnProperty('zoom')) {
           this.sendZoom(this.props.zoom);
         }
-        if (this.props.hasOwnProperty("showZoomControls")) {
+        if (this.props.hasOwnProperty('showZoomControls')) {
           this.sendShowZoomControls(this.props.showZoomControls);
         }
         // let the parent know the webview is ready
-        if (this.props.hasOwnProperty("onWebViewReady")) {
+        if (this.props.hasOwnProperty('onWebViewReady')) {
           this.props.onWebViewReady();
         }
       }
@@ -75,138 +78,144 @@ export default class WebViewLeaflet extends React.Component {
 
   // called after the map is loaded
   initializeMapAfterLoading = () => {
-    if (this.props.hasOwnProperty("onZoomLevelsChange")) {
+    if (this.props.hasOwnProperty('onZoomLevelsChange')) {
       this.sendAddZoomLevelsChangeListener();
     }
-    if (this.props.hasOwnProperty("onResize")) {
+    if (this.props.hasOwnProperty('onResize')) {
       this.sendResizeListener();
     }
-    if (this.props.hasOwnProperty("onUnload")) {
+    if (this.props.hasOwnProperty('onUnload')) {
       this.sendUnloadListener();
     }
-    if (this.props.hasOwnProperty("onViewReset")) {
+    if (this.props.hasOwnProperty('onViewReset')) {
       this.sendAddViewResetListener();
     }
-    if (this.props.hasOwnProperty("onLoad")) {
+    if (this.props.hasOwnProperty('onLoad')) {
       this.sendLoadListener();
     }
-    if (this.props.hasOwnProperty("onZoomStart")) {
+    if (this.props.hasOwnProperty('onZoomStart')) {
       this.sendZoomStartListener();
     }
-    if (this.props.hasOwnProperty("onMoveStart")) {
+    if (this.props.hasOwnProperty('onMoveStart')) {
       this.sendMoveStartListener();
     }
-    if (this.props.hasOwnProperty("onZoom")) {
+    if (this.props.hasOwnProperty('onZoom')) {
       this.sendAddZoomListener();
     }
-    if (this.props.hasOwnProperty("onMove")) {
+    if (this.props.hasOwnProperty('onMove')) {
       this.sendAddMoveListener();
     }
-    if (this.props.hasOwnProperty("onZoomEnd")) {
+    if (this.props.hasOwnProperty('onZoomEnd')) {
       this.sendAddZoomEndListener();
     }
-    if (this.props.hasOwnProperty("onMoveEnd")) {
+    if (this.props.hasOwnProperty('onMoveEnd')) {
       this.sendAddMoveEndListener();
     }
-    if (this.props.hasOwnProperty("getMapCallback")) {
+    if (this.props.hasOwnProperty('getMapCallback')) {
       this.sendGetMap();
     }
+    
   };
 
   sendUpdatedMapCenterCoordsToHTML = () => {
-    this.sendMessage("MAP_CENTER_COORD_CHANGE", {
+    this.sendMessage('MAP_CENTER_COORD_CHANGE', {
       mapCenterCoords: this.state.mapCenterCoords,
       panToLocation: this.props.panToLocation
     });
   };
 
-  sendLocations = markers => {
-    this.sendMessage("UPDATE_MARKERS", { markers });
+  sendLocations = (markers) => {
+    this.sendMessage('UPDATE_MARKERS', { markers });
   };
 
-  sendZoom = zoom => {
-    this.sendMessage("SET_ZOOM", { zoom });
+  sendZoom = (zoom) => {
+    this.sendMessage('SET_ZOOM', { zoom });
   };
 
-  sendShowZoomControls = showZoomControls => {
-    this.sendMessage("SHOW_ZOOM_CONTROLS", { showZoomControls });
+  sendShowZoomControls = (showZoomControls) => {
+    this.sendMessage('SHOW_ZOOM_CONTROLS', { showZoomControls });
+  };
+
+  // sent after the map is loaded
+  sendShowMapAttribution = () => {
+    this.sendMessage('SHOW_MAP_ATTRIBUTION');
   };
 
   // sent after the map is loaded
   sendGetMap = () => {
-    this.sendMessage("GET_MAP");
+    this.sendMessage('GET_MAP');
   };
 
   sendAddZoomLevelsChangeListener = () => {
-    this.sendMessage("ADD_ZOOM_LEVELS_CHANGE_LISTENER");
+    this.sendMessage('ADD_ZOOM_LEVELS_CHANGE_LISTENER');
   };
   sendResizeListener = () => {
-    this.sendMessage("ADD_RESIZE_LISTENER");
+    this.sendMessage('ADD_RESIZE_LISTENER');
   };
   sendUnloadListener = () => {
-    this.sendMessage("ADD_UNLOAD_LISTENER");
+    this.sendMessage('ADD_UNLOAD_LISTENER');
   };
   sendAddViewResetListener = () => {
-    this.sendMessage("ADD_VIEW_RESET_LISTENER");
+    this.sendMessage('ADD_VIEW_RESET_LISTENER');
   };
   sendLoadListener = () => {
-    this.sendMessage("ADD_LOAD_LISTENER");
+    this.sendMessage('ADD_LOAD_LISTENER');
   };
   sendZoomStartListener = () => {
-    this.sendMessage("ADD_ZOOM_START_LISTENER");
+    this.sendMessage('ADD_ZOOM_START_LISTENER');
   };
   sendMoveStartListener = () => {
-    this.sendMessage("ADD_MOVE_START_LISTENER");
+    this.sendMessage('ADD_MOVE_START_LISTENER');
   };
   sendAddZoomListener = () => {
-    this.sendMessage("ADD_ZOOM_LISTENER");
+    this.sendMessage('ADD_ZOOM_LISTENER');
   };
   sendAddMoveListener = () => {
-    this.sendMessage("ADD_MOVE_LISTENER");
+    this.sendMessage('ADD_MOVE_LISTENER');
   };
   sendAddZoomEndListener = () => {
-    this.sendMessage("ADD_ZOOM_END_LISTENER");
+    this.sendMessage('ADD_ZOOM_END_LISTENER');
   };
   sendAddMoveEndListener = () => {
-    this.sendMessage("ADD_MOVE_END_LISTENER");
+    this.sendMessage('ADD_MOVE_END_LISTENER');
   };
- 
+
   //
-  handleMessage = event => {
+  handleMessage = (event) => {
     let msgData;
-    console.log(`WebViewLeaflet: handleMessage called: `, event);
+    // // console.log(`WebViewLeaflet: handleMessage called: `, event);
 
     try {
       msgData = JSON.parse(event.nativeEvent.data);
       if (
-        msgData.hasOwnProperty("prefix") &&
+        msgData.hasOwnProperty('prefix') &&
         msgData.prefix === MESSAGE_PREFIX
       ) {
-        console.log(`WebViewLeaflet: received message ${msgData.type}`);
+        // // console.log(`WebViewLeaflet: received message ${msgData.type}`);
         // this.sendMessage("MESSAGE_ACKNOWLEDGED");
 
         switch (msgData.type) {
-          case "MAP_LOADED":
-            console.log("MAP_LOADED");
+          case 'MAP_LOADED':
+            // // console.log('MAP_LOADED');
             this.setState({ mapNotLoaded: false });
             this.initializeMapAfterLoading();
             break;
-          case "MAP_SENT":
+          case 'MAP_SENT':
             debugger;
             this.props.getMapCallback(msgData.payload.map);
             break;
-          case "MARKER_CLICKED":
-            if (this.props.hasOwnProperty("onMarkerClicked")) {
-              console.log("Received MARKER_CLICKED");
-              console.log(msgData);
+          case 'MARKER_CLICKED':
+            if (this.props.hasOwnProperty('onMarkerClicked')) {
+              // console.log('Received MARKER_CLICKED');
+              // console.log(msgData);
               this.props.onMarkerClicked(msgData.payload.id);
             }
             break;
 
-          case "MAP_CLICKED":
-            if (this.props.hasOwnProperty("onMapClicked")) {
-              console.log("Received MAP_CLICKED");
-              console.log(msgData);
+          case 'MAP_CLICKED':
+            if (this.props.hasOwnProperty('onMapClicked')) {
+              // console.log('Received MAP_CLICKED');
+              // console.log(msgData);
 
               this.props.onMapClicked([
                 msgData.payload.coords.lat,
@@ -214,70 +223,71 @@ export default class WebViewLeaflet extends React.Component {
               ]);
             }
             break;
-          case "CONSOLE_LOG":
-            console.log("From Webview: ", msgData.payload.msg);
+          case 'CONSOLE_LOG':
+            // console.log('From Webview: ', msgData.payload.msg);
             break;
-            
-          case "ZOOM_LEVELS_CHANGE":
-            if (this.props.hasOwnProperty("onZoomLevelsChange")) {
+
+          case 'ZOOM_LEVELS_CHANGE':
+            if (this.props.hasOwnProperty('onZoomLevelsChange')) {
               this.props.onZoomLevelsChange(msgData.payload);
             }
             break;
-          case "RESIZE":
-            if (this.props.hasOwnProperty("onResize")) {
+          case 'RESIZE':
+            if (this.props.hasOwnProperty('onResize')) {
               this.props.onResize(msgData.payload);
             }
             break;
-            case "UNLOAD":
-            if (this.props.hasOwnProperty("onUnload")) {
+          case 'UNLOAD':
+            if (this.props.hasOwnProperty('onUnload')) {
               this.props.onUnload(msgData.payload);
             }
             break;
-          case "VIEW_RESET":
-            if (this.props.hasOwnProperty("onViewReset")) {
+          case 'VIEW_RESET':
+            if (this.props.hasOwnProperty('onViewReset')) {
               this.props.onViewReset(msgData.payload);
             }
             break;
-            case "LOAD":
-            if (this.props.hasOwnProperty("onLoad")) {
+          case 'LOAD':
+            if (this.props.hasOwnProperty('onLoad')) {
               this.props.onLoad(msgData.payload);
             }
             break;
-          case "MOVE_START":
-            if (this.props.hasOwnProperty("onMoveStart")) {
+          case 'MOVE_START':
+            if (this.props.hasOwnProperty('onMoveStart')) {
               this.props.onMoveStart(msgData.payload);
             }
             break;
-            case "ZOOM_START":
-            if (this.props.hasOwnProperty("onZoomStart")) {
+          case 'ZOOM_START':
+            if (this.props.hasOwnProperty('onZoomStart')) {
               this.props.onZoomStart(msgData.payload);
             }
             break;
-            case "ZOOM":
-            if (this.props.hasOwnProperty("onZoom")) {
+          case 'ZOOM':
+            if (this.props.hasOwnProperty('onZoom')) {
               this.props.onZoom(msgData.payload);
             }
             break;
-          case "MOVE":
-            if (this.props.hasOwnProperty("onMove")) {
+          case 'MOVE':
+            if (this.props.hasOwnProperty('onMove')) {
               this.props.onMove(msgData.payload);
             }
-            break;          
-          case "ZOOM_END":
-            if (this.props.hasOwnProperty("onZoomEnd")) {
+            break;
+          case 'ZOOM_END':
+            if (this.props.hasOwnProperty('onZoomEnd')) {
               this.props.onZoomEnd(msgData.payload);
             }
             break;
-          case "MOVE_END":
-            if (this.props.hasOwnProperty("onMoveEnd")) {
+          case 'MOVE_END':
+            if (this.props.hasOwnProperty('onMoveEnd')) {
               this.props.onMoveEnd(msgData.payload);
             }
             break;
+
           default:
             console.warn(
-              `WebViewLeaflet Error: Unhandled message type received "${
-                JSON.stringify(msgData)
-              }"`
+              `WebViewLeaflet Error: Unhandled message type received "${JSON.stringify(
+                msgData
+              )}"`
             );
         }
       }
@@ -290,21 +300,23 @@ export default class WebViewLeaflet extends React.Component {
   sendMessage = (type, payload) => {
     // only send message when webview is loaded
     if (!this.state.webViewNotLoaded) {
-      console.log(
-        `WebViewLeaflet: sending message ${type}, ${payload?JSON.stringify(payload):""}`
-      );
+      /* console.log(
+        `WebViewLeaflet: sending message ${type}, ${
+          payload ? JSON.stringify(payload) : ''
+        }`
+      );  */
       this.webview.postMessage(
         JSON.stringify({
           prefix: MESSAGE_PREFIX,
           type,
           payload
         }),
-        "*"
+        '*'
       );
     }
   };
 
-  createWebViewRef = webview => {
+  createWebViewRef = (webview) => {
     this.webview = webview;
   };
 
@@ -312,12 +324,12 @@ export default class WebViewLeaflet extends React.Component {
     if (isValidCoordinates(lat, long)) {
       return [lat, long];
     } else {
-      console.log(`WebViewLeaflet: Invalid coords received ${[lat, long]}`);
+      // console.log(`WebViewLeaflet: Invalid coords received ${[lat, long]}`);
       return false;
     }
   };
 
-  componentWillReceiveProps = nextProps => {
+  componentWillReceiveProps = (nextProps) => {
     if (
       nextProps.mapCenterCoords &&
       JSON.stringify(this.state.mapCenterCoords) !==
@@ -336,7 +348,7 @@ export default class WebViewLeaflet extends React.Component {
 
     if (!this.state.webViewNotLoaded) {
       if (
-        nextProps.hasOwnProperty("locations") &&
+        nextProps.hasOwnProperty('locations') &&
         JSON.stringify(this.state.locations) !==
           JSON.stringify(nextProps.locations)
       ) {
@@ -346,19 +358,19 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  validateLocations = (locations)=>{
+  validateLocations = (locations) => {
     // confirm the location coordinates are valid
     const validCoordLocations = locations.filter((location) => {
-      return this.coordinateValidation(location.coords[0], location.coords[1])
+      return this.coordinateValidation(location.coords[0], location.coords[1]);
     });
     // remove any locations that are already in the component state's "locations"
     // create a new array containing all the locations
-    let combinedArray = [...this.state.locations, ...validCoordLocations]
+    let combinedArray = [...this.state.locations, ...validCoordLocations];
     // remove duplicate locations
-    const deDupedLocations = uniqby (combinedArray, 'id');
+    const deDupedLocations = uniqby(combinedArray, 'id');
     this.sendLocations(deDupedLocations);
     this.setState({ locations: deDupedLocations });
-  }
+  };
 
   showLoadingIndicator = () => {
     return (
@@ -374,18 +386,18 @@ export default class WebViewLeaflet extends React.Component {
     );
   };
 
-  onError = error => {
-    Alert.alert("WebView onError", error, [
-      { text: "OK", onPress: () => console.log("OK Pressed") }
+  onError = (error) => {
+    Alert.alert('WebView onError', error, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') }
     ]);
-    console.log("WebView onError: ", error);
+    // console.log('WebView onError: ', error);
   };
 
-  renderError = error => {
-    Alert.alert("WebView renderError", error, [
-      { text: "OK", onPress: () => console.log("OK Pressed") }
+  renderError = (error) => {
+    Alert.alert('WebView renderError', error, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') }
     ]);
-    console.log("WebView renderError: ", error);
+    // console.log('WebView renderError: ', error);
   };
 
   render() {
@@ -408,12 +420,12 @@ export default class WebViewLeaflet extends React.Component {
             javaScriptEnabled={true}
             onError={this.onError}
             scalesPageToFit={false}
-            mixedContentMode={"always"}
+            mixedContentMode={'always'}
           />
           {renderIf(this.props.centerButton)(
             <View
               style={{
-                position: "absolute",
+                position: 'absolute',
                 right: 10,
                 bottom: 20,
                 padding: 10
@@ -421,7 +433,7 @@ export default class WebViewLeaflet extends React.Component {
             >
               <Button
                 onPress={this.sendUpdatedMapCenterCoordsToHTML}
-                text={"🎯"}
+                text={'🎯'}
               />
             </View>
           )}
@@ -440,31 +452,33 @@ WebViewLeaflet.propTypes = {
   panToLocation: PropTypes.bool,
   zoom: PropTypes.number,
   showZoomControls: PropTypes.bool,
-  centerButton: PropTypes.bool
+  centerButton: PropTypes.bool,
+  showMapAttribution: PropTypes.bool
 };
 
 WebViewLeaflet.defaultProps = {
   zoom: 10,
   showZoomControls: true,
   centerButton: true,
-  panToLocation: false
+  panToLocation: false,
+  showMapAttribution: true
 };
 
 const styles = StyleSheet.create({
   activityOverlayStyle: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, .5)",
-    display: "flex",
-    justifyContent: "center",
-    alignContent: "center",
+    backgroundColor: 'rgba(255, 255, 255, .5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
     borderRadius: 5
   },
   activityIndicatorContainer: {
-    backgroundColor: "lightgray",
+    backgroundColor: 'lightgray',
     padding: 10,
     borderRadius: 50,
-    alignSelf: "center",
-    shadowColor: "#000000",
+    alignSelf: 'center',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
       height: 3
@@ -477,7 +491,7 @@ const styles = StyleSheet.create({
     android: {
       elevation: 4,
       // Material design blue from https://material.google.com/style/color.html#color-color-palette
-      backgroundColor: "#2196F3",
+      backgroundColor: '#2196F3',
       borderRadius: 2
     }
   })
