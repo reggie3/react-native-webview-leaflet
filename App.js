@@ -220,7 +220,6 @@ export default class App extends React.Component {
           onMove={this.onMove}
           onZoomEnd={this.onZoomEnd}
           onMoveEnd={this.onMoveEnd}
-          showMapAttribution={false}
         />
         <View
           style={{
