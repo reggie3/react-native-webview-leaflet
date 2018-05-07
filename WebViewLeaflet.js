@@ -321,7 +321,7 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   coordinateValidation = (lat, long) => {
-    if (isValidCoordinates(lat, long)) {
+    if (isValidCoordinates(long, lat)) {
       return [lat, long];
     } else {
       // console.log(`WebViewLeaflet: Invalid coords received ${[lat, long]}`);
