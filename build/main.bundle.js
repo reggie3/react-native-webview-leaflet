@@ -37444,7 +37444,7 @@ var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node
 
 
 var BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-var SHOW_DEBUG_INFORMATION = true;
+var SHOW_DEBUG_INFORMATION = false;
 var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 var messageCounter = 0;
@@ -37452,7 +37452,7 @@ var messageCounter = 0;
 var LeafletReactHTML = function (_React$Component) {
   _inherits(LeafletReactHTML, _React$Component);
 
-  function LeafletReactHTML() {
+  function LeafletReactHTML(props) {
     _classCallCheck(this, LeafletReactHTML);
 
     var _this = _possibleConstructorReturn(this, (LeafletReactHTML.__proto__ || Object.getPrototypeOf(LeafletReactHTML)).call(this));
@@ -37474,6 +37474,8 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.componentDidMount = function () {
       _this.printElement('leafletReactHTML.js componentDidMount');
+
+      // add the event listeners
       if (document) {
         document.addEventListener('message', _this.handleMessage), false;
         _this.printElement('using document');
@@ -37484,8 +37486,8 @@ var LeafletReactHTML = function (_React$Component) {
         console.log('unable to add event listener');
         return;
       }
-      _this.eventListenersAdded = true;
 
+      _this.eventListenersAdded = true;
       // lauch the map in brower test mode
       if (BROWSER_TESTING_ENABLED) {
         _this.loadMap({
@@ -37494,9 +37496,22 @@ var LeafletReactHTML = function (_React$Component) {
           showZoomControls: true,
           centerButton: true,
           panToLocation: false,
-          showMapAttribution: true
+          showMapAttribution: true,
+          currentPosition: [36.56, -76.17],
+          currentPositionMarkerStyle: {
+            icon: '😀',
+            animation: {
+              name: 'beat',
+              duration: 0.25,
+              delay: 0,
+              interationCount: 'infinite',
+              direction: 'alternate'
+            },
+            size: [36, 36]
+          }
         });
       }
+      _this.printElement('leafletReactHTML.js componentDidMount complete');
     };
 
     _this.componentWillUnmount = function () {
@@ -37507,19 +37522,28 @@ var LeafletReactHTML = function (_React$Component) {
       }
     };
 
-    _this.loadMap = function (mapConfig) {
+    _this.loadMap = function () {
+      var mapConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+        defaultIconSize: [16, 16],
+        showMapAttribution: true,
+        currentPosition: [36.56, -76.17]
+      };
+
       _this.printElement('loading map: ');
       // set the default icon size
       _this.defaultIconSize = mapConfig.defaultIconSize;
+      _this.currentPositionMarkerStyle = mapConfig.currentPositionMarkerStyle;
 
       if (!_this.map) {
         try {
           // set up map
           _this.map = L.map('map', {
-            center: mapConfig.mapCenterCoords ? mapConfig.mapCenterCoords : [28.417839, -81.563808],
-            zoom: 10,
+            center: mapConfig.currentPosition,
+            zoomControl: mapConfig.showZoomControls,
+            zoom: mapConfig.zoom,
             // removing the attribution control prevents accidentally clicking on it
-            attributionControl: mapConfig.showMapAttribution
+            attributionControl: mapConfig.showMapAttribution,
+            touchZoom: true
           });
           // Initialize the base layer
           L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -37539,6 +37563,9 @@ var LeafletReactHTML = function (_React$Component) {
           // create the marker layer
           _this.layerMarkerCluster = L.markerClusterGroup();
           _this.map.addLayer(_this.layerMarkerCluster);
+
+          // mark the current position on the map
+          _this.updateCurrentPostionMarker(mapConfig.currentPosition);
 
           if (BROWSER_TESTING_ENABLED) {
             _this.updateMarkers(_this.state.locations);
@@ -37565,6 +37592,7 @@ var LeafletReactHTML = function (_React$Component) {
           });
           console.log(error);
         }
+
         // send a messaging back indicating the map has been loaded
         _this.addMessageToQueue('MAP_LOADED', {
           type: 'success'
@@ -37608,7 +37636,7 @@ var LeafletReactHTML = function (_React$Component) {
         msgData = JSON.parse(event.data);
         if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
           // this.printElement(msgData);
-          var that = _this;
+
           switch (msgData.type) {
             // receive an event when the webview is ready
 
@@ -37656,23 +37684,20 @@ var LeafletReactHTML = function (_React$Component) {
               _this.printElement('Sending Map');
               _this.addMessageToQueue('MAP_SENT', { map: _this.map });
               break;
-            case 'MAP_CENTER_COORD_CHANGE':
-              _this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
-              _this.printElement(msgData.payload.mapCenterCoords);
+            case 'CENTER_MAP_ON_CURRENT_POSITION':
+              _this.printElement('CENTER_MAP_ON_CURRENT_POSITION event recieved');
+              _this.printElement(msgData.payload.currentPosition);
 
-              _this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords }, function () {
-                /* that.printElement('center set to:');
-                that.printElement(that.state.mapCenterCoords);
-                that.printElement('that.map = ');
-                that.printElement(that.map); */
+              _this.setState({ currentPosition: msgData.payload.currentPosition }, function () {
+                _this.printElement(_this.state.currentPosition);
                 if (msgData.payload.panToLocation === true) {
-                  that.printElement('panning map');
-                  that.map.flyTo(that.state.mapCenterCoords);
+                  _this.printElement('panning map');
+                  _this.map.flyTo(_this.state.currentPosition);
                 } else {
-                  that.printElement('setting map');
-                  that.map.setView(that.state.mapCenterCoords);
+                  _this.printElement('setting map');
+                  _this.map.setView(_this.state.currentPosition);
                 }
-                that.updateCurrentPostionMarker(that.state.mapCenterCoords);
+                _this.updateCurrentPostionMarker(_this.state.currentPosition);
               });
               break;
 
@@ -37711,19 +37736,28 @@ var LeafletReactHTML = function (_React$Component) {
     };
 
     _this.updateCurrentPostionMarker = function (currentPos) {
-      // this.printElement(`leafletReactHTML: currentPos: ${currentPos}`);
+      _this.printElement('leafletReactHTML: currentPos: ' + currentPos);
       if (_this.currentLocationMarker) {
         _this.currentLocationMarker.removeFrom(_this.map);
       }
+
+      _this.printElement('currentPositionMarkerStyle: ', _this.currentPositionMarkerStyle);
+
+      var currentPositionIcon = _this.getIcon(_this.currentPositionMarkerStyle.icon, _this.currentPositionMarkerStyle.animation, _this.currentPositionMarkerStyle.size);
+
+      _this.printElement('currentPostitionIcon: ', currentPositionIcon);
+
       _this.currentLocationMarker = L.marker(currentPos, {
-        icon: _this.getIcon('❤️', {
-          name: 'beat',
-          duration: 0.25,
-          delay: 0,
-          interationCount: 'infinite',
-          direction: 'alternate'
-        })
+        icon: currentPositionIcon
       });
+
+      // add onClick event to current position marker
+      var that = _this;
+      _this.currentLocationMarker.on('click', function () {
+        that.printElement('leafletReactHTML: current postion marker clicked');
+        that.addMessageToQueue('CURRENT_POSITION_MARKER_CLICKED');
+      });
+
       _this.currentLocationMarker.addTo(_this.map);
     };
 
@@ -37878,11 +37912,6 @@ var LeafletReactHTML = function (_React$Component) {
             id: 'messages'
           },
           _react2.default.createElement(
-            'h3',
-            null,
-            'messages'
-          ),
-          _react2.default.createElement(
             'ul',
             null,
             _this.state.debugMessages.map(function (message, index) {
@@ -37925,11 +37954,13 @@ var LeafletReactHTML = function (_React$Component) {
     _this.currentLocationMarker = null;
     _this.eventListenersAdded = false;
     _this.messageQueue = [];
-    _this.defaultIconSize = [36, 36];
+    _this.defaultIconSize = undefined;
+    _this.currentPositionMarkerStyle = undefined;
     _this.state = {
       debugMessages: [],
       locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
-      readyToSendNextMessage: true
+      readyToSendNextMessage: true,
+      currentPosition: []
     };
     return _this;
   }

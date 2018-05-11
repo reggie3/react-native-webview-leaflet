@@ -9036,7 +9036,7 @@ react-dom@^15.4.0:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-dom@^16.3.1:
+react-dom@^16.3.2:
   version "16.3.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.3.2.tgz#cb90f107e09536d683d84ed5d4888e9640e0e4df"
   dependencies:

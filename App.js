@@ -172,6 +172,10 @@ export default class App extends React.Component {
     console.log('onMoveEnd received : ', event);
   };
 
+  onCurrentPositionClicked=()=>{
+    console.log('onCurrentPositionClicked received');
+  }
+
   centerMap = (parkInitials) => {
     console.log(parkInitials);
     switch (parkInitials) {
@@ -201,14 +205,14 @@ export default class App extends React.Component {
           Animated Map Markers App
         </Text>
         <WebViewLeaflet
-          mapCenterCoords={this.state.coords}
+          currentPosition={this.state.coords}
           locations={this.state.locations}
           onMapClicked={this.onMapClicked}
           onMarkerClicked={this.onMarkerClicked}
           onWebViewReady={this.onWebViewReady}
           panToLocation={false}
-          zoom={5}
-          showZoomControls={false}
+          zoom={10}
+          showZoomControls={true}
           onZoomLevelsChange={this.onZoomLevelsChange}
           onResize={this.onResize}
           onUnload={this.onUnload}
@@ -220,8 +224,9 @@ export default class App extends React.Component {
           onMove={this.onMove}
           onZoomEnd={this.onZoomEnd}
           onMoveEnd={this.onMoveEnd}
-          showMapAttribution={false}
+          showMapAttribution={true}
           defaultIconSize={[16, 16]}
+          onCurrentPositionClicked={this.onCurrentPositionClicked}
         />
         <View
           style={{

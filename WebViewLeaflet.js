@@ -29,10 +29,14 @@ export default class WebViewLeaflet extends React.Component {
       downloadCompleted: false,
       webViewNotLoaded: true,
       mapNotLoaded: true,
-      mapCenterCoords: null,
+      currentPosition: null,
       locations: []
     };
   }
+
+  componentDidMount = () => {
+    this.setState({ currentPosition: this.props.currentPosition });
+  };
 
   onWebViewLoaded = () => {
     this.setState(
@@ -40,61 +44,36 @@ export default class WebViewLeaflet extends React.Component {
         webViewNotLoaded: false
       },
       () => {
-        // set up the map initialization object
-        let mapInitializationOptions = {
-          showMapAttribution: this.props.showMapAttribution
-        };
-        // add a default icon size if present.  The map will default to 36 by 36 if none is set
-        // and a size is not provided.  The default icons size should be a 2 digit array, i.e. [24, 24]
-        if (this.props.hasOwnProperty('defaultIconSize')) {
-          mapInitializationOptions.defaultIconSize = this.props.defaultIconSize;
-        }
-        if (
-          this.props.mapCenterCoords &&
-          isValidCoordinates(
-            this.props.mapCenterCoords[1],
-            this.props.mapCenterCoords[0]
-          )
-        ) {
-          mapInitializationOptions.mapCenterCoords = this.props.mapCenterCoords;
-        }
-
-        // tell the map to load with the created map initialization options
-        this.sendMessage('LOAD_MAP', mapInitializationOptions);
-
-        // this.props.mapCenterCoords should be an array containing 2 elements; a latitude and a longitude
-        if (this.props.mapCenterCoords.length > 0) {
-          const lat = this.props.mapCenterCoords[0];
-          const long = this.props.mapCenterCoords[1];
-
-          if (this.coordinateValidation(long, lat)) {
-            this.setState({ mapCenterCoords: [lat, long] }, () => {
-              this.sendUpdatedMapCenterCoordsToHTML();
-            });
-          }
-        }
-
-        if (this.props.hasOwnProperty('locations')) {
-          // validate the location coordinates
-          const newLocations = this.props.locations;
-          this.validateLocations(newLocations);
-        }
-        if (this.props.hasOwnProperty('zoom')) {
-          this.sendZoom(this.props.zoom);
-        }
-        if (this.props.hasOwnProperty('showZoomControls')) {
-          this.sendShowZoomControls(this.props.showZoomControls);
-        }
-        // let the parent know the webview is ready
-        if (this.props.hasOwnProperty('onWebViewReady')) {
-          this.props.onWebViewReady();
-        }
+        // tell the map to load with the map initialization options
+        this.sendMessage('LOAD_MAP', {
+          defaultIconSize: this.props.defaultIconSize,
+          showMapAttribution: this.props.showMapAttribution,
+          currentPosition: this.props.currentPosition,
+          zoom: this.props.zoom,
+          showZoomControls: this.props.showZoomControls,
+          currentPositionMarkerStyle: this.props.currentPositionMarkerStyle
+        });
       }
     );
+    // let the parent know the webview is ready
+    if (this.props.hasOwnProperty('onWebViewReady')) {
+      this.props.onWebViewReady();
+    }
   };
 
   // called after the map is loaded
   initializeMapAfterLoading = () => {
+    if (this.props.hasOwnProperty('locations')) {
+      // validate the location coordinates
+      const newLocations = this.props.locations;
+      this.validateLocations(newLocations);
+    }
+    if (this.props.hasOwnProperty('zoom')) {
+      this.sendZoom(this.props.zoom);
+    }
+    if (this.props.hasOwnProperty('showZoomControls')) {
+      this.sendShowZoomControls(this.props.showZoomControls);
+    }
     if (this.props.hasOwnProperty('onZoomLevelsChange')) {
       this.sendAddZoomLevelsChangeListener();
     }
@@ -133,11 +112,18 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  sendUpdatedMapCenterCoordsToHTML = () => {
-    this.sendMessage('MAP_CENTER_COORD_CHANGE', {
-      mapCenterCoords: this.state.mapCenterCoords,
-      panToLocation: this.props.panToLocation
-    });
+  centerMapOnCurrentPosition = () => {
+    if (
+      isValidCoordinates(
+        this.props.currentPosition[1],
+        this.props.currentPosition[0]
+      )
+    ) {
+      this.sendMessage('CENTER_MAP_ON_CURRENT_POSITION', {
+        currentPosition: this.props.currentPosition,
+        panToLocation: this.props.panToLocation
+      });
+    }
   };
 
   sendLocations = (markers) => {
@@ -297,7 +283,11 @@ export default class WebViewLeaflet extends React.Component {
             this.props.onMoveEnd(msgData.payload);
           }
           break;
-
+        case 'CURRENT_POSITION_MARKER_CLICKED':
+          if (this.props.hasOwnProperty('onCurrentPositionClicked')) {
+            this.props.onCurrentPositionClicked();
+          }
+          break;
         default:
           console.warn(
             `WebViewLeaflet Error: Unhandled message type received "${JSON.stringify(
@@ -346,16 +336,16 @@ export default class WebViewLeaflet extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     if (
-      nextProps.mapCenterCoords &&
-      JSON.stringify(this.state.mapCenterCoords) !==
-        JSON.stringify(nextProps.mapCenterCoords)
+      nextProps.currentPosition &&
+      JSON.stringify(this.state.currentPosition) !==
+        JSON.stringify(nextProps.currentPosition)
     ) {
-      if (this.props.mapCenterCoords.length > 0) {
-        const lat = nextProps.mapCenterCoords[0];
-        const long = nextProps.mapCenterCoords[1];
+      if (this.props.currentPosition.length > 0) {
+        const lat = nextProps.currentPosition[0];
+        const long = nextProps.currentPosition[1];
         if (this.coordinateValidation(lat, long)) {
-          this.setState({ mapCenterCoords: [lat, long] }, () => {
-            this.sendUpdatedMapCenterCoordsToHTML();
+          this.setState({ currentPosition: [lat, long] }, () => {
+            this.sendUpdatedcurrentPositionToHTML();
           });
         }
       }
@@ -394,7 +384,6 @@ export default class WebViewLeaflet extends React.Component {
           <ActivityIndicator
             size="large"
             animating={this.state.webViewNotLoaded}
-            color="blue"
           />
         </View>
       </View>
@@ -405,14 +394,14 @@ export default class WebViewLeaflet extends React.Component {
     Alert.alert('WebView onError', error, [
       { text: 'OK', onPress: () => console.log('OK Pressed') }
     ]);
-    // console.log('WebView onError: ', error);
+    console.error('WebView onError: ', error);
   };
 
   renderError = (error) => {
     Alert.alert('WebView renderError', error, [
       { text: 'OK', onPress: () => console.log('OK Pressed') }
     ]);
-    // console.log('WebView renderError: ', error);
+    console.error('WebView renderError: ', error);
   };
 
   render() {
@@ -424,7 +413,9 @@ export default class WebViewLeaflet extends React.Component {
       >
         <View style={{ ...StyleSheet.absoluteFillObject }}>
           <WebView
-            style={{ ...StyleSheet.absoluteFillObject }}
+            style={{
+              ...StyleSheet.absoluteFillObject
+            }}
             ref={this.createWebViewRef}
             source={INDEX_FILE}
             onLoadEnd={this.onWebViewLoaded}
@@ -446,10 +437,7 @@ export default class WebViewLeaflet extends React.Component {
                 padding: 10
               }}
             >
-              <Button
-                onPress={this.sendUpdatedMapCenterCoordsToHTML}
-                text={'🎯'}
-              />
+              <Button onPress={this.centerMapOnCurrentPosition} text={'🎯'} />
             </View>
           )}
         </View>
@@ -460,7 +448,7 @@ export default class WebViewLeaflet extends React.Component {
 
 WebViewLeaflet.propTypes = {
   defaultIconSize: PropTypes.array,
-  mapCenterCoords: PropTypes.array,
+  currentPosition: PropTypes.array,
   locations: PropTypes.array,
   onMapClicked: PropTypes.func,
   onMarkerClicked: PropTypes.func,
@@ -469,16 +457,30 @@ WebViewLeaflet.propTypes = {
   zoom: PropTypes.number,
   showZoomControls: PropTypes.bool,
   centerButton: PropTypes.bool,
-  showMapAttribution: PropTypes.bool
+  showMapAttribution: PropTypes.bool,
+  currentPositionMarkerStyle: PropTypes.object,
+  onCurrentPositionClicked: PropTypes.func
 };
 
 WebViewLeaflet.defaultProps = {
   defaultIconSize: [36, 36],
-  zoom: 10,
+  zoom: 5,
   showZoomControls: true,
   centerButton: true,
   panToLocation: false,
-  showMapAttribution: true
+  showMapAttribution: false,
+  currentPosition: [38.89511, -77.03637],
+  currentPositionMarkerStyle: {
+    icon: '❤️',
+    animation: {
+      name: 'beat',
+      duration: 0.25,
+      delay: 0,
+      interationCount: 'infinite',
+      direction: 'alternate'
+    },
+    size: [36, 36]
+  }
 };
 
 const styles = StyleSheet.create({
