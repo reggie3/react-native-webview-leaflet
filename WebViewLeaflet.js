@@ -71,9 +71,7 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.hasOwnProperty('zoom')) {
       this.sendZoom(this.props.zoom);
     }
-    if (this.props.hasOwnProperty('showZoomControls')) {
-      this.sendShowZoomControls(this.props.showZoomControls);
-    }
+
     if (this.props.hasOwnProperty('onZoomLevelsChange')) {
       this.sendAddZoomLevelsChangeListener();
     }
