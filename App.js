@@ -227,6 +227,17 @@ export default class App extends React.Component {
           showMapAttribution={true}
           defaultIconSize={[16, 16]}
           onCurrentPositionClicked={this.onCurrentPositionClicked}
+          currentPositionMarkerStyle= {{
+            icon: '🍇',
+            animation: {
+              name: 'beat',
+              duration: 0.25,
+              delay: 0,
+              interationCount: 'infinite',
+              direction: 'alternate'
+            },
+            size: [36, 36]
+          }}
         />
         <View
           style={{
