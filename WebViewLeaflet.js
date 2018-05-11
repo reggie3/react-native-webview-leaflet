@@ -343,7 +343,7 @@ export default class WebViewLeaflet extends React.Component {
         const long = nextProps.currentPosition[1];
         if (this.coordinateValidation(lat, long)) {
           this.setState({ currentPosition: [lat, long] }, () => {
-            this.sendUpdatedcurrentPositionToHTML();
+            this.sendUpdatedCurrentPositionToHTML();
           });
         }
       }
@@ -359,6 +359,15 @@ export default class WebViewLeaflet extends React.Component {
         this.validateLocations(newLocations);
       }
     }
+  };
+
+  sendUpdatedCurrentPositionToHTML = () => {
+
+    this.sendMessage('CENTER_MAP_ON_CURRENT_POSITION', {
+      currentPosition: this.state.currentPosition,
+      panToLocation: this.props.panToLocation
+    });
+
   };
 
   validateLocations = (locations) => {
