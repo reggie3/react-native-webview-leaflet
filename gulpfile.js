@@ -132,7 +132,7 @@ gulp.task(
   'beta',
   gulp.series(
     'forNPM',
-    'webpack',
+    'build',
     gulp.parallel(
       gulp.series('git-add', 'git-commit', 'git-push-beta'),
       'npm-publish-beta'
