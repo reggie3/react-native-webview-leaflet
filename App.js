@@ -38,7 +38,7 @@ export default class App extends React.Component {
     }
   }
 
-  _getLocationAsync = async() => {
+  _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
@@ -175,15 +175,15 @@ export default class App extends React.Component {
   centerMap = (parkInitials) => {
     console.log(parkInitials);
     switch (parkInitials) {
-      case 'dw':
-        this.setState({ coords: parkLocations.dw });
-        break;
-      case 'bg':
-        this.setState({ coords: parkLocations.bg });
-        break;
-      case 'kd':
-        this.setState({ coords: parkLocations.kd });
-        break;
+    case 'dw':
+      this.setState({ coords: parkLocations.dw });
+      break;
+    case 'bg':
+      this.setState({ coords: parkLocations.bg });
+      break;
+    case 'kd':
+      this.setState({ coords: parkLocations.kd });
+      break;
     }
   };
 
@@ -220,7 +220,8 @@ export default class App extends React.Component {
           onMove={this.onMove}
           onZoomEnd={this.onZoomEnd}
           onMoveEnd={this.onMoveEnd}
-          showMapAttribution ={false}
+          showMapAttribution={false}
+          defaultIconSize={[16, 16]}
         />
         <View
           style={{

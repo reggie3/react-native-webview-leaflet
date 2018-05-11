@@ -5,6 +5,7 @@ module.exports = {
         "es6": true,
         "node": true
     },
+    "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaFeatures": {
@@ -28,6 +29,11 @@ module.exports = {
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-console": ["error", { allow: ["warn", "error", "log"] }],
+        "extends": [
+            "eslint:recommended",
+            "plugin:react/recommended"
+          ]
     }
 };

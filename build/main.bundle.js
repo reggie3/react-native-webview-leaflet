@@ -17997,595 +17997,6 @@ module.exports = checkPropTypes;
 
 /***/ }),
 
-/***/ "./node_modules/prop-types/factoryWithTypeCheckers.js":
-/*!************************************************************!*\
-  !*** ./node_modules/prop-types/factoryWithTypeCheckers.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-var emptyFunction = __webpack_require__(/*! fbjs/lib/emptyFunction */ "./node_modules/fbjs/lib/emptyFunction.js");
-var invariant = __webpack_require__(/*! fbjs/lib/invariant */ "./node_modules/fbjs/lib/invariant.js");
-var warning = __webpack_require__(/*! fbjs/lib/warning */ "./node_modules/fbjs/lib/warning.js");
-var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
-
-var ReactPropTypesSecret = __webpack_require__(/*! ./lib/ReactPropTypesSecret */ "./node_modules/prop-types/lib/ReactPropTypesSecret.js");
-var checkPropTypes = __webpack_require__(/*! ./checkPropTypes */ "./node_modules/prop-types/checkPropTypes.js");
-
-module.exports = function(isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-
-  /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */
-
-  var ANONYMOUS = '<<anonymous>>';
-
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-  var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
-
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker,
-    exact: createStrictShapeTypeChecker,
-  };
-
-  /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-   */
-  /*eslint-disable no-self-compare*/
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
-
-  /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  }
-  // Make `instanceof Error` still work for returned errors.
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    if (true) {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== ReactPropTypesSecret) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          invariant(
-            false,
-            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-            'Use `PropTypes.checkPropTypes()` to call them. ' +
-            'Read more at http://fb.me/use-check-prop-types'
-          );
-        } else if ("development" !== 'production' && typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-          if (
-            !manualPropTypeCallCache[cacheKey] &&
-            // Avoid spamming the console because they are often not actionable except for lib authors
-            manualPropTypeWarningCount < 3
-          ) {
-            warning(
-              false,
-              'You are manually calling a React.PropTypes validation ' +
-              'function for the `%s` prop on `%s`. This is deprecated ' +
-              'and will throw in the standalone `prop-types` package. ' +
-              'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-              propFullName,
-              componentName
-            );
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-      var propValue = props[propName];
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-       true ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : undefined;
-      return emptyFunction.thatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues);
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-      for (var key in propValue) {
-        if (propValue.hasOwnProperty(key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-       true ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : undefined;
-      return emptyFunction.thatReturnsNull;
-    }
-
-    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-      var checker = arrayOfTypeCheckers[i];
-      if (typeof checker !== 'function') {
-        warning(
-          false,
-          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received %s at index %s.',
-          getPostfixForTypeWarning(checker),
-          i
-        );
-        return emptyFunction.thatReturnsNull;
-      }
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createStrictShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      // We need to check all keys in case some are required but missing from
-      // props.
-      var allKeys = assign({}, props[propName], shapeTypes);
-      for (var key in allKeys) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          return new PropTypeError(
-            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
-            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
-          );
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-      case 'boolean':
-        return !propValue;
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    }
-
-    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    }
-
-    // Fallback for non-spec compliant Symbols which are polyfilled.
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Equivalent of `typeof` but with special handling for array and regexp.
-  function getPropType(propValue) {
-    var propType = typeof propValue;
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-    return propType;
-  }
-
-  // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-  function getPreciseType(propValue) {
-    if (typeof propValue === 'undefined' || propValue === null) {
-      return '' + propValue;
-    }
-    var propType = getPropType(propValue);
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-    return propType;
-  }
-
-  // Returns a string that is postfixed to a warning about an invalid type.
-  // For example, "undefined" or "of type array"
-  function getPostfixForTypeWarning(value) {
-    var type = getPreciseType(value);
-    switch (type) {
-      case 'array':
-      case 'object':
-        return 'an ' + type;
-      case 'boolean':
-      case 'date':
-      case 'regexp':
-        return 'a ' + type;
-      default:
-        return type;
-    }
-  }
-
-  // Returns class name of the object, if any.
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/prop-types/index.js":
-/*!******************************************!*\
-  !*** ./node_modules/prop-types/index.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (true) {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(/*! ./factoryWithTypeCheckers */ "./node_modules/prop-types/factoryWithTypeCheckers.js")(isValidElement, throwOnDirectAccess);
-} else {}
-
-
-/***/ }),
-
 /***/ "./node_modules/prop-types/lib/ReactPropTypesSecret.js":
 /*!*************************************************************!*\
   !*** ./node_modules/prop-types/lib/ReactPropTypesSecret.js ***!
@@ -38004,14 +37415,6 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _markers = __webpack_require__(/*! ./markers.js */ "./web/markers.js");
-
-var markers = _interopRequireWildcard(_markers);
-
 __webpack_require__(/*! ./markers.css */ "./web/markers.css");
 
 var _testLocations = __webpack_require__(/*! ./testLocations */ "./web/testLocations.js");
@@ -38041,13 +37444,7 @@ var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node
 
 
 var BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-var SHOW_DEBUG_INFORMATION = false;
-
-// used for testing seperately of the react-native applicaiton
-var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
-// used for testing seperately of the react-native applicaiton
-var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
-var updateCounter = 0;
+var SHOW_DEBUG_INFORMATION = true;
 var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 var messageCounter = 0;
@@ -38088,8 +37485,17 @@ var LeafletReactHTML = function (_React$Component) {
         return;
       }
       _this.eventListenersAdded = true;
+
+      // lauch the map in brower test mode
       if (BROWSER_TESTING_ENABLED) {
-        _this.loadMap();
+        _this.loadMap({
+          defaultIconSize: [16, 16],
+          zoom: 10,
+          showZoomControls: true,
+          centerButton: true,
+          panToLocation: false,
+          showMapAttribution: true
+        });
       }
     };
 
@@ -38101,22 +37507,22 @@ var LeafletReactHTML = function (_React$Component) {
       }
     };
 
-    _this.loadMap = function () {
-      var mapConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { showMapAttribution: true };
+    _this.loadMap = function (mapConfig) {
+      _this.printElement('loading map: ');
+      // set the default icon size
+      _this.defaultIconSize = mapConfig.defaultIconSize;
 
-
-      _this.printElement('loading map: ', mapConfig);
       if (!_this.map) {
         try {
           // set up map
           _this.map = L.map('map', {
-            center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
+            center: mapConfig.mapCenterCoords ? mapConfig.mapCenterCoords : [28.417839, -81.563808],
             zoom: 10,
             // removing the attribution control prevents accidentally clicking on it
             attributionControl: mapConfig.showMapAttribution
           });
           // Initialize the base layer
-          var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
             attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           }).addTo(_this.map);
@@ -38202,6 +37608,7 @@ var LeafletReactHTML = function (_React$Component) {
         msgData = JSON.parse(event.data);
         if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
           // this.printElement(msgData);
+          var that = _this;
           switch (msgData.type) {
             // receive an event when the webview is ready
 
@@ -38239,7 +37646,7 @@ var LeafletReactHTML = function (_React$Component) {
               mapEventListeners.addMoveEndListener(_this);
               break;
             case 'LOAD_MAP':
-              _this.printElement('LOAD_MAP event recieved: $msgData.payload');
+              _this.printElement('LOAD_MAP event recieved: ' + msgData.payload);
               _this.loadMap(msgData.payload);
               break;
             case 'SHOW_MAP_ATTRIBUTION':
@@ -38252,7 +37659,7 @@ var LeafletReactHTML = function (_React$Component) {
             case 'MAP_CENTER_COORD_CHANGE':
               _this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
               _this.printElement(msgData.payload.mapCenterCoords);
-              var that = _this;
+
               _this.setState({ mapCenterCoords: msgData.payload.mapCenterCoords }, function () {
                 /* that.printElement('center set to:');
                 that.printElement(that.state.mapCenterCoords);
@@ -38294,7 +37701,7 @@ var LeafletReactHTML = function (_React$Component) {
               break;
 
             default:
-              printElement('leafletReactHTML Error: Unhandled message type received "' + msgData.type + '"');
+              _this.printElement('leafletReactHTML Error: Unhandled message type received "' + msgData.type + '"');
           }
         }
       } catch (err) {
@@ -38320,26 +37727,28 @@ var LeafletReactHTML = function (_React$Component) {
       _this.currentLocationMarker.addTo(_this.map);
     };
 
-    _this.getAnimatedHTMLString = function (icon, animation) {
-      return '<div class=\'animationContainer\' style="\n      animation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n      animation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n      animation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n      animation-direction: ' + (animation.direction ? animation.direction : 'normal') + ';\n      animation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n      <div style=\'font-size: 36px\'>\n      ' + icon + '\n      </div>\n      </div>';
+    _this.getAnimatedHTMLString = function (icon, animation, size) {
+      var iconSizeString = '<div style=\'font-size: ' + Math.max(size[0], size[1]) + 'px\'>';
+
+      return '<div class=\'animationContainer\' style="\n      animation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n      animation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n      animation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n      animation-direction: ' + (animation.direction ? animation.direction : 'normal') + ';\n      animation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n      ' + iconSizeString + '\n      ' + icon + '\n      </div>\n      </div>';
     };
 
-    _this.getIcon = function (icon, animation) {
+    _this.getIcon = function (icon, animation, size) {
       // this.printElement(icon);
       // print animated markers
       if (animation) {
         return L.divIcon({
-          iconSize: null,
+          size: size,
           className: 'clearMarkerContainer',
-          html: _this.getAnimatedHTMLString(icon, animation)
+          html: _this.getAnimatedHTMLString(icon, animation, size)
         });
       } else {
         // print non animated markers
         return L.divIcon({
           iconSize: null,
-          iconAnchor: [18, 18],
+          iconAnchor: [Math.floor(_this.defaultIconSize[0] / 2), Math.floor(_this.defaultIconSize[1] / 2)],
           className: 'clearMarkerContainer',
-          html: '<div style=\'font-size: 36px\'>\n        ' + icon + '\n        </div>'
+          html: '<div style=\'font-size: ' + Math.max(_this.defaultIconSize[0], _this.defaultIconSize[1]) + 'px\'>\n        ' + icon + '\n        </div>'
         });
       }
     };
@@ -38395,7 +37804,10 @@ var LeafletReactHTML = function (_React$Component) {
       }
       try {
         var mapMarker = L.marker(markerInfo.coords, {
-          icon: _this.getIcon(markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍', markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null),
+          // build the actual icon
+          icon: _this.getIcon(markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍', markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null,
+          // marker size is controled by a 2 digit array
+          markerInfo.hasOwnProperty('size') ? markerInfo.size : _this.defaultIconSize),
           id: markerInfo.id ? markerInfo.id : null
         });
         /* this.printElement(`new mapMarker`);
@@ -38404,7 +37816,7 @@ var LeafletReactHTML = function (_React$Component) {
         // click event is for use by the parent of this html file's
         // WebView
         var that = _this;
-        mapMarker.on('click', function (e) {
+        mapMarker.on('click', function () {
           // const markerID = this.options.id;
           that.printElement('leafletReactHTML: marker clicked ' + markerInfo.id);
           that.addMessageToQueue('MARKER_CLICKED', {
@@ -38466,6 +37878,11 @@ var LeafletReactHTML = function (_React$Component) {
             id: 'messages'
           },
           _react2.default.createElement(
+            'h3',
+            null,
+            'messages'
+          ),
+          _react2.default.createElement(
             'ul',
             null,
             _this.state.debugMessages.map(function (message, index) {
@@ -38508,6 +37925,7 @@ var LeafletReactHTML = function (_React$Component) {
     _this.currentLocationMarker = null;
     _this.eventListenersAdded = false;
     _this.messageQueue = [];
+    _this.defaultIconSize = [36, 36];
     _this.state = {
       debugMessages: [],
       locations: BROWSER_TESTING_ENABLED ? _testLocations2.default : [],
@@ -38715,10 +38133,10 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./web/markers.js":
-/*!************************!*\
-  !*** ./web/markers.js ***!
-  \************************/
+/***/ "./web/svgIcons.js":
+/*!*************************!*\
+  !*** ./web/svgIcons.js ***!
+  \*************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -38726,10 +38144,9 @@ if(false) {}
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-var test = exports.test = "<svg version=\"1.1\"\nbaseProfile=\"full\"\nwidth=\"300\" height=\"200\"\nxmlns=\"http://www.w3.org/2000/svg\">\n<rect width=\"100%\" height=\"100%\" fill=\"red\" />\n<circle cx=\"150\" cy=\"100\" r=\"80\" fill=\"green\" />\n<text x=\"150\" y=\"125\" font-size=\"60\" text-anchor=\"middle\" fill=\"white\">SVG</text>\n</svg>";
-var circleMarker = exports.circleMarker = "<svg version=\"1.1\"\nfill-opacity=\"0.75\"\nbaseProfile=\"full\"\nwidth=\"40\" height=\"40\"\nviewBox=\"0 0 40 40\"\nxmlns=\"http://www.w3.org/2000/svg\">\n<circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"red\"/>\n</svg>";
+var greenCircle = exports.greenCircle = "<svg xmlns=\"http://www.w3.org/2000/svg\">\n    <circle id=\"greencircle\" cx=\"30\" cy=\"30\" r=\"30\" fill=\"green\" />\n</svg>";
 
 /***/ }),
 
@@ -38746,32 +38163,265 @@ var circleMarker = exports.circleMarker = "<svg version=\"1.1\"\nfill-opacity=\"
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _svgIcons = __webpack_require__(/*! ./svgIcons */ "./web/svgIcons.js");
+
+var svgIcons = _interopRequireWildcard(_svgIcons);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 var duration = Math.floor(Math.random() * 3) + 1;
 var delay = Math.floor(Math.random()) * 0.5;
 var interationCount = 'infinite';
 
+
 var locations = [{
 	id: 2,
 	coords: [37.06452161, -75.67364786],
-	icon: emoji[Math.floor(Math.random() * emoji.length)],
+	icon: '😴',
+	size: [64, 64],
 	animation: {
 		name: animations[Math.floor(Math.random() * animations.length)],
-		duration: Math.floor(Math.random() * 3) + 1,
-		delay: Math.floor(Math.random()) * 0.5,
+		duration: duration,
+		delay: delay,
 		interationCount: interationCount
 	}
 }, {
 	id: 1,
 	coords: [36.46410354, -75.6432701],
-	icon: 'Hello',
+	icon: '😴',
+	size: [32, 32],
 	animation: {
 		name: animations[Math.floor(Math.random() * animations.length)],
-		duration: Math.floor(Math.random() * 3) + 1,
-		delay: Math.floor(Math.random()) * 0.5,
+		duration: duration,
+		delay: delay,
 		interationCount: interationCount
 	}
+}, {
+	id: Math.floor(Math.random() * 1000),
+	coords: [37.23310632, -76.23518332],
+	icon: emoji[Math.floor(Math.random() * emoji.length)],
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: duration,
+		delay: delay,
+		interationCount: interationCount
+	}
+},
+/* {
+  id: 1,
+  coords: [36.46410354, -75.6432701],
+  icon: '😴',
+  size: [32, 32],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration,
+    delay,
+    interationCount
+  }
+},*/
+{
+	id: Math.floor(Math.random() * 1000),
+	coords: [36.60061515, -76.48888338],
+	icon: svgIcons.greenCircle,
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: duration,
+		delay: delay,
+		interationCount: interationCount
+	}
+
+	/* {
+   id: Math.floor(Math.random() * 1000),
+   coords: [37.0580835, -75.82318747],
+   icon: 'Fish',
+   animation: {
+     name: animations[Math.floor(Math.random() * animations.length)],
+     duration,
+     delay,
+     interationCount
+   }
+ },
+ {
+   id: Math.floor(Math.random() * 1000),
+   coords: [37.23310632, -76.23518332],
+   icon: emoji[Math.floor(Math.random() * emoji.length)],
+   size: [4, 4],
+   animation: {
+     name: animations[Math.floor(Math.random() * animations.length)],
+     duration,
+     delay,
+     interationCount
+   }
+ } */
+	/*
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.94994253, -76.64318409],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.19810239, -76.28058546],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.02416165, -76.56052521],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.91541467, -75.49279245],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.70503123, -76.32755185],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.31605891, -76.45141618],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.59436803, -76.89486842],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.35740877, -75.77910112],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.31509182, -76.76693784],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.91815909, -76.06707072],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.611917, -75.76758822],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.79520769, -76.3959497],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.42854666, -75.95883052],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.78673099, -76.90459724],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.20966767, -75.58799685],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ } */
 }];
 exports.default = locations;
 

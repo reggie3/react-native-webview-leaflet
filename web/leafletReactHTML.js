@@ -11,21 +11,13 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import React from 'react';
-import PropTypes from 'prop-types';
-import * as markers from './markers.js';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 import locations from './testLocations';
 import * as mapEventListeners from './mapEventListeners';
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
-
-// used for testing seperately of the react-native applicaiton
-const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
-// used for testing seperately of the react-native applicaiton
-const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
-let updateCounter = 0;
+const SHOW_DEBUG_INFORMATION = true;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 let messageCounter = 0;
@@ -40,6 +32,7 @@ export default class LeafletReactHTML extends React.Component {
     this.currentLocationMarker = null;
     this.eventListenersAdded = false;
     this.messageQueue = [];
+    this.defaultIconSize = [36, 36];
     this.state = {
       debugMessages: [],
       locations: BROWSER_TESTING_ENABLED ? locations : [],
@@ -77,8 +70,17 @@ export default class LeafletReactHTML extends React.Component {
       return;
     }
     this.eventListenersAdded = true;
+
+    // lauch the map in brower test mode
     if (BROWSER_TESTING_ENABLED) {
-      this.loadMap();
+      this.loadMap({
+        defaultIconSize: [16, 16],
+        zoom: 10,
+        showZoomControls: true,
+        centerButton: true,
+        panToLocation: false,
+        showMapAttribution: true
+      });
     }
   };
 
@@ -90,27 +92,28 @@ export default class LeafletReactHTML extends React.Component {
     }
   };
 
-  loadMap = (mapConfig ={showMapAttribution: true}) => {
+  loadMap = (mapConfig) => {
+    this.printElement('loading map: ');
+    // set the default icon size
+    this.defaultIconSize = mapConfig.defaultIconSize;
 
-    this.printElement('loading map: ', mapConfig);
     if (!this.map) {
       try {
         // set up map
         this.map = L.map('map', {
-          center: BROWSER_TESTING_ENABLED ? [37, -76] : [38.889931, -77.009003],
+          center: mapConfig.mapCenterCoords
+            ? mapConfig.mapCenterCoords
+            : [28.417839, -81.563808],
           zoom: 10,
           // removing the attribution control prevents accidentally clicking on it
           attributionControl: mapConfig.showMapAttribution
         });
         // Initialize the base layer
-        var osm_mapnik = L.tileLayer(
-          'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          {
-            maxZoom: 20,
-            attribution:
-              '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          }
-        ).addTo(this.map);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 20,
+          attribution:
+            '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(this.map);
 
         // add click event to map
         let that = this;
@@ -148,7 +151,7 @@ export default class LeafletReactHTML extends React.Component {
           type: 'error',
           msg: error
         });
-        console.log(error)
+        console.log(error);
       }
       // send a messaging back indicating the map has been loaded
       this.addMessageToQueue('MAP_LOADED', {
@@ -230,106 +233,107 @@ export default class LeafletReactHTML extends React.Component {
         msgData.prefix === MESSAGE_PREFIX
       ) {
         // this.printElement(msgData);
+        let that = this;
         switch (msgData.type) {
-          // receive an event when the webview is ready
+        // receive an event when the webview is ready
 
-          case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
-            mapEventListeners.addZoomLevelsChangeListener(this);
-            break;
-          case 'ADD_RESIZE_LISTENER':
-            mapEventListeners.addResizeListener(this);
-            break;
-          case 'ADD_UNLOAD_LISTENER':
-            mapEventListeners.addUnloadListener(this);
-            break;
-          case 'ADD_VIEW_RESET_LISTENER':
-            mapEventListeners.addViewResetListener(this);
-            break;
-          case 'ADD_LOAD_LISTENER':
-            mapEventListeners.addLoadListener(this);
-            break;
-          case 'ADD_ZOOM_START_LISTENER':
-            mapEventListeners.addZoomStartListener(this);
-            break;
-          case 'ADD_MOVE_START_LISTENER':
-            mapEventListeners.addMoveStartListener(this);
-            break;
-          case 'ADD_ZOOM_LISTENER':
-            mapEventListeners.addZoomListener(this);
-            break;
-          case 'ADD_MOVE_LISTENER':
-            mapEventListeners.addMoveListener(this);
-            break;
-          case 'ADD_ZOOM_END_LISTENER':
-            mapEventListeners.addZoomEndListener(this);
-            break;
-          case 'ADD_MOVE_END_LISTENER':
-            mapEventListeners.addMoveEndListener(this);
-            break;
-          case 'LOAD_MAP':
-            this.printElement(`LOAD_MAP event recieved: $msgData.payload`);
-            this.loadMap(msgData.payload);
-            break;
-          case 'SHOW_MAP_ATTRIBUTION':
-            this.showMapAttribution();
-            break;
-          case 'GET_MAP':
-            this.printElement(`Sending Map`);
-            this.addMessageToQueue('MAP_SENT', { map: this.map });
-            break;
-          case 'MAP_CENTER_COORD_CHANGE':
-            this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
-            this.printElement(msgData.payload.mapCenterCoords);
-            let that = this;
-            this.setState(
-              { mapCenterCoords: msgData.payload.mapCenterCoords },
-              () => {
-                /* that.printElement('center set to:');
+        case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
+          mapEventListeners.addZoomLevelsChangeListener(this);
+          break;
+        case 'ADD_RESIZE_LISTENER':
+          mapEventListeners.addResizeListener(this);
+          break;
+        case 'ADD_UNLOAD_LISTENER':
+          mapEventListeners.addUnloadListener(this);
+          break;
+        case 'ADD_VIEW_RESET_LISTENER':
+          mapEventListeners.addViewResetListener(this);
+          break;
+        case 'ADD_LOAD_LISTENER':
+          mapEventListeners.addLoadListener(this);
+          break;
+        case 'ADD_ZOOM_START_LISTENER':
+          mapEventListeners.addZoomStartListener(this);
+          break;
+        case 'ADD_MOVE_START_LISTENER':
+          mapEventListeners.addMoveStartListener(this);
+          break;
+        case 'ADD_ZOOM_LISTENER':
+          mapEventListeners.addZoomListener(this);
+          break;
+        case 'ADD_MOVE_LISTENER':
+          mapEventListeners.addMoveListener(this);
+          break;
+        case 'ADD_ZOOM_END_LISTENER':
+          mapEventListeners.addZoomEndListener(this);
+          break;
+        case 'ADD_MOVE_END_LISTENER':
+          mapEventListeners.addMoveEndListener(this);
+          break;
+        case 'LOAD_MAP':
+          this.printElement(`LOAD_MAP event recieved: ${msgData.payload}`);
+          this.loadMap(msgData.payload);
+          break;
+        case 'SHOW_MAP_ATTRIBUTION':
+          this.showMapAttribution();
+          break;
+        case 'GET_MAP':
+          this.printElement(`Sending Map`);
+          this.addMessageToQueue('MAP_SENT', { map: this.map });
+          break;
+        case 'MAP_CENTER_COORD_CHANGE':
+          this.printElement('MAP_CENTER_COORD_CHANGE event recieved');
+          this.printElement(msgData.payload.mapCenterCoords);
+
+          this.setState(
+            { mapCenterCoords: msgData.payload.mapCenterCoords },
+            () => {
+              /* that.printElement('center set to:');
 							that.printElement(that.state.mapCenterCoords);
 							that.printElement('that.map = ');
 							that.printElement(that.map); */
-                if (msgData.payload.panToLocation === true) {
-                  that.printElement('panning map');
-                  that.map.flyTo(that.state.mapCenterCoords);
-                } else {
-                  that.printElement('setting map');
-                  that.map.setView(that.state.mapCenterCoords);
-                }
-                that.updateCurrentPostionMarker(that.state.mapCenterCoords);
+              if (msgData.payload.panToLocation === true) {
+                that.printElement('panning map');
+                that.map.flyTo(that.state.mapCenterCoords);
+              } else {
+                that.printElement('setting map');
+                that.map.setView(that.state.mapCenterCoords);
               }
-            );
-            break;
-
-          case 'UPDATE_MARKERS':
-            // this.printElement('UPDATE_MARKERS event recieved');
-            // this.printElement('markers 0: ' + JSON.stringify(msgData));
-            this.updateMarkers(msgData.payload.markers);
-            break;
-
-          case 'MESSAGE_ACKNOWLEDGED':
-            this.setState({ readyToSendNextMessage: true });
-            this.sendNextMessage();
-            break;
-
-          case 'SET_ZOOM':
-            this.map.setZoom(msgData.payload.zoom);
-            break;
-
-          case 'SHOW_ZOOM_CONTROLS':
-            if (msgData.payload.showZoomControls) {
-              this.map.addControl(this.map.zoomControl);
+              that.updateCurrentPostionMarker(that.state.mapCenterCoords);
             }
-            {
-              this.map.removeControl(this.map.zoomControl);
-            }
-            break;
+          );
+          break;
 
-          default:
-            printElement(
-              `leafletReactHTML Error: Unhandled message type received "${
-                msgData.type
-              }"`
-            );
+        case 'UPDATE_MARKERS':
+          // this.printElement('UPDATE_MARKERS event recieved');
+          // this.printElement('markers 0: ' + JSON.stringify(msgData));
+          this.updateMarkers(msgData.payload.markers);
+          break;
+
+        case 'MESSAGE_ACKNOWLEDGED':
+          this.setState({ readyToSendNextMessage: true });
+          this.sendNextMessage();
+          break;
+
+        case 'SET_ZOOM':
+          this.map.setZoom(msgData.payload.zoom);
+          break;
+
+        case 'SHOW_ZOOM_CONTROLS':
+          if (msgData.payload.showZoomControls) {
+            this.map.addControl(this.map.zoomControl);
+          }
+          {
+            this.map.removeControl(this.map.zoomControl);
+          }
+          break;
+
+        default:
+          this.printElement(
+            `leafletReactHTML Error: Unhandled message type received "${
+              msgData.type
+            }"`
+          );
         }
       }
     } catch (err) {
@@ -355,7 +359,12 @@ export default class LeafletReactHTML extends React.Component {
     this.currentLocationMarker.addTo(this.map);
   };
 
-  getAnimatedHTMLString = (icon, animation) => {
+  getAnimatedHTMLString = (icon, animation, size) => {
+    let iconSizeString = `<div style='font-size: ${Math.max(
+      size[0],
+      size[1]
+    )}px'>`;
+
     return `<div class='animationContainer' style="
       animation-name: ${animation.name ? animation.name : 'bounce'}; 
       animation-duration: ${animation.duration ? animation.duration : 1}s ;
@@ -366,28 +375,34 @@ export default class LeafletReactHTML extends React.Component {
       animation-iteration-count: ${
         animation.interationCount ? animation.interationCount : 'infinite'
       }">
-      <div style='font-size: 36px'>
+      ${iconSizeString}
       ${icon}
       </div>
       </div>`;
   };
 
-  getIcon = (icon, animation) => {
+  getIcon = (icon, animation, size) => {
     // this.printElement(icon);
     // print animated markers
     if (animation) {
       return L.divIcon({
-        iconSize: null,
+        size,
         className: 'clearMarkerContainer',
-        html: this.getAnimatedHTMLString(icon, animation)
+        html: this.getAnimatedHTMLString(icon, animation, size)
       });
     } else {
       // print non animated markers
       return L.divIcon({
         iconSize: null,
-        iconAnchor: [18, 18],
+        iconAnchor: [
+          Math.floor(this.defaultIconSize[0] / 2),
+          Math.floor(this.defaultIconSize[1] / 2)
+        ],
         className: 'clearMarkerContainer',
-        html: `<div style='font-size: 36px'>
+        html: `<div style='font-size: ${Math.max(
+          this.defaultIconSize[0],
+          this.defaultIconSize[1]
+        )}px'>
         ${icon}
         </div>`
       });
@@ -461,9 +476,14 @@ export default class LeafletReactHTML extends React.Component {
     }
     try {
       let mapMarker = L.marker(markerInfo.coords, {
+        // build the actual icon
         icon: this.getIcon(
           markerInfo.hasOwnProperty('icon') ? markerInfo.icon : '📍',
-          markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null
+          markerInfo.hasOwnProperty('animation') ? markerInfo.animation : null,
+          // marker size is controled by a 2 digit array
+          markerInfo.hasOwnProperty('size')
+            ? markerInfo.size
+            : this.defaultIconSize
         ),
         id: markerInfo.id ? markerInfo.id : null
       });
@@ -473,7 +493,7 @@ export default class LeafletReactHTML extends React.Component {
       // click event is for use by the parent of this html file's
       // WebView
       let that = this;
-      mapMarker.on('click', (e) => {
+      mapMarker.on('click', () => {
         // const markerID = this.options.id;
         that.printElement(`leafletReactHTML: marker clicked ${markerInfo.id}`);
         that.addMessageToQueue('MARKER_CLICKED', {
@@ -532,6 +552,7 @@ export default class LeafletReactHTML extends React.Component {
             }}
             id="messages"
           >
+            <h3>messages</h3>
             <ul>
               {this.state.debugMessages.map((message, index) => {
                 return <li key={index}>{message}</li>;
