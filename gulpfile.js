@@ -88,8 +88,8 @@ gulp.task('git-push', () => {
   return run('git push origin master').exec();
 });
 
-gulp.task('git-push-inline-javascript', () => {
-  return run('git push origin inline-javascript-2').exec();
+gulp.task('git-push-beta', () => {
+  return run('git push origin 5-with-sizable-icons').exec();
 });
 
 gulp.task('forExpo', (done) => {
@@ -134,7 +134,7 @@ gulp.task(
     'forNPM',
     'webpack',
     gulp.parallel(
-      gulp.series('git-add', 'git-commit', 'git-push-inline-javascript'),
+      gulp.series('git-add', 'git-commit', 'git-push-beta'),
       'npm-publish-beta'
     ),
     'forExpo',

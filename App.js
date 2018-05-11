@@ -199,7 +199,7 @@ export default class App extends React.Component {
           style={{
             margin: 10,
             fontSize: 24,
-            color: 'black'
+            color: 'white'
           }}
         >
           Animated Map Markers App
@@ -259,8 +259,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#ccccff',
-    display: 'flex'
+    backgroundColor: '#7b337c',
+    display: 'flex',
   },
   statusBar: {
     height: Constants.statusBarHeight
