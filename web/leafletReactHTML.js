@@ -155,21 +155,22 @@ export default class LeafletReactHTML extends React.Component {
         // mark the current position on the map
         this.updateCurrentPostionMarker(mapConfig.currentPosition);
 
+        // add the map event listeners
+        mapEventListeners.addZoomLevelsChangeListener(this);
+        mapEventListeners.addResizeListener(this);
+        mapEventListeners.addUnloadListener(this);
+        mapEventListeners.addViewResetListener(this);
+        mapEventListeners.addLoadListener(this);
+        mapEventListeners.addZoomStartListener(this);
+        mapEventListeners.addMoveStartListener(this);
+        mapEventListeners.addZoomListener(this);
+        mapEventListeners.addMoveListener(this);
+        mapEventListeners.addMoveEndListener(this);
+        mapEventListeners.addZoomEndListener(this);
+
         if (BROWSER_TESTING_ENABLED) {
           this.updateMarkers(this.state.locations);
           // this.setUpMarkerAlterationTest();
-
-          mapEventListeners.addZoomLevelsChangeListener(this);
-          mapEventListeners.addResizeListener(this);
-          mapEventListeners.addUnloadListener(this);
-          mapEventListeners.addViewResetListener(this);
-          mapEventListeners.addLoadListener(this);
-          mapEventListeners.addZoomStartListener(this);
-          mapEventListeners.addMoveStartListener(this);
-          mapEventListeners.addZoomListener(this);
-          mapEventListeners.addMoveListener(this);
-          mapEventListeners.addMoveEndListener(this);
-          mapEventListeners.addZoomEndListener(this);
         }
       } catch (error) {
         this.printElement('ERROR loading map: ', error);
@@ -183,7 +184,10 @@ export default class LeafletReactHTML extends React.Component {
 
       // send a messaging back indicating the map has been loaded
       this.addMessageToQueue('MAP_LOADED', {
-        type: 'success'
+        type: 'success',
+        center: this.map.getCenter(),
+        bounds: this.map.getBounds(),
+        zoom: this.map.getZoom()
       });
     }
   };
@@ -265,7 +269,7 @@ export default class LeafletReactHTML extends React.Component {
         switch (msgData.type) {
         // receive an event when the webview is ready
 
-        case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
+        /* case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
           mapEventListeners.addZoomLevelsChangeListener(this);
           break;
         case 'ADD_RESIZE_LISTENER':
@@ -297,7 +301,7 @@ export default class LeafletReactHTML extends React.Component {
           break;
         case 'ADD_MOVE_END_LISTENER':
           mapEventListeners.addMoveEndListener(this);
-          break;
+          break;*/
         case 'LOAD_MAP':
           this.printElement(`LOAD_MAP event recieved: ${msgData.payload}`);
           this.loadMap(msgData.payload);
@@ -305,8 +309,7 @@ export default class LeafletReactHTML extends React.Component {
         case 'SHOW_MAP_ATTRIBUTION':
           this.showMapAttribution();
           break;
-        case 'GET_MAP':
-          this.printElement(`Sending Map`);
+        case 'GET_MAP_VIEW_INFO':
           this.addMessageToQueue('MAP_SENT', { map: this.map });
           break;
         case 'CENTER_MAP_ON_CURRENT_POSITION':
@@ -395,7 +398,7 @@ export default class LeafletReactHTML extends React.Component {
     this.currentLocationMarker.on('click', () => {
       that.printElement(`leafletReactHTML: current postion marker clicked`);
       that.addMessageToQueue('CURRENT_POSITION_MARKER_CLICKED');
-    }); 
+    });
 
     this.currentLocationMarker.addTo(this.map);
   };

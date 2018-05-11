@@ -71,43 +71,6 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.hasOwnProperty('zoom')) {
       this.sendZoom(this.props.zoom);
     }
-
-    if (this.props.hasOwnProperty('onZoomLevelsChange')) {
-      this.sendAddZoomLevelsChangeListener();
-    }
-    if (this.props.hasOwnProperty('onResize')) {
-      this.sendResizeListener();
-    }
-    if (this.props.hasOwnProperty('onUnload')) {
-      this.sendUnloadListener();
-    }
-    if (this.props.hasOwnProperty('onViewReset')) {
-      this.sendAddViewResetListener();
-    }
-    if (this.props.hasOwnProperty('onLoad')) {
-      this.sendLoadListener();
-    }
-    if (this.props.hasOwnProperty('onZoomStart')) {
-      this.sendZoomStartListener();
-    }
-    if (this.props.hasOwnProperty('onMoveStart')) {
-      this.sendMoveStartListener();
-    }
-    if (this.props.hasOwnProperty('onZoom')) {
-      this.sendAddZoomListener();
-    }
-    if (this.props.hasOwnProperty('onMove')) {
-      this.sendAddMoveListener();
-    }
-    if (this.props.hasOwnProperty('onZoomEnd')) {
-      this.sendAddZoomEndListener();
-    }
-    if (this.props.hasOwnProperty('onMoveEnd')) {
-      this.sendAddMoveEndListener();
-    }
-    if (this.props.hasOwnProperty('getMapCallback')) {
-      this.sendGetMap();
-    }
   };
 
   centerMapOnCurrentPosition = () => {
@@ -146,40 +109,6 @@ export default class WebViewLeaflet extends React.Component {
     this.sendMessage('GET_MAP');
   };
 
-  sendAddZoomLevelsChangeListener = () => {
-    this.sendMessage('ADD_ZOOM_LEVELS_CHANGE_LISTENER');
-  };
-  sendResizeListener = () => {
-    this.sendMessage('ADD_RESIZE_LISTENER');
-  };
-  sendUnloadListener = () => {
-    this.sendMessage('ADD_UNLOAD_LISTENER');
-  };
-  sendAddViewResetListener = () => {
-    this.sendMessage('ADD_VIEW_RESET_LISTENER');
-  };
-  sendLoadListener = () => {
-    this.sendMessage('ADD_LOAD_LISTENER');
-  };
-  sendZoomStartListener = () => {
-    this.sendMessage('ADD_ZOOM_START_LISTENER');
-  };
-  sendMoveStartListener = () => {
-    this.sendMessage('ADD_MOVE_START_LISTENER');
-  };
-  sendAddZoomListener = () => {
-    this.sendMessage('ADD_ZOOM_LISTENER');
-  };
-  sendAddMoveListener = () => {
-    this.sendMessage('ADD_MOVE_LISTENER');
-  };
-  sendAddZoomEndListener = () => {
-    this.sendMessage('ADD_ZOOM_END_LISTENER');
-  };
-  sendAddMoveEndListener = () => {
-    this.sendMessage('ADD_MOVE_END_LISTENER');
-  };
-
   //
   handleMessage = (event) => {
     let msgData;
@@ -198,6 +127,9 @@ export default class WebViewLeaflet extends React.Component {
         case 'MAP_LOADED':
           // // console.log('MAP_LOADED');
           this.setState({ mapNotLoaded: false });
+          if (this.props.hasOwnProperty('onLoad')) {
+            this.props.onLoad(msgData.payload);
+          }
           this.initializeMapAfterLoading();
           break;
         case 'MAP_SENT':
@@ -247,6 +179,7 @@ export default class WebViewLeaflet extends React.Component {
           }
           break;
         case 'LOAD':
+          
           if (this.props.hasOwnProperty('onLoad')) {
             this.props.onLoad(msgData.payload);
           }
@@ -362,12 +295,10 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   sendUpdatedCurrentPositionToHTML = () => {
-
     this.sendMessage('CENTER_MAP_ON_CURRENT_POSITION', {
       currentPosition: this.state.currentPosition,
       panToLocation: this.props.panToLocation
     });
-
   };
 
   validateLocations = (locations) => {

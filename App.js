@@ -238,6 +238,7 @@ export default class App extends React.Component {
             },
             size: [36, 36]
           }}
+          
         />
         <View
           style={{

@@ -37593,21 +37593,22 @@ var LeafletReactHTML = function (_React$Component) {
           // mark the current position on the map
           _this.updateCurrentPostionMarker(mapConfig.currentPosition);
 
+          // add the map event listeners
+          mapEventListeners.addZoomLevelsChangeListener(_this);
+          mapEventListeners.addResizeListener(_this);
+          mapEventListeners.addUnloadListener(_this);
+          mapEventListeners.addViewResetListener(_this);
+          mapEventListeners.addLoadListener(_this);
+          mapEventListeners.addZoomStartListener(_this);
+          mapEventListeners.addMoveStartListener(_this);
+          mapEventListeners.addZoomListener(_this);
+          mapEventListeners.addMoveListener(_this);
+          mapEventListeners.addMoveEndListener(_this);
+          mapEventListeners.addZoomEndListener(_this);
+
           if (BROWSER_TESTING_ENABLED) {
             _this.updateMarkers(_this.state.locations);
             // this.setUpMarkerAlterationTest();
-
-            mapEventListeners.addZoomLevelsChangeListener(_this);
-            mapEventListeners.addResizeListener(_this);
-            mapEventListeners.addUnloadListener(_this);
-            mapEventListeners.addViewResetListener(_this);
-            mapEventListeners.addLoadListener(_this);
-            mapEventListeners.addZoomStartListener(_this);
-            mapEventListeners.addMoveStartListener(_this);
-            mapEventListeners.addZoomListener(_this);
-            mapEventListeners.addMoveListener(_this);
-            mapEventListeners.addMoveEndListener(_this);
-            mapEventListeners.addZoomEndListener(_this);
           }
         } catch (error) {
           _this.printElement('ERROR loading map: ', error);
@@ -37621,7 +37622,10 @@ var LeafletReactHTML = function (_React$Component) {
 
         // send a messaging back indicating the map has been loaded
         _this.addMessageToQueue('MAP_LOADED', {
-          type: 'success'
+          type: 'success',
+          center: _this.map.getCenter(),
+          bounds: _this.map.getBounds(),
+          zoom: _this.map.getZoom()
         });
       }
     };
@@ -37666,39 +37670,39 @@ var LeafletReactHTML = function (_React$Component) {
           switch (msgData.type) {
             // receive an event when the webview is ready
 
-            case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
-              mapEventListeners.addZoomLevelsChangeListener(_this);
+            /* case 'ADD_ZOOM_LEVELS_CHANGE_LISTENER':
+              mapEventListeners.addZoomLevelsChangeListener(this);
               break;
             case 'ADD_RESIZE_LISTENER':
-              mapEventListeners.addResizeListener(_this);
+              mapEventListeners.addResizeListener(this);
               break;
             case 'ADD_UNLOAD_LISTENER':
-              mapEventListeners.addUnloadListener(_this);
+              mapEventListeners.addUnloadListener(this);
               break;
             case 'ADD_VIEW_RESET_LISTENER':
-              mapEventListeners.addViewResetListener(_this);
+              mapEventListeners.addViewResetListener(this);
               break;
             case 'ADD_LOAD_LISTENER':
-              mapEventListeners.addLoadListener(_this);
+              mapEventListeners.addLoadListener(this);
               break;
             case 'ADD_ZOOM_START_LISTENER':
-              mapEventListeners.addZoomStartListener(_this);
+              mapEventListeners.addZoomStartListener(this);
               break;
             case 'ADD_MOVE_START_LISTENER':
-              mapEventListeners.addMoveStartListener(_this);
+              mapEventListeners.addMoveStartListener(this);
               break;
             case 'ADD_ZOOM_LISTENER':
-              mapEventListeners.addZoomListener(_this);
+              mapEventListeners.addZoomListener(this);
               break;
             case 'ADD_MOVE_LISTENER':
-              mapEventListeners.addMoveListener(_this);
+              mapEventListeners.addMoveListener(this);
               break;
             case 'ADD_ZOOM_END_LISTENER':
-              mapEventListeners.addZoomEndListener(_this);
+              mapEventListeners.addZoomEndListener(this);
               break;
             case 'ADD_MOVE_END_LISTENER':
-              mapEventListeners.addMoveEndListener(_this);
-              break;
+              mapEventListeners.addMoveEndListener(this);
+              break;*/
             case 'LOAD_MAP':
               _this.printElement('LOAD_MAP event recieved: ' + msgData.payload);
               _this.loadMap(msgData.payload);
@@ -37706,8 +37710,7 @@ var LeafletReactHTML = function (_React$Component) {
             case 'SHOW_MAP_ATTRIBUTION':
               _this.showMapAttribution();
               break;
-            case 'GET_MAP':
-              _this.printElement('Sending Map');
+            case 'GET_MAP_VIEW_INFO':
               _this.addMessageToQueue('MAP_SENT', { map: _this.map });
               break;
             case 'CENTER_MAP_ON_CURRENT_POSITION':
