@@ -54,6 +54,9 @@ export default class WebViewLeaflet extends React.Component {
           currentPositionMarkerStyle: this.props.currentPositionMarkerStyle
         });
         // let the parent know the webview is ready
+        // put this inside the set state callback to prevent parent
+        // from trying to send a message before the webview thinks the map
+        // is ready
         if (this.props.hasOwnProperty('onWebViewReady')) {
           this.props.onWebViewReady();
         }

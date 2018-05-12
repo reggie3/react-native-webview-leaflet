@@ -1,5 +1,5 @@
 {
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
   "version": "0.4.13",
@@ -29,7 +29,11 @@
     "prop-types": "^15.6.0",
     "util": "^0.10.3",
     "render-if": "^0.1.1",
-    "lodash.uniqby": "^4.7.0"
+    "lodash.uniqby": "^4.7.0",
+    "expo": "^27.0.0",
+    "react": "16.3.1",
+    "react-dom": "^16.3.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz"
   },
   "devDependencies": {
     "assert": "^1.4.1",

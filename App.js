@@ -206,10 +206,10 @@ export default class App extends React.Component {
     });
     const bounds = geolib.getBounds(boundsArray);
 
-    this.webViewLeaflet.fitBounds([
-      [bounds.minLat, bounds.minLng],
-      [bounds.maxLat, bounds.maxLng]
-    ], [75, 75]);
+    this.webViewLeaflet.fitBounds(
+      [[bounds.minLat, bounds.minLng], [bounds.maxLat, bounds.maxLng]],
+      [75, 75]
+    );
   };
 
   render() {
