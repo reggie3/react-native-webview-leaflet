@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Platform, Alert } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
+import geolib from 'geolib';
 
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
@@ -172,9 +173,9 @@ export default class App extends React.Component {
     console.log('onMoveEnd received : ', event);
   };
 
-  onCurrentPositionClicked=()=>{
+  onCurrentPositionClicked = () => {
     console.log('onCurrentPositionClicked received');
-  }
+  };
 
   centerMap = (parkInitials) => {
     console.log(parkInitials);
@@ -191,6 +192,26 @@ export default class App extends React.Component {
     }
   };
 
+  setBoundsForAllMarkers = () => {
+    let boundsArray = this.state.locations.map((location) => {
+      return {
+        latitude: location.coords[0],
+        longitude: location.coords[1]
+      };
+    });
+
+    boundsArray.push({
+      latitude: this.state.coords[0],
+      longitude: this.state.coords[1]
+    });
+    const bounds = geolib.getBounds(boundsArray);
+
+    this.webViewLeaflet.fitBounds([
+      [bounds.minLat, bounds.minLng],
+      [bounds.maxLat, bounds.maxLng]
+    ], [75, 75]);
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -205,6 +226,7 @@ export default class App extends React.Component {
           Animated Map Markers App
         </Text>
         <WebViewLeaflet
+          ref={(component) => (this.webViewLeaflet = component)}
           currentPosition={this.state.coords}
           locations={this.state.locations}
           onMapClicked={this.onMapClicked}
@@ -227,7 +249,7 @@ export default class App extends React.Component {
           showMapAttribution={true}
           defaultIconSize={[16, 16]}
           onCurrentPositionClicked={this.onCurrentPositionClicked}
-          currentPositionMarkerStyle= {{
+          currentPositionMarkerStyle={{
             icon: '🍇',
             animation: {
               name: 'beat',
@@ -238,7 +260,6 @@ export default class App extends React.Component {
             },
             size: [36, 36]
           }}
-          
         />
         <View
           style={{
@@ -251,6 +272,7 @@ export default class App extends React.Component {
           <Button onPress={() => this.centerMap('dw')} text={'🏰'} />
           <Button onPress={() => this.centerMap('bg')} text={'🍺'} />
           <Button onPress={() => this.centerMap('kd')} text={'👑'} />
+          <Button onPress={this.setBoundsForAllMarkers} text={'🗺️'} />
         </View>
       </View>
     );
@@ -261,7 +283,7 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#7b337c',
-    display: 'flex',
+    display: 'flex'
   },
   statusBar: {
     height: Constants.statusBarHeight

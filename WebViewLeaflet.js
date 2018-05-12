@@ -265,6 +265,9 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
+  fitBounds =(bounds, padding)=>{
+    this.sendMessage('FIT_BOUNDS', {bounds, padding});
+  }
   componentWillReceiveProps = (nextProps) => {
     if (
       nextProps.currentPosition &&

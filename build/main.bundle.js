@@ -37704,6 +37704,14 @@ var LeafletReactHTML = function (_React$Component) {
               });
               break;
 
+            case 'FIT_BOUNDS':
+              _this.printElement('FIT_BOUNDS event recieved');
+              _this.printElement(msgData.payload);
+              _this.map.fitBounds(msgData.payload.bounds, {
+                padding: msgData.payload.padding
+              });
+              break;
+
             case 'UPDATE_MARKERS':
               // this.printElement('UPDATE_MARKERS event recieved');
               // this.printElement('markers 0: ' + JSON.stringify(msgData));

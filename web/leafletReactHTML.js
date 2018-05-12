@@ -332,6 +332,14 @@ export default class LeafletReactHTML extends React.Component {
           );
           break;
 
+        case 'FIT_BOUNDS':
+          this.printElement('FIT_BOUNDS event recieved');
+          this.printElement(msgData.payload);
+          this.map.fitBounds(msgData.payload.bounds, {
+            padding: msgData.payload.padding
+          });
+          break;
+
         case 'UPDATE_MARKERS':
           // this.printElement('UPDATE_MARKERS event recieved');
           // this.printElement('markers 0: ' + JSON.stringify(msgData));
