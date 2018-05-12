@@ -53,12 +53,12 @@ export default class WebViewLeaflet extends React.Component {
           showZoomControls: this.props.showZoomControls,
           currentPositionMarkerStyle: this.props.currentPositionMarkerStyle
         });
+        // let the parent know the webview is ready
+        if (this.props.hasOwnProperty('onWebViewReady')) {
+          this.props.onWebViewReady();
+        }
       }
     );
-    // let the parent know the webview is ready
-    if (this.props.hasOwnProperty('onWebViewReady')) {
-      this.props.onWebViewReady();
-    }
   };
 
   // called after the map is loaded
@@ -179,7 +179,6 @@ export default class WebViewLeaflet extends React.Component {
           }
           break;
         case 'LOAD':
-          
           if (this.props.hasOwnProperty('onLoad')) {
             this.props.onLoad(msgData.payload);
           }
@@ -265,9 +264,9 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  fitBounds =(bounds, padding)=>{
-    this.sendMessage('FIT_BOUNDS', {bounds, padding});
-  }
+  fitBounds = (bounds, padding) => {
+    this.sendMessage('FIT_BOUNDS', { bounds, padding });
+  };
   componentWillReceiveProps = (nextProps) => {
     if (
       nextProps.currentPosition &&

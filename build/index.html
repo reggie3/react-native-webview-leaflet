@@ -37734,7 +37734,7 @@ var LeafletReactHTML = function (_React$Component) {
               _this.printElement('FIT_BOUNDS event recieved');
               _this.printElement(msgData.payload);
               _this.map.fitBounds(msgData.payload.bounds, {
-                padding: msgData.payload.padding
+                padding: msgData.payload.hasOwnProperty('padding') ? msgData.payload.padding : [0, 0]
               });
               break;
 

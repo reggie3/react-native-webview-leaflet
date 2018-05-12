@@ -336,7 +336,9 @@ export default class LeafletReactHTML extends React.Component {
           this.printElement('FIT_BOUNDS event recieved');
           this.printElement(msgData.payload);
           this.map.fitBounds(msgData.payload.bounds, {
-            padding: msgData.payload.padding
+            padding: msgData.payload.hasOwnProperty('padding')
+              ? msgData.payload.padding
+              : [0, 0]
           });
           break;
 
