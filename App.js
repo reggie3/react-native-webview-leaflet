@@ -4,6 +4,7 @@ import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
 import geolib from 'geolib';
+import Button from './Button';
 
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
@@ -180,15 +181,15 @@ export default class App extends React.Component {
   centerMap = (parkInitials) => {
     console.log(parkInitials);
     switch (parkInitials) {
-    case 'dw':
-      this.setState({ coords: parkLocations.dw });
-      break;
-    case 'bg':
-      this.setState({ coords: parkLocations.bg });
-      break;
-    case 'kd':
-      this.setState({ coords: parkLocations.kd });
-      break;
+      case 'dw':
+        this.setState({ coords: parkLocations.dw });
+        break;
+      case 'bg':
+        this.setState({ coords: parkLocations.bg });
+        break;
+      case 'kd':
+        this.setState({ coords: parkLocations.kd });
+        break;
     }
   };
 
@@ -266,13 +267,35 @@ export default class App extends React.Component {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-around',
-            alignItems: 'center'
+            alignItems: 'center',
+            paddingVertical: 8,
+            backgroundColor: 'rgba(255,255,255,.50)'
           }}
         >
-          <Button onPress={() => this.centerMap('dw')} text={'🏰'} />
-          <Button onPress={() => this.centerMap('bg')} text={'🍺'} />
-          <Button onPress={() => this.centerMap('kd')} text={'👑'} />
-          <Button onPress={this.setBoundsForAllMarkers} text={'🗺️'} />
+          <Button
+            onPress={() => this.centerMap('dw')}
+            borderWidth={0}
+            fontSize={30}
+            text={'🏰'}
+          />
+          <Button
+            onPress={() => this.centerMap('bg')}
+            borderWidth={0}
+            fontSize={30}
+            text={'🍺'}
+          />
+          <Button
+            onPress={() => this.centerMap('kd')}
+            borderWidth={0}
+            fontSize={30}
+            text={'👑'}
+          />
+          <Button
+            onPress={this.setBoundsForAllMarkers}
+            borderWidth={0}
+            fontSize={30}
+            text={'🗺️'}
+          />
         </View>
       </View>
     );
@@ -287,5 +310,11 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     height: Constants.statusBarHeight
+  },
+  controlButton: {
+    height: 40,
+    width: 40,
+    borderRadius: 5,
+    backgroundColor: 'dodgerblue'
   }
 });
