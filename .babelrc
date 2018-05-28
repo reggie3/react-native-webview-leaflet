@@ -1,0 +1,11 @@
+{
+  "presets": ["babel-preset-expo"],
+  "env": {
+    "development": {
+      "plugins": ["transform-react-jsx-source", "transform-regenerator"]
+    },
+    "production": {
+      "plugins": ["transform-react-jsx-source", "transform-regenerator"]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/**/*
+.expo/*
+npm-debug.*
+secrets.*
+publishingDirections.txt
+react-native-webview-leaflet
