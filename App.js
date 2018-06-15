@@ -4,10 +4,12 @@ import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
 import Button from './Button';
+import Modal_EmojiSelector from './Modal_EmojiSelector';
 
 const geolib = require('geolib');
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+
 let parkLocations = {
   dw: [28.417839, -81.563808],
   bg: [37.23416573, -76.63999744],
@@ -25,11 +27,12 @@ export default class App extends React.Component {
       location: null,
       errorMessage: null,
       locations: [...testLocations],
-      coords: []
+      coords: [],
+      showEmojiSelectorModal: false
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
         errorMessage:
@@ -126,7 +129,18 @@ export default class App extends React.Component {
   onMarkerClicked = (id) => {
     console.log(`Marker Clicked: ${id}`);
     this.showAlert('Marker Clicked', `Marker ID = ${id}`);
+    this.setState({clickedMarkerID: id, showEmojiSelector: true})
   };
+
+  setEmojiForMarker=(emoji)=>{
+    debugger;
+  }
+  onCloseEmojiSelectorModal=()=>{
+    this.setState({showEmojiSelectorModal: false})
+  }
+  onOpenEmojiSelectorModal=()=>{
+    this.setState({showEmojiSelectorModal: true})
+  }
 
   showAlert = (title, body) => {
     Alert.alert(
@@ -297,9 +311,22 @@ export default class App extends React.Component {
             text={'🗺️'}
           />
         </View>
+       {/*  <Modal_EmojiSelector
+          visible={this.state.showEmojiSelectorModal}
+          onClose={this.onCloseEmojiSelectorModal}
+          getEmojiCallback={emoji => {
+            this.setState({
+              showEmojiSelectorModal: false,
+            },()=>{
+              this.setEmojiForMarker(emoji)
+            });
+          }}
+        /> */}
       </View>
     );
   }
+
+
 }
 
 const styles = StyleSheet.create({

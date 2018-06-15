@@ -3,16 +3,13 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
-  Text,
   WebView,
   Alert,
-  Platform,
-  Touchable
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import Button from './Button';
-import Expo from 'expo';
 const isValidCoordinates = require('is-valid-coordinates');
 const uniqby = require('lodash.uniqby');
 const INDEX_FILE = require(`./assets/dist/index.html`);
@@ -128,7 +125,7 @@ export default class WebViewLeaflet extends React.Component {
 
         switch (msgData.type) {
         case 'MAP_LOADED':
-          // // console.log('MAP_LOADED');
+          console.log('MAP_LOADED');
           this.setState({ mapNotLoaded: false });
           if (this.props.hasOwnProperty('onLoad')) {
             this.props.onLoad(msgData.payload);
@@ -270,34 +267,45 @@ export default class WebViewLeaflet extends React.Component {
   fitBounds = (bounds, padding) => {
     this.sendMessage('FIT_BOUNDS', { bounds, padding });
   };
-  componentWillReceiveProps = (nextProps) => {
+
+
+  static getDerivedStateFromProps = (props, prevState) => {
     if (
-      nextProps.currentPosition &&
-      JSON.stringify(this.state.currentPosition) !==
-        JSON.stringify(nextProps.currentPosition)
+      props.currentPosition &&
+      JSON.stringify(prevState.currentPosition) !==
+        JSON.stringify(props.currentPosition)
     ) {
-      if (this.props.currentPosition.length > 0) {
-        const lat = nextProps.currentPosition[0];
-        const long = nextProps.currentPosition[1];
-        if (this.coordinateValidation(lat, long)) {
-          this.setState({ currentPosition: [lat, long] }, () => {
-            this.sendUpdatedCurrentPositionToHTML();
-          });
-        }
+      if (props.currentPosition.length > 0) {
+        const lat = props.currentPosition[0];
+        const long = props.currentPosition[1];
+        if (isValidCoordinates(long, lat)) {
+          return {
+            ...prevState,
+            currentPosition: [lat, long]
+          }
+        }  
       }
+      return null;
+    }
+      return null;
+  };
+
+  componentDidUpdate =(prevProps, prevState, snapshot)=>{
+    if(prevState.currentPosition !== this.state.currentPosition){
+      this.sendUpdatedCurrentPositionToHTML();
     }
 
-    if (!this.state.webViewNotLoaded) {
+    if (prevState.webViewNotLoaded) {
       if (
-        nextProps.hasOwnProperty('locations') &&
+        prevProps.hasOwnProperty('locations') &&
         JSON.stringify(this.state.locations) !==
-          JSON.stringify(nextProps.locations)
+          JSON.stringify(prevProps.locations)
       ) {
-        const newLocations = nextProps.locations;
+        const newLocations = prevProps.locations;
         this.validateLocations(newLocations);
       }
     }
-  };
+  }
 
   sendUpdatedCurrentPositionToHTML = () => {
     this.sendMessage('CENTER_MAP_ON_CURRENT_POSITION', {

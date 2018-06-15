@@ -17,7 +17,7 @@ import locations from './testLocations';
 import * as mapEventListeners from './mapEventListeners';
 
 const BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-const SHOW_DEBUG_INFORMATION = false;
+const SHOW_DEBUG_INFORMATION = true;
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 let messageCounter = 0;
@@ -111,20 +111,21 @@ export default class LeafletReactHTML extends React.Component {
 
   loadMap = (
     mapConfig = {
-      defaultIconSize: [16, 16],
+      defaultIconSize: [64, 64],
       showMapAttribution: true,
       currentPosition: [36.56, -76.17]
     }
   ) => {
-    this.printElement('loading map: ');
+    this.printElement('loading map: ', mapConfig);
     // set the default icon size
     this.defaultIconSize = mapConfig.defaultIconSize;
     this.currentPositionMarkerStyle = mapConfig.currentPositionMarkerStyle;
 
     if (!this.map) {
       try {
+        this.printElement('attempting to load map mapConfing:');
         // set up map
-        this.map = L.map('map', {
+        this.map = L.map('mapDiv', {
           center: mapConfig.currentPosition,
           zoomControl: mapConfig.showZoomControls,
           zoom: mapConfig.zoom,
@@ -132,6 +133,12 @@ export default class LeafletReactHTML extends React.Component {
           attributionControl: mapConfig.showMapAttribution,
           touchZoom: true
         });
+
+/*         this.map = L.map('map').setView([51.505, -0.09], 13);
+ */
+
+        this.printElement('Map Loaded: this.map = ', this.map);
+        
         // Initialize the base layer
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 20,
@@ -583,7 +590,8 @@ export default class LeafletReactHTML extends React.Component {
           left: 0,
           right: 0,
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          backgroundColor: 'lightgoldenrod'
         }}
         ref={(component) => {
           this.webComponent = component;
@@ -592,9 +600,10 @@ export default class LeafletReactHTML extends React.Component {
         <div
           style={{
             position: 'relative',
-            flex: 1
+            flex: 1,
+            backgroundColor: 'lightblue'
           }}
-          id="map"
+          id="mapDiv"
         />
         {renderIf(SHOW_DEBUG_INFORMATION)(
           <div

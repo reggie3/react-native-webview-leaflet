@@ -38122,7 +38122,7 @@ var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node
 
 
 var BROWSER_TESTING_ENABLED = false; // flag to enable testing directly in browser
-var SHOW_DEBUG_INFORMATION = false;
+var SHOW_DEBUG_INFORMATION = true;
 var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 var messageCounter = 0;
@@ -38202,20 +38202,21 @@ var LeafletReactHTML = function (_React$Component) {
 
     _this.loadMap = function () {
       var mapConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-        defaultIconSize: [16, 16],
+        defaultIconSize: [64, 64],
         showMapAttribution: true,
         currentPosition: [36.56, -76.17]
       };
 
-      _this.printElement('loading map: ');
+      _this.printElement('loading map: ', mapConfig);
       // set the default icon size
       _this.defaultIconSize = mapConfig.defaultIconSize;
       _this.currentPositionMarkerStyle = mapConfig.currentPositionMarkerStyle;
 
       if (!_this.map) {
         try {
+          _this.printElement('attempting to load map mapConfing:');
           // set up map
-          _this.map = L.map('map', {
+          _this.map = L.map('mapDiv', {
             center: mapConfig.currentPosition,
             zoomControl: mapConfig.showZoomControls,
             zoom: mapConfig.zoom,
@@ -38223,6 +38224,12 @@ var LeafletReactHTML = function (_React$Component) {
             attributionControl: mapConfig.showMapAttribution,
             touchZoom: true
           });
+
+          /*         this.map = L.map('map').setView([51.505, -0.09], 13);
+           */
+
+          _this.printElement('Map Loaded: this.map = ', _this.map);
+
           // Initialize the base layer
           L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
@@ -38576,7 +38583,8 @@ var LeafletReactHTML = function (_React$Component) {
             left: 0,
             right: 0,
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            backgroundColor: 'lightgoldenrod'
           },
           ref: function ref(component) {
             _this.webComponent = component;
@@ -38585,9 +38593,10 @@ var LeafletReactHTML = function (_React$Component) {
         _react2.default.createElement('div', {
           style: {
             position: 'relative',
-            flex: 1
+            flex: 1,
+            backgroundColor: 'lightblue'
           },
-          id: 'map'
+          id: 'mapDiv'
         }),
         (0, _renderIf2.default)(SHOW_DEBUG_INFORMATION)(_react2.default.createElement(
           'div',

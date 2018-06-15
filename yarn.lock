@@ -3836,6 +3836,10 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+emoji-datasource@^4.0.3:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/emoji-datasource/-/emoji-datasource-4.0.4.tgz#516b9ab2f34569e468e4e3753a34a47a0b2b5aa3"
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -4283,9 +4287,9 @@ expect@^22.4.0:
     jest-message-util "^22.4.3"
     jest-regex-util "^22.4.3"
 
-expo@^27.0.1:
-  version "27.0.2"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-27.0.2.tgz#1ae86d71f8e66fdc6783f7393354671e8197b7ef"
+expo@^27.0.0:
+  version "27.1.0"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-27.1.0.tgz#c8ec4a7abaf9ae96c6f2863320670e960ae2d78a"
   dependencies:
     "@expo/vector-icons" "^6.3.1"
     "@expo/websql" "^1.0.1"
@@ -9108,6 +9112,14 @@ react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
+react-native-emoji-selector@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/react-native-emoji-selector/-/react-native-emoji-selector-0.1.6.tgz#fa8e6802a2390f81ff7fb06f096f60b67774a228"
+  dependencies:
+    emoji-datasource "^4.0.3"
+    prop-types "^15.6.0"
+    string.fromcodepoint "^0.2.1"
+
 react-native-gesture-handler@1.0.0-alpha.41:
   version "1.0.0-alpha.41"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.41.tgz#5667a1977ab148339ec2e7b0a94ad4b959cf09e5"
@@ -10277,6 +10289,10 @@ string-width@^1.0.1, string-width@^1.0.2:
   dependencies:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
+
+string.fromcodepoint@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/string.fromcodepoint/-/string.fromcodepoint-0.2.1.tgz#8d978333c0bc92538f50f383e4888f3e5619d653"
 
 string_decoder@^1.0.0, string_decoder@~1.1.1:
   version "1.1.1"
