@@ -611,7 +611,8 @@ export default class LeafletReactHTML extends React.Component {
               backgroundColor: 'orange',
               maxHeight: 200,
               overflow: 'auto',
-              padding: 5
+              padding: 5,
+              zIndex: 5000
             }}
             id="messages"
           >

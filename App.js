@@ -311,7 +311,7 @@ export default class App extends React.Component {
             text={'🗺️'}
           />
         </View>
-       {/*  <Modal_EmojiSelector
+        {/* <Modal_EmojiSelector
           visible={this.state.showEmojiSelectorModal}
           onClose={this.onCloseEmojiSelectorModal}
           getEmojiCallback={emoji => {

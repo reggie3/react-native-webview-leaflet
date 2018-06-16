@@ -25,7 +25,7 @@ const Modal_EmojiSelector = props => {
               style={{
                 flex: 1,
                 width: '100%',
-                backgroundColor: 'white',
+                backgroundColor: 'red',
               }}>
               <EmojiSelector
                 category={Categories.nature}
