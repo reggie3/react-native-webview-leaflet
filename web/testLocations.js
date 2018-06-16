@@ -53,7 +53,7 @@ const locations = [
       interationCount
     }
   },*/
-  {
+   {
     id: Math.floor(Math.random() * 1000),
     coords: [36.60061515, -76.48888338],
     icon: svgIcons.greenCircle,
@@ -63,7 +63,7 @@ const locations = [
       delay,
       interationCount
     }
-  }
+  } 
 
   /* {
     id: Math.floor(Math.random() * 1000),

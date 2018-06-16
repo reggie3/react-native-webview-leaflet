@@ -17,6 +17,9 @@ const npmDeps = {
   "util": "^0.10.3",
   "render-if": "^0.1.1",
   "lodash.uniqby": "^4.7.0",
+  "geolib": "^2.0.24",
+  "react-leaflet": "^2.0.0-rc.1",
+  "react-native-emoji-selector": "^0.1.6"
 };
 // additional dependencies for expo app
 const expoDeps = {
@@ -107,8 +110,9 @@ gulp.task('forExpo', (done) => {
 });
 
 gulp.task('copy-build-files', (done) => {
-  gulp.src('./build/index.html').pipe(gulp.dest('./assets/dist/'));
-  gulp.src('./build/main.bundle.js.map').pipe(gulp.dest('./assets/dist/'));
+  gulp.src('./web/index.html').pipe(gulp.dest('./assets/dist/'));
+  gulp.src('./build/bundle.js.map').pipe(gulp.dest('./assets/dist/'));
+  gulp.src('./build/bundle.js').pipe(gulp.dest('./assets/dist/'));
   done();
 });
 
