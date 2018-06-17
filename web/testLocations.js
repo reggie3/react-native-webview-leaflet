@@ -10,13 +10,13 @@ const locations = [
     id: 2,
     coords: [37.06452161, -75.67364786],
     icon: '😴',
-    size: [64, 64],
+    size: [64, 64]/* ,
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
       interationCount
-    }
+    } */
   },
   {
     id: 1,

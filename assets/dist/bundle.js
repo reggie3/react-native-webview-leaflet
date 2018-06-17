@@ -45612,7 +45612,7 @@ var mapComponent = function (_Component) {
     _this.createDivIcon = function (location) {
       var divIcon = _leaflet2.default.divIcon({
         className: 'clearMarkerContainer',
-        html: _this.getAnimatedHTMLString(location.icon || '📍', location.animation || null, location.size || [24, 24])
+        html: location.animation ? _this.getAnimatedHTMLString(location.icon || '📍', location.animation || null, location.size || [24, 24]) : _this.getUnanimatedHTMLString(location.icon, location.size)
       });
       return divIcon;
     };
@@ -45623,6 +45623,14 @@ var mapComponent = function (_Component) {
       var iconSizeString = '<div style=\'font-size: ' + Math.max(size[0], size[1]) + 'px\'>';
 
       return '<div class=\'animationContainer\' style="\n      animation-name: ' + (animation.name ? animation.name : 'bounce') + '; \n      animation-duration: ' + (animation.duration ? animation.duration : 1) + 's ;\n      animation-delay: ' + (animation.delay ? animation.delay : 0) + 's;\n      animation-direction: ' + (animation.direction ? animation.direction : 'normal') + ';\n      animation-iteration-count: ' + (animation.interationCount ? animation.interationCount : 'infinite') + '">\n      ' + iconSizeString + '\n      ' + icon + '\n      </div>\n      </div>';
+    };
+
+    _this.getUnanimatedHTMLString = function (icon, animation) {
+      var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [24, 24];
+
+      var iconSizeString = '<div style=\'font-size: ' + Math.max(size[0], size[1]) + 'px\'>';
+
+      return '<div class=\'unanimatedIconContainer\' >\n      ' + iconSizeString + '\n      ' + icon + '\n      </div>\n      </div>';
     };
 
     _this.sendMessage = function (payload) {
@@ -45897,13 +45905,13 @@ var locations = [{
 	id: 2,
 	coords: [37.06452161, -75.67364786],
 	icon: '😴',
-	size: [64, 64],
-	animation: {
-		name: animations[Math.floor(Math.random() * animations.length)],
-		duration: duration,
-		delay: delay,
-		interationCount: interationCount
-	}
+	size: [64, 64] /* ,
+                animation: {
+                name: animations[Math.floor(Math.random() * animations.length)],
+                duration,
+                delay,
+                interationCount
+                } */
 }, {
 	id: 1,
 	coords: [36.46410354, -75.6432701],

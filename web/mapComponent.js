@@ -126,11 +126,12 @@ class mapComponent extends Component {
   createDivIcon = (location) => {
     let divIcon = L.divIcon({
       className: 'clearMarkerContainer',
-      html: this.getAnimatedHTMLString(
+      html: location.animation? this.getAnimatedHTMLString(
         location.icon || '📍',
         location.animation || null,
         location.size || [24, 24]
-      )
+      ) :
+      this.getUnanimatedHTMLString(location.icon, location.size)
     });
     return divIcon;
   };
@@ -154,6 +155,19 @@ class mapComponent extends Component {
       animation-iteration-count: ${
         animation.interationCount ? animation.interationCount : 'infinite'
       }">
+      ${iconSizeString}
+      ${icon}
+      </div>
+      </div>`;
+  };
+
+  getUnanimatedHTMLString = (icon, animation, size = [24, 24]) => {
+    let iconSizeString = `<div style='font-size: ${Math.max(
+      size[0],
+      size[1]
+    )}px'>`;
+
+    return `<div class='unanimatedIconContainer' >
       ${iconSizeString}
       ${icon}
       </div>
