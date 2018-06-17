@@ -5,17 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug in Exponent",
+            "program": "${workspaceRoot}/.vscode/launchReactNative.js",
+            "type": "reactnative",
+            "request": "launch",
+            "platform": "exponent",
+            "sourceMaps": true,
+            "outDir": "${workspaceRoot}/.vscode/.react"
+        },
+        {
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
-            "port": 5500,
+            "port": 5501,
             "webRoot": "${workspaceFolder}"
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "http://127.0.0.1:5500/assets/dist/index.html",
+            "url": "http://127.0.0.1:5501/assets/dist/index.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

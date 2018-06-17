@@ -27,8 +27,9 @@ export default class App extends React.Component {
       location: null,
       errorMessage: null,
       locations: [...testLocations],
-      coords: [],
-      showEmojiSelectorModal: false
+      coords: undefined,
+      showEmojiSelectorModal: false,
+      mapState: {}
     };
   }
 
@@ -104,8 +105,40 @@ export default class App extends React.Component {
     return newMarkers;
   };
 
-  onWebViewReady = () => {
-    // setInterval(this.updateMarkerSpeed.bind(this), 1000);
+  componentDidUpdate = (prevProps, prevState) => {
+    // do these things once the map has loaded
+    if (!prevState.mapState.mapLoaded && this.state.mapState.mapLoaded) {
+      this.webViewLeaflet.sendMessage({
+        zoom: 6,
+        showAttributionControl: false,
+        locations: this.state.locations
+      });
+    }
+
+    // do these things only if the map has been loaded
+    if (this.state.mapState.mapLoaded) {
+      // if the user's location has changed
+      if (prevState.coords !== this.state.coords) {
+        this.webViewLeaflet.sendMessage({
+          centerPosition: this.state.coords,
+          locations: [
+            ...this.state.locations,
+            {
+              id: 0,
+              coords: this.state.coords,
+              icon: '❤️',
+              size: [24, 24],
+              animation: {
+                name: 'pulse',
+                duration: '.5',
+                delay: 0,
+                interationCount: 'infinite'
+              }
+            }
+          ]
+        });
+      }
+    }
   };
 
   updateMarkerSpeed = () => {
@@ -121,26 +154,42 @@ export default class App extends React.Component {
     this.setState({ locations: updatedLocations });
   };
 
-  onMapClicked = (coords) => {
-    console.log(`Map Clicked: app received: ${coords}`);
-    this.showAlert('Map Clicked', `Coordinates = ${coords}`);
+  onMapClicked = ({ payload }) => {
+    console.log(`Map Clicked: app received: ${payload.coords}`);
+    this.showAlert('Map Clicked', `Coordinates = ${payload.coords}`);
   };
 
-  onMarkerClicked = (id) => {
-    console.log(`Marker Clicked: ${id}`);
-    this.showAlert('Marker Clicked', `Marker ID = ${id}`);
-    this.setState({clickedMarkerID: id, showEmojiSelector: true})
+  onMapMarkerClicked = ({ payload }) => {
+    console.log(`Marker Clicked: ${payload.id}`);
+    this.showAlert('Marker Clicked', `Marker ID = ${payload.id}`);
+    this.setState({ 
+      clickedMarkerID: payload.id, 
+      locations: this.state.locations.map((location)=>{
+        if(location.id === payload.id){
+          return {...location,
+            icon: location.icon = '✖️'
+          }
+        }
+        return location;
+      }) 
+    }, ()=>{
+      // send the updated locations
+      this.webViewLeaflet.sendMessage({
+        locations: this.state.locations
+      });
+    });
+    
   };
 
-  setEmojiForMarker=(emoji)=>{
+  setEmojiForMarker = (emoji) => {
     debugger;
-  }
-  onCloseEmojiSelectorModal=()=>{
-    this.setState({showEmojiSelectorModal: false})
-  }
-  onOpenEmojiSelectorModal=()=>{
-    this.setState({showEmojiSelectorModal: true})
-  }
+  };
+  onCloseEmojiSelectorModal = () => {
+    this.setState({ showEmojiSelectorModal: false });
+  };
+  onOpenEmojiSelectorModal = () => {
+    this.setState({ showEmojiSelectorModal: true });
+  };
 
   showAlert = (title, body) => {
     Alert.alert(
@@ -151,9 +200,6 @@ export default class App extends React.Component {
     );
   };
 
-  getMapCallback = (map) => {
-    console.log('getMapCallback received : ', map);
-  };
   onZoomLevelsChange = (event) => {
     console.log('onZoomLevelsChange received : ', event);
   };
@@ -167,6 +213,10 @@ export default class App extends React.Component {
     console.log('onViewReset received : ', event);
   };
   onLoad = (event) => {
+    this.setState({
+      ...this.state,
+      mapState: { ...this.state.mapState, mapLoaded: true }
+    });
     console.log('onLoad received : ', event);
   };
   onZoomStart = (event) => {
@@ -221,10 +271,18 @@ export default class App extends React.Component {
     });
     const bounds = geolib.getBounds(boundsArray);
 
-    this.webViewLeaflet.fitBounds(
-      [[bounds.minLat, bounds.minLng], [bounds.maxLat, bounds.maxLng]],
-      [75, 75]
-    );
+    this.webViewLeaflet.sendMessage({
+      bounds: [[bounds.minLat, bounds.minLng], [bounds.maxLat, bounds.maxLng]],
+      padding: [100, 100]
+    });
+  };
+
+  // update the map object in the component's state
+  onUpdateMapState = (data) => {
+    this.setState({
+      ...this.state,
+      mapState: { ...this.mapState, ...data }
+    });
   };
 
   render() {
@@ -242,14 +300,10 @@ export default class App extends React.Component {
         </Text>
         <WebViewLeaflet
           ref={(component) => (this.webViewLeaflet = component)}
-          currentPosition={this.state.coords}
-          locations={this.state.locations}
-          onMapClicked={this.onMapClicked}
-          onMarkerClicked={this.onMarkerClicked}
-          onWebViewReady={this.onWebViewReady}
           panToLocation={false}
           zoom={10}
           showZoomControls={true}
+          eventReceiver={this} // the component that will receive map events
           onZoomLevelsChange={this.onZoomLevelsChange}
           onResize={this.onResize}
           onUnload={this.onUnload}
@@ -311,7 +365,7 @@ export default class App extends React.Component {
             text={'🗺️'}
           />
         </View>
-       {/*  <Modal_EmojiSelector
+        {/*  <Modal_EmojiSelector
           visible={this.state.showEmojiSelectorModal}
           onClose={this.onCloseEmojiSelectorModal}
           getEmojiCallback={emoji => {
@@ -325,8 +379,6 @@ export default class App extends React.Component {
       </View>
     );
   }
-
-
 }
 
 const styles = StyleSheet.create({

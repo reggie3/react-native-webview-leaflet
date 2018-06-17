@@ -41,6 +41,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz",
     "react-native-emoji-selector": "^0.1.6",
     "render-if": "^0.1.1",
+    "type-of-is": "^3.5.1",
     "util": "^0.11.0"
   },
   "devDependencies": {
