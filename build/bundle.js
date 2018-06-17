@@ -45726,8 +45726,11 @@ var mapComponent = function (_Component) {
             },
             ref: this.mapRef,
             center: this.state.centerPosition,
-            zoom: this.state.zoom,
             attributionControl: this.state.showAttributionControl,
+            zoomControl: this.state.showZoomControl,
+            panToLocation: this.state.panToLocation,
+            zoom: this.state.zoom,
+
             onClick: function onClick(event) {
               _this2.onMapEvent('onMapClicked', {
                 coords: [event.latlng.lat, event.latlng.lng]
