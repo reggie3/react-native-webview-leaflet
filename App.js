@@ -221,13 +221,13 @@ export default class App extends React.Component {
   onViewReset = (event) => {
     console.log('onViewReset received : ', event);
   };
-  onLoad = (event) => {
+  /* onLoad = (event) => {
     this.setState({
       ...this.state,
       mapState: { ...this.state.mapState, mapLoaded: true }
     });
     console.log('onLoad received : ', event);
-  };
+  }; */
   onZoomStart = (event) => {
     console.log('onZoomEnd received : ', event);
   };

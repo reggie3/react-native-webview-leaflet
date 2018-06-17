@@ -54,13 +54,13 @@ export default class WebViewLeaflet extends React.Component {
         // if we receive an event, then pass it to the parent by calling
         // the parent function wtith the same name as the event, and passing
         // the entire payload as a parameter
-        if (msgData.payload.event) {
-          this.props.eventReceiver[msgData.payload.event](msgData.payload) || null;
+        if (msgData.payload.event && 
+            this.props.eventReceiver.hasOwnProperty(msgData.payload.event) ) {
+          this.props.eventReceiver[msgData.payload.event](msgData.payload);
         }
         // WebViewLeaflet will also need to know of some state changes, such as
         // when the mapComponent is mounted
         else {
-          this.props.onUpdateMapState(msgData.payload);
           this.props.eventReceiver.setState({
             state: {
               ...this.props.eventReceiver.state,
