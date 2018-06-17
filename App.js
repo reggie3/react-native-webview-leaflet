@@ -4,7 +4,6 @@ import { Constants, Location, Permissions } from 'expo';
 import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
 import Button from './Button';
-import Modal_EmojiSelector from './Modal_EmojiSelector';
 
 const geolib = require('geolib');
 const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
@@ -347,17 +346,6 @@ export default class App extends React.Component {
             text={'🗺️'}
           />
         </View>
-        {/*  <Modal_EmojiSelector
-          visible={this.state.showEmojiSelectorModal}
-          onClose={this.onCloseEmojiSelectorModal}
-          getEmojiCallback={emoji => {
-            this.setState({
-              showEmojiSelectorModal: false,
-            },()=>{
-              this.setEmojiForMarker(emoji)
-            });
-          }}
-        /> */}
       </View>
     );
   }

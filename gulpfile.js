@@ -15,11 +15,9 @@ const npmDeps = {
   "leaflet.markercluster": "^1.3.0",
   "prop-types": "^15.6.0",
   "util": "^0.10.3",
-  "render-if": "^0.1.1",
   "lodash.uniqby": "^4.7.0",
   "geolib": "^2.0.24",
   "react-leaflet": "^2.0.0-rc.1",
-  "react-native-emoji-selector": "^0.1.6"
 };
 // additional dependencies for expo app
 const expoDeps = {

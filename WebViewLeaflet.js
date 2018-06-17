@@ -8,7 +8,6 @@ import {
   Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
-import renderIf from 'render-if';
 import Button from './Button';
 
 const Type = require('type-of-is');
