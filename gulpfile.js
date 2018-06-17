@@ -69,27 +69,33 @@ gulp.task('webpack', (done) => {
   });
 });
 
-gulp.task('npm-publish', () => {
-  return run('npm publish').exec();
+gulp.task('npm-publish', (done) => {
+	return run('npm publish').exec();
+	done();
 });
 
-gulp.task('npm-publish-beta', () => {
-  return run('npm publish --tag beta').exec();
+gulp.task('npm-publish-beta', (done) => {
+	return run('npm publish --tag beta').exec();
+	done();
 });
 
-gulp.task('git-add', () => {
-  return run('git add .').exec();
+gulp.task('git-add', (done) => {
+	return run('git add .').exec();
+	done();
 });
 
-gulp.task('git-commit', () => {
-  return run('git commit -m "publishing"').exec();
+gulp.task('git-commit', (done) => {
+	return run('git commit -m "publishing"').exec();
+
+	done();
 });
 
-gulp.task('git-push', () => {
-  return run('git push origin master').exec();
+gulp.task('git-push', (done) => {
+	return run('git push origin master').exec();
+	done();
 });
 
-gulp.task('git-push-beta', () => {
+gulp.task('git-push-beta', (done) => {
   return run('git push origin 5-with-sizable-icons').exec();
 });
 

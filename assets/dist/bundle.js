@@ -45521,7 +45521,7 @@ var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 _leaflet2.default.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-var SHOW_DEBUG_INFORMATION = true;
+var SHOW_DEBUG_INFORMATION = false;
 var ENABLE_BROWSER_TESTING = false;
 
 var mapComponent = function (_Component) {
