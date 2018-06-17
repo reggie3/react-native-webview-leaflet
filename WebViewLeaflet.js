@@ -145,7 +145,7 @@ export default class WebViewLeaflet extends React.Component {
             scalesPageToFit={false}
             mixedContentMode={'always'}
           />
-          {renderIf(this.props.centerButton)(
+          { this.props.centerButton ? (
             <View
               style={{
                 position: 'absolute',
@@ -156,7 +156,7 @@ export default class WebViewLeaflet extends React.Component {
             >
               <Button onPress={this.centerMapOnCurrentPosition} text={'🎯'} />
             </View>
-          )}
+          ): null}
         </View>
       </View>
     );
