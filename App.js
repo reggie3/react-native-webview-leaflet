@@ -29,7 +29,12 @@ export default class App extends React.Component {
       locations: [...testLocations],
       coords: undefined,
       showEmojiSelectorModal: false,
-      mapState: {}
+      mapState: {
+        showAttributionControl: false,
+        showZoomControls: false,
+        panToLocation: false,
+        zoom: 10
+      }
     };
   }
 
@@ -110,8 +115,9 @@ export default class App extends React.Component {
     if (!prevState.mapState.mapLoaded && this.state.mapState.mapLoaded) {
       this.webViewLeaflet.sendMessage({
         zoom: 6,
-        showAttributionControl: false,
-        locations: this.state.locations
+        locations: this.state.locations,
+        showAttributionControl: this.state.mapState.showAttributionControl,
+        showZoomControl: this.state.mapState.showZoomControl
       });
     }
 
@@ -121,6 +127,7 @@ export default class App extends React.Component {
       if (prevState.coords !== this.state.coords) {
         this.webViewLeaflet.sendMessage({
           centerPosition: this.state.coords,
+
           locations: [
             ...this.state.locations,
             {
@@ -162,23 +169,26 @@ export default class App extends React.Component {
   onMapMarkerClicked = ({ payload }) => {
     console.log(`Marker Clicked: ${payload.id}`);
     this.showAlert('Marker Clicked', `Marker ID = ${payload.id}`);
-    this.setState({ 
-      clickedMarkerID: payload.id, 
-      locations: this.state.locations.map((location)=>{
-        if(location.id === payload.id){
-          return {...location,
-            icon: location.icon = '✖️'
+    this.setState(
+      {
+        clickedMarkerID: payload.id,
+        locations: this.state.locations.map((location) => {
+          if (location.id === payload.id) {
+            return {
+              ...location,
+              icon: (location.icon = '✖️')
+            };
           }
-        }
-        return location;
-      }) 
-    }, ()=>{
-      // send the updated locations
-      this.webViewLeaflet.sendMessage({
-        locations: this.state.locations
-      });
-    });
-    
+          return location;
+        })
+      },
+      () => {
+        // send the updated locations
+        this.webViewLeaflet.sendMessage({
+          locations: this.state.locations
+        });
+      }
+    );
   };
 
   setEmojiForMarker = (emoji) => {
@@ -300,35 +310,7 @@ export default class App extends React.Component {
         </Text>
         <WebViewLeaflet
           ref={(component) => (this.webViewLeaflet = component)}
-          panToLocation={false}
-          zoom={10}
-          showZoomControls={true}
           eventReceiver={this} // the component that will receive map events
-          onZoomLevelsChange={this.onZoomLevelsChange}
-          onResize={this.onResize}
-          onUnload={this.onUnload}
-          onViewReset={this.onViewReset}
-          onLoad={this.onLoad}
-          onZoomStart={this.onZoomStart}
-          onMoveStart={this.onMoveStart}
-          onZoom={this.onZoom}
-          onMove={this.onMove}
-          onZoomEnd={this.onZoomEnd}
-          onMoveEnd={this.onMoveEnd}
-          showMapAttribution={true}
-          defaultIconSize={[16, 16]}
-          onCurrentPositionClicked={this.onCurrentPositionClicked}
-          currentPositionMarkerStyle={{
-            icon: '🍇',
-            animation: {
-              name: 'beat',
-              duration: 0.25,
-              delay: 0,
-              interationCount: 'infinite',
-              direction: 'alternate'
-            },
-            size: [36, 36]
-          }}
         />
         <View
           style={{
