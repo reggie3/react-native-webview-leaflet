@@ -125,15 +125,11 @@ gulp.task('build', gulp.series('webpack', 'copy-build-files'));
 gulp.task(
   'prod',
   gulp.series(
-    'forNPM',
-    'build',
-    gulp.parallel(
-      gulp.series('git-add', 'git-commit', 'git-push'),
-      'npm-publish'
-    ),
-    'forExpo',
-    'copy-build-files'
-  )
+		'forNPM',
+		'build',
+		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
+		'forExpo'
+	)
 );
 
 gulp.task(
