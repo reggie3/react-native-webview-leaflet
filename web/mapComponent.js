@@ -4,11 +4,11 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import L, { divIcon } from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
-
-import '/normalize.min.css';
 import './leaflet.css';
-/* import 'leaflet/dist/images/marker-icon-2x.png';
-import 'leaflet/dist/images/marker-shadow.png'; */
+import '/normalize.min.css';
+
+import 'leaflet/dist/images/marker-icon-2x.png';
+import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');

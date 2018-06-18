@@ -1053,6 +1053,28 @@ function isNumber (n) {
 
 /***/ }),
 
+/***/ "./node_modules/leaflet/dist/images/marker-icon-2x.png":
+/*!*************************************************************!*\
+  !*** ./node_modules/leaflet/dist/images/marker-icon-2x.png ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "images/marker-icon-2x.png";
+
+/***/ }),
+
+/***/ "./node_modules/leaflet/dist/images/marker-shadow.png":
+/*!************************************************************!*\
+  !*** ./node_modules/leaflet/dist/images/marker-shadow.png ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "images/marker-shadow.png";
+
+/***/ }),
+
 /***/ "./node_modules/leaflet/dist/leaflet-src.js":
 /*!**************************************************!*\
   !*** ./node_modules/leaflet/dist/leaflet-src.js ***!
@@ -45477,9 +45499,13 @@ var _testLocations2 = _interopRequireDefault(_testLocations);
 
 __webpack_require__(/*! ./markerAnimations.css */ "./web/markerAnimations.css");
 
+__webpack_require__(/*! ./leaflet.css */ "./web/leaflet.css");
+
 __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module '/normalize.min.css'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
-__webpack_require__(/*! ./leaflet.css */ "./web/leaflet.css");
+__webpack_require__(/*! leaflet/dist/images/marker-icon-2x.png */ "./node_modules/leaflet/dist/images/marker-icon-2x.png");
+
+__webpack_require__(/*! leaflet/dist/images/marker-shadow.png */ "./node_modules/leaflet/dist/images/marker-shadow.png");
 
 __webpack_require__(/*! ./markers.css */ "./web/markers.css");
 
@@ -45492,9 +45518,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-/* import 'leaflet/dist/images/marker-icon-2x.png';
-import 'leaflet/dist/images/marker-shadow.png'; */
-
 
 var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node_modules/is-valid-coordinates/index.js");
 var util = __webpack_require__(/*! util */ "./node_modules/util/util.js");
