@@ -5,12 +5,12 @@ import {
   ActivityIndicator,
   WebView,
   Alert,
-  Platform
+  Platform,
+  Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from './Button';
 
-const Type = require('type-of-is');
 const isValidCoordinates = require('is-valid-coordinates');
 const uniqby = require('lodash.uniqby');
 const INDEX_FILE = require(`./assets/dist/index.html`);
@@ -54,8 +54,10 @@ export default class WebViewLeaflet extends React.Component {
         // if we receive an event, then pass it to the parent by calling
         // the parent function wtith the same name as the event, and passing
         // the entire payload as a parameter
-        if (msgData.payload.event && 
-            this.props.eventReceiver.hasOwnProperty(msgData.payload.event) ) {
+        if (
+          msgData.payload.event &&
+          this.props.eventReceiver.hasOwnProperty(msgData.payload.event)
+        ) {
           this.props.eventReceiver[msgData.payload.event](msgData.payload);
         }
         // WebViewLeaflet will also need to know of some state changes, such as
@@ -77,7 +79,7 @@ export default class WebViewLeaflet extends React.Component {
       return;
     }
   };
-  
+
   validateLocations = (locations) => {
     // confirm the location coordinates are valid
     const validCoordLocations = locations.filter((location) => {
@@ -93,17 +95,21 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   onError = (error) => {
-    Alert.alert('WebView onError', error, [
-      { text: 'OK', onPress: () => console.log('OK Pressed') }
-    ]);
-    console.error('WebView onError: ', error);
+    return (
+      <View style={styles.activityOverlayStyle}>
+        <Text>WebViewError</Text>
+        <Text>{error}</Text>
+      </View>
+    );
   };
 
   renderError = (error) => {
-    Alert.alert('WebView renderError', error, [
-      { text: 'OK', onPress: () => console.log('OK Pressed') }
-    ]);
-    console.error('WebView renderError: ', error);
+    return (
+      <View style={styles.activityOverlayStyle}>
+        <Text>RenderError</Text>
+        <Text>{error}</Text>
+      </View>
+    );
   };
 
   renderLoadingIndicator = () => {
@@ -145,7 +151,7 @@ export default class WebViewLeaflet extends React.Component {
             scalesPageToFit={false}
             mixedContentMode={'always'}
           />
-          { this.props.centerButton ? (
+          {this.props.centerButton ? (
             <View
               style={{
                 position: 'absolute',
@@ -156,7 +162,7 @@ export default class WebViewLeaflet extends React.Component {
             >
               <Button onPress={this.centerMapOnCurrentPosition} text={'🎯'} />
             </View>
-          ): null}
+          ) : null}
         </View>
       </View>
     );

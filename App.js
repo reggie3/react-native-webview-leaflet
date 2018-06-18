@@ -46,6 +46,7 @@ export default class App extends React.Component {
     } else {
       this._getLocationAsync();
     }
+    debugger;
   }
 
   _getLocationAsync = async () => {

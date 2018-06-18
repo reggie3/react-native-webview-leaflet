@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "2.0.492",
+  "version": "2.0.493",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -72,7 +72,7 @@
     "jest": "^22.4.3",
     "jest-css-modules": "^1.1.0",
     "jest-enzyme": "^6.0.0",
-    "jest-expo": "^27.0.0",
+    "jest-expo": "^28.0.0",
     "jest-react-native": "^18.0.0",
     "react-addons-test-utils": "^15.6.2",
     "react-native-mock": "^0.3.1",

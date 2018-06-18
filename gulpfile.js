@@ -21,10 +21,10 @@ const npmDeps = {
 };
 // additional dependencies for expo app
 const expoDeps = {
-  "expo": "^27.0.0",
+  "expo": "^28.0.0",
   "react": "16.3.1",
   "react-dom": "^16.3.1",
-  "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz"
+  "react-native": `https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz`
 };
 
 // main for npm publishing

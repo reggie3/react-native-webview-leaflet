@@ -5,9 +5,14 @@ import L, { divIcon } from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
 
-const Type = require('type-of-is');
+import '/normalize.min.css';
+import './leaflet.css';
+import 'leaflet/dist/images/marker-icon-2x.png';
+import 'leaflet/dist/images/marker-shadow.png';
+import './markers.css';
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
+
 
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
