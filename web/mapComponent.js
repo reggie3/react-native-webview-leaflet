@@ -6,7 +6,7 @@ import testLocations from './testLocations';
 import './markerAnimations.css';
 import '/normalize.min.css';
 
-import '.leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
