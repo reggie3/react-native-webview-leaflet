@@ -66,7 +66,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./web/mapComponent.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -45482,39 +45482,6 @@ module.exports = function(originalModule) {
 
 /***/ }),
 
-/***/ "./web/index.js":
-/*!**********************!*\
-  !*** ./web/index.js ***!
-  \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var MOUNT_NODE = document.getElementById('app');
-
-var render = function render() {
-  var App = __webpack_require__(/*! ./mapComponent */ "./web/mapComponent.js").default;
-  _reactDom2.default.render(_react2.default.createElement(App, null), MOUNT_NODE);
-};
-
-render();
-
-if (false) {}
-
-/***/ }),
-
 /***/ "./web/mapComponent.js":
 /*!*****************************!*\
   !*** ./web/mapComponent.js ***!
@@ -45578,7 +45545,7 @@ var MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 _leaflet2.default.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-var SHOW_DEBUG_INFORMATION = false;
+var SHOW_DEBUG_INFORMATION = true;
 var ENABLE_BROWSER_TESTING = false;
 
 var mapComponent = function (_Component) {
@@ -46256,19 +46223,7 @@ var locations = [{
 }];
 exports.default = locations;
 
-/***/ }),
-
-/***/ 0:
-/*!****************************!*\
-  !*** multi ./web/index.js ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! C:\Users\regin\Dropbox\react-native-webview-leaflet\web\index.js */"./web/index.js");
-
-
 /***/ })
 
 /******/ });
-//# sourceMappingURL=bundle.js.map
+//# sourceMappingURL=main.bundle.js.map

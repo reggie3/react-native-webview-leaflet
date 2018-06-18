@@ -3,7 +3,7 @@
     "name": "react-native-webview-leaflet",
     "description": "This webview containing a clickable Leaflet map.",
     "slug": "react-native-webview-leaflet",
-    "privacy": "unlisted",
+    "privacy": "public",
     "sdkVersion": "28.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
