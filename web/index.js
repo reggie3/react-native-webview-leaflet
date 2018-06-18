@@ -1,20 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import MapComponent from './mapComponent'
 
-const MOUNT_NODE = document.getElementById('app')
-
-const render = () => {
-  const App = require('./mapComponent').default
-  ReactDOM.render(<App />, MOUNT_NODE)
-}
-
-render()
-
-if (module.hot) {
-  module.hot.accept(['./mapComponent'], () =>
-    setImmediate(() => {
-      ReactDOM.unmountComponentAtNode(MOUNT_NODE)
-      render()
-    }),
-  )
-}
+ReactDOM.render(<MapComponent />, document.getElementById('app'))

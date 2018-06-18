@@ -15,13 +15,13 @@ module.exports = {
   mode: 'development',
   devtool: 'source-map',
   entry: {
-    main: './web/mapComponent.js'
+    main: './web/index.js'
   },
   output: {
     path: path.join(__dirname, './build'),
     filename: '[name].bundle.js'
   },
-  module: {
+  module: { 
     rules: [
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -60,8 +60,7 @@ module.exports = {
                 'react',
                 'stage-2'
               ],
-              plugins: ['babel-plugin-transform-object-rest-spread'],
-              babelrc: false
+              plugins: ['babel-plugin-transform-object-rest-spread'],  
             }
           }
         ]
@@ -87,7 +86,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
-      inlineSource: '(main.bundle.js)',
+      inlineSource: '.(js|css)$', // embed all javascript and css inline
       template: './web/index.html',
       inject: 'body'
     }),

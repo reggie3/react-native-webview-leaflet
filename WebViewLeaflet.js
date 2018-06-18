@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   WebView,
-  Alert,
   Platform,
   Text
 } from 'react-native';

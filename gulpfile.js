@@ -116,7 +116,6 @@ gulp.task('forExpo', (done) => {
 gulp.task('copy-build-files', (done) => {
   gulp.src('./build/index.html').pipe(gulp.dest('./assets/dist/'));
   gulp.src('./build/main.bundle.js.map').pipe(gulp.dest('./assets/dist/'));
-  gulp.src('./build/main.bundle.js').pipe(gulp.dest('./assets/dist/'));
   done();
 });
 
