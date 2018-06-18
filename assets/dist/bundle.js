@@ -129,6 +129,25 @@ exports.push([module.i, "/*General marker style*/\r\n.marker {\r\n    background
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./web/markers.css":
+/*!***************************************************!*\
+  !*** ./node_modules/css-loader!./web/markers.css ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "/*General marker style*/\r\n.marker {\r\n    background-color: rgba(255, 255, 255, 0);\r\n    width: 100%;\r\n    height: 100%;\r\n    position: relative;\r\n  }\r\n  \r\n  /* div containing the marker parent */\r\n  .clearMarkerContainer {\r\n    background-color: rgba(57, 57, 216, 0);\r\n    display: flex;\r\n    justify-content: center;\r\n  }\r\n  \r\n  /* div containing all the animated portions of the marker */\r\n  .animationContainer{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: flex-end;\r\n  }\r\n  \r\n  \r\n  @keyframes bounce {\r\n    0% {\r\n      transform: scale(1, .8) translateY(10px);\r\n    }\r\n    45% {\r\n      transform: scale(.8, 1) translateY(-27px);\r\n    }\r\n    50% {\r\n      transform: scale(.8, 1) translateY(-30px);\r\n    }\r\n    55% {\r\n      transform: scale(.8, 1) translateY(-27px);\r\n    }\r\n    100% {\r\n      transform: scale(1, .8) translateY(10px);\r\n    }\r\n  }\r\n  \r\n  @keyframes fade {\r\n    0% {\r\n      opacity: .1;\r\n    }\r\n    50% {\r\n      opacity: 1;\r\n    }\r\n    100% {\r\n      opacity: .1;\r\n    }\r\n  }\r\n  \r\n  @keyframes pulse {\r\n    0% {\r\n      transform: scale(1);\r\n    }\r\n    50% {\r\n      transform: scale(1.25);\r\n    }\r\n    100% {\r\n      transform: scale(1);\r\n    }\r\n  }\r\n  \r\n  @keyframes jump {\r\n    0% {\r\n      transform: none;\r\n    }\r\n    50% {\r\n      transform: translateY(-2em);\r\n    }\r\n  }\r\n  \r\n  @keyframes waggle {\r\n    0% {\r\n      transform: none;\r\n    }\r\n    50% {\r\n      transform: rotateZ(-20deg) scale(1.2);\r\n    }\r\n    60% {\r\n      transform: rotateZ(25deg) scale(1.2);\r\n    }\r\n    67.5% {\r\n      transform: rotateZ(-15deg) scale(1.2);\r\n    }\r\n    75% {\r\n      transform: rotateZ(15deg) scale(1.2);\r\n    }\r\n    82.5% {\r\n      transform: rotateZ(-12deg) scale(1.2);\r\n    }\r\n    85% {\r\n      transform: rotateZ(0) scale(1.2);\r\n    }\r\n    100% {\r\n      transform: rotateZ(0) scale(1);\r\n    }\r\n  }\r\n  \r\n  \r\n  @keyframes spin {\r\n    50% {\r\n      transform: rotateZ(-20deg);\r\n      animation-timing-function: ease;\r\n    }\r\n    100% {\r\n      transform: rotateZ(360deg);\r\n    }\r\n  }\r\n  \r\n  @keyframes beat{\r\n      to { transform: scale(.7); }\r\n  }", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/lib/css-base.js":
 /*!*************************************************!*\
   !*** ./node_modules/css-loader/lib/css-base.js ***!
@@ -1031,28 +1050,6 @@ function isNumber (n) {
   return typeof n === 'number'
 }
 
-
-/***/ }),
-
-/***/ "./node_modules/leaflet/dist/images/marker-icon-2x.png":
-/*!*************************************************************!*\
-  !*** ./node_modules/leaflet/dist/images/marker-icon-2x.png ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "images/marker-icon-2x.png";
-
-/***/ }),
-
-/***/ "./node_modules/leaflet/dist/images/marker-shadow.png":
-/*!************************************************************!*\
-  !*** ./node_modules/leaflet/dist/images/marker-shadow.png ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "images/marker-shadow.png";
 
 /***/ }),
 
@@ -45484,11 +45481,7 @@ __webpack_require__(!(function webpackMissingModule() { var e = new Error("Canno
 
 __webpack_require__(/*! ./leaflet.css */ "./web/leaflet.css");
 
-__webpack_require__(/*! leaflet/dist/images/marker-icon-2x.png */ "./node_modules/leaflet/dist/images/marker-icon-2x.png");
-
-__webpack_require__(/*! leaflet/dist/images/marker-shadow.png */ "./node_modules/leaflet/dist/images/marker-shadow.png");
-
-__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module './markers.css'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+__webpack_require__(/*! ./markers.css */ "./web/markers.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45499,6 +45492,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+/* import 'leaflet/dist/images/marker-icon-2x.png';
+import 'leaflet/dist/images/marker-shadow.png'; */
+
 
 var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node_modules/is-valid-coordinates/index.js");
 var util = __webpack_require__(/*! util */ "./node_modules/util/util.js");
@@ -45829,6 +45825,31 @@ exports.default = mapComponent;
 
 // load the styles
 var content = __webpack_require__(/*! !../node_modules/css-loader!./markerAnimations.css */ "./node_modules/css-loader/index.js!./web/markerAnimations.css");
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(/*! ../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./web/markers.css":
+/*!*************************!*\
+  !*** ./web/markers.css ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../node_modules/css-loader!./markers.css */ "./node_modules/css-loader/index.js!./web/markers.css");
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
