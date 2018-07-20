@@ -9047,9 +9047,9 @@ react-is@^16.4.0:
   version "16.4.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.4.0.tgz#cc9fdc855ac34d2e7d9d2eb7059bbc240d35ffcf"
 
-react-leaflet@^2.0.0-rc.1:
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-2.0.0-rc.1.tgz#16450c8b4c3c2721dd8468fc0c13e814d0ecb74d"
+react-leaflet@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-2.0.0.tgz#5ba2c3ddc69014e221c259b966cb1eb494b01611"
   dependencies:
     hoist-non-react-statics "^2.5.0"
     lodash "^4.0.0"

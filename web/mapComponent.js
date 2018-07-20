@@ -1,6 +1,6 @@
 import Leaflet from 'leaflet';
-import React, { Component, StrictMode, createRef } from 'react';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { Component, createRef } from 'react';
+import { Map, Marker, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
@@ -11,6 +11,9 @@ import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 
+import ControlsLayer from './ControlsLayer';
+import RasterLayer from './RasterLayer';
+import mapLayers from './mockMapLayers';
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
 
@@ -19,8 +22,8 @@ const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 Leaflet.Icon.Default.imagePath =
   '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-const SHOW_DEBUG_INFORMATION = false;
-const ENABLE_BROWSER_TESTING = false;
+const SHOW_DEBUG_INFORMATION = true;
+const ENABLE_BROWSER_TESTING = true;
 
 class mapComponent extends Component {
   constructor(props) {
@@ -36,12 +39,12 @@ class mapComponent extends Component {
       debugMessages: [],
       locations: [],
       markers: [],
-      showAttributionControl: false
+      showAttributionControl: false,
+      mapLayers: []
     };
   }
 
   componentDidMount = () => {
-    
     this.printElement('leafletReactHTML.js componentDidMount');
 
     // add the event listeners
@@ -59,12 +62,25 @@ class mapComponent extends Component {
     this.eventListenersAdded = true;
 
     if (ENABLE_BROWSER_TESTING) {
-      this.setState({ locations: [...testLocations] });
+      this.setState({ locations: [...testLocations],
+      mapLayers });
     }
 
-    setTimeout(() => {
-      this.onMapEvent('onLoad', { loaded: true });
-    }, 500);
+    try {
+      setTimeout(() => {
+        this.onMapEvent('onLoad', {
+          loaded: true,
+          center: this.mapRef.current.leafletElement.getCenter(),
+          bounds: this.mapRef.current.leafletElement.getBounds(),
+          zoom: this.mapRef.current.leafletElement.getZoom()
+        });
+      }, 500);
+      setTimeout(() => {
+        // this.onMapEvent('onRef', {ref: this.mapRef});
+      }, 500);
+    } catch (error) {
+      this.printElement(error);
+    }
   };
 
   componentWillUnmount = () => {
@@ -95,21 +111,27 @@ class mapComponent extends Component {
           };
         }
       });
-      this.setState({ markers }, ()=>{
-        console.log(this.state.markers)
+      this.setState({ markers }, () => {
+        console.log(this.state.markers);
       });
     }
 
     // update the bounds if they have changed
     if (
-      JSON.stringify(this.state.bounds) !==
-      JSON.stringify(prevState.bounds)
+      JSON.stringify(this.state.bounds) !== JSON.stringify(prevState.bounds)
     ) {
-      this.mapRef.current.leafletElement.fitBounds(
+      this.state.map.leafletElement.fitBounds(
         this.state.bounds,
         this.state.padding
-      )
+      );
     }
+
+    // see if a reference to the map is available, and if so send it
+    /* if (!prevState.map && this.state.map) {
+      this.printElement(`map reference availabile`);
+
+      this.onMapEvent('onMapReference', this.state.map);
+    } */
   };
 
   // print passed information in an html element; useful for debugging
@@ -132,12 +154,13 @@ class mapComponent extends Component {
   createDivIcon = (location) => {
     let divIcon = L.divIcon({
       className: 'clearMarkerContainer',
-      html: location.animation? this.getAnimatedHTMLString(
-        location.icon || '📍',
-        location.animation || null,
-        location.size || [24, 24]
-      ) :
-      this.getUnanimatedHTMLString(location.icon, location.size)
+      html: location.animation
+        ? this.getAnimatedHTMLString(
+            location.icon || '📍',
+            location.animation || null,
+            location.size || [24, 24]
+          )
+        : this.getUnanimatedHTMLString(location.icon, location.size)
     });
     return divIcon;
   };
@@ -201,13 +224,13 @@ class mapComponent extends Component {
   };
 
   handleMessage = (event) => {
-    this.printElement(`received message ${JSON.stringify(event)}`);
+    /* this.printElement(`received message ${JSON.stringify(event)}`);
     this.printElement(
       util.inspect(event.data, {
         showHidden: false,
         depth: null
       })
-    );
+    ); */
 
     let msgData;
     try {
@@ -245,7 +268,7 @@ class mapComponent extends Component {
 
   render() {
     return (
-      <StrictMode>
+      <React.Fragment>
         <Map
           style={{
             width: '100%',
@@ -257,7 +280,6 @@ class mapComponent extends Component {
           zoomControl={this.state.showZoomControl}
           panToLocation={this.state.panToLocation}
           zoom={this.state.zoom}
-         
           onClick={(event) => {
             this.onMapEvent('onMapClicked', {
               coords: [event.latlng.lat, event.latlng.lng]
@@ -293,14 +315,15 @@ class mapComponent extends Component {
           onViewReset={() => {
             this.onMapEvent('onViewReset', null);
           }}
-          onLoad={() => {
-            this.onMapEvent('onLoad', null);
-          }}
         >
-          <TileLayer
-            attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          {this.state.mapLayers.length === 1 ? (
+            <RasterLayer mapLayer={this.state.mapLayers[0]} />
+          ) : (
+            <LayersControl position="topright">
+              <ControlsLayer mapLayers={this.state.mapLayers} />
+            </LayersControl>
+          )}
+
           {this.state.markers.map((marker) => {
             return (
               <Marker
@@ -336,7 +359,7 @@ class mapComponent extends Component {
             </ul>
           </div>
         ) : null}
-      </StrictMode>
+      </React.Fragment>
     );
   }
 }
