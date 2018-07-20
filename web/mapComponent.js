@@ -1,6 +1,14 @@
 import Leaflet from 'leaflet';
-import React, { Component, createRef } from 'react';
-import { Map, Marker, LayersControl } from 'react-leaflet';
+import React, { Component, StrictMode, createRef } from 'react';
+import {
+  Map,
+  TileLayer,
+  WMSTileLayer,
+  Marker,
+  ImageOverlay,
+  VideoOverlay,
+  LayersControl
+} from 'react-leaflet';
 import L from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
@@ -11,9 +19,8 @@ import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 
-import ControlsLayer from './ControlsLayer';
-import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
+
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
 
@@ -62,8 +69,10 @@ class mapComponent extends Component {
     this.eventListenersAdded = true;
 
     if (ENABLE_BROWSER_TESTING) {
-      this.setState({ locations: [...testLocations],
-      mapLayers });
+      this.setState({
+        locations: [...testLocations],
+        mapLayers
+      });
     }
 
     try {
@@ -268,7 +277,7 @@ class mapComponent extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <StrictMode>
         <Map
           style={{
             width: '100%',
@@ -316,13 +325,52 @@ class mapComponent extends Component {
             this.onMapEvent('onViewReset', null);
           }}
         >
-          {this.state.mapLayers.length === 1 ? (
-            <RasterLayer mapLayer={this.state.mapLayers[0]} />
-          ) : (
-            <LayersControl position="topright">
-              <ControlsLayer mapLayers={this.state.mapLayers} />
-            </LayersControl>
-          )}
+          <LayersControl position="topright">
+            {this.state.mapLayers.map((layer, index) => {
+              if (layer.type === 'TileLayer') {
+                return (
+                  <LayersControl.BaseLayer
+                    name={layer.name}
+                    checked={layer.checked || false}
+                  >
+                    <TileLayer
+                      attribution={layer.attribution}
+                      url={layer.url}
+                      zIndex={layer.zIndex || 0}
+                      key={index}
+                    />
+                  </LayersControl.BaseLayer>
+                );
+              } else if (layer.type === 'WMSTileLayer') {
+                this.printElement('layer.type === WMSTileLayer');
+                return <WMSTileLayer url={layer.url} />;
+              } else if (layer.type === 'ImageOverlay') {
+                this.printElement('layer.type === ImageOverlay');
+                return (
+                  <ImageOverlay
+                    url={layer.url}
+                    bounds={layer.bounds}
+                    opacity={layer.opacity || 1}
+                    zIndex={layer.zIndex || 0}
+                    key={index}
+                  />
+                );
+              } else if (layer.type === 'VideoOverlay') {
+                this.printElement('layer.type === VideoOverlay');
+
+                return (
+                  <VideoOverlay
+                    url={layer.url}
+                    bounds={layer.bounds}
+                    opacity={layer.opacity || 1}
+                    play={layer.play || true}
+                    zIndex={layer.zIndex || 0}
+                    key={index}
+                  />
+                );
+              }
+            })}
+          </LayersControl>
 
           {this.state.markers.map((marker) => {
             return (
@@ -359,7 +407,7 @@ class mapComponent extends Component {
             </ul>
           </div>
         ) : null}
-      </React.Fragment>
+      </StrictMode>
     );
   }
 }
