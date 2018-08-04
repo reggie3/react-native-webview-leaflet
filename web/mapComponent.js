@@ -22,7 +22,7 @@ const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 Leaflet.Icon.Default.imagePath =
   '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-const SHOW_DEBUG_INFORMATION = true;
+const SHOW_DEBUG_INFORMATION = false;
 const ENABLE_BROWSER_TESTING = true;
 
 class mapComponent extends Component {
@@ -319,7 +319,7 @@ class mapComponent extends Component {
               this.onMapEvent('onViewReset', null);
             }}
           >
-            {this.state.mapLayers.length === 1 ? (
+            {this.state.mapLayers.length <= 1 ? (
               <RasterLayer layer={this.state.mapLayers[0]} />
             ) : (
               <LayersControl position="topright">
