@@ -3,11 +3,10 @@ import {
   TileLayer,
   WMSTileLayer,
   ImageOverlay,
-  VideoOverlay,
+  VideoOverlay
 } from 'react-leaflet';
 
 const RasterLayer = (props) => {
-  debugger;
   console.log({ props });
   if (props.layer.type === 'TileLayer') {
     return (
@@ -15,17 +14,26 @@ const RasterLayer = (props) => {
         attribution={props.layer.attribution}
         url={props.layer.url}
         zIndex={props.layer.zIndex || 0}
+        {...props}
       />
     );
   } else if (props.layer.type === 'WMSTileLayer') {
-    return <WMSTileLayer url={props.layer.url} />;
+    return (
+      <WMSTileLayer
+        url={props.layer.url}
+        layers={props.layer.layers}
+        {...props}
+      />
+    );
   } else if (props.layer.type === 'ImageOverlay') {
+    debugger;
     return (
       <ImageOverlay
         url={props.layer.url}
         bounds={props.layer.bounds}
         opacity={props.layer.opacity || 1}
         zIndex={props.layer.zIndex || 0}
+        {...props}
       />
     );
   } else if (props.layer.type === 'VideoOverlay') {
@@ -36,6 +44,7 @@ const RasterLayer = (props) => {
         opacity={props.layer.opacity || 1}
         play={props.layer.play || true}
         zIndex={props.layer.zIndex || 0}
+        {...props}
       />
     );
   }

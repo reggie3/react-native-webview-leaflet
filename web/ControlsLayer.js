@@ -1,6 +1,6 @@
 import React from 'react';
 import { LayersControl } from 'react-leaflet';
-import L from 'leaflet';
+
 
 import RasterLayer from './RasterLayer';
 
@@ -13,8 +13,9 @@ const ControlsLayer = (props) => {
           name={layer.name}
           checked={layer.checked || false}
           key={index}
+          {...props}
         >
-          <RasterLayer layer={layer} />
+          <RasterLayer layer={layer} {...props}/>
         </LayersControl.BaseLayer>
       );
     } else {
@@ -23,8 +24,9 @@ const ControlsLayer = (props) => {
           name={layer.name}
           checked={layer.checked || false}
           key={index}
+          {...props}
         >
-          <RasterLayer layer={layer} />
+          <RasterLayer layer={layer} {...props}/>
         </LayersControl.Overlay>
       );
     }

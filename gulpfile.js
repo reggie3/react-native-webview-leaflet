@@ -10,21 +10,21 @@ const gutil = require('gulp-util');
 
 // dependencies for npm publishing
 const npmDeps = {
-  "is-valid-coordinates": "^1.0.0",
-  "leaflet": "^1.3.1",
-  "leaflet.markercluster": "^1.3.0",
-  "prop-types": "^15.6.0",
-  "util": "^0.10.3",
-  "lodash.uniqby": "^4.7.0",
-  "geolib": "^2.0.24",
-  "react-leaflet": "^2.0.0-rc.1",
+  'is-valid-coordinates': '^1.0.0',
+  leaflet: '^1.3.1',
+  'leaflet.markercluster': '^1.3.0',
+  'prop-types': '^15.6.0',
+  util: '^0.10.3',
+  'lodash.uniqby': '^4.7.0',
+  geolib: '^2.0.24',
+  'react-leaflet': '^2.0.0-rc.1'
 };
 // additional dependencies for expo app
 const expoDeps = {
-  "expo": "^28.0.0",
-  "react": "16.3.1",
-  "react-dom": "^16.3.1",
-  "react-native": `https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz`
+  expo: '^28.0.0',
+  react: '16.3.1',
+  'react-dom': '^16.3.1',
+  'react-native': `https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz`
 };
 
 // main for npm publishing
@@ -51,52 +51,38 @@ gulp.task('forNPM', (done) => {
 
 // pack the files
 gulp.task('webpack', (done) => {
-  webpack(webpackConfig, function(err, stats) {
-    if (err) throw new gutil.PluginError('webpack:build', err);
-    gutil.log(
-      '[webpack:build] Completed\n' +
-        stats.toString({
-          assets: true,
-          chunks: true,
-          chunkModules: true,
-          colors: true,
-          hash: false,
-          timings: false,
-          version: false
-        })
-    );
-    done();
-  });
+  return run('webpack').exec();
+  done();
 });
 
 gulp.task('npm-publish', (done) => {
-	return run('npm publish').exec();
-	done();
+  return run('npm publish').exec();
+  done();
 });
 
 gulp.task('npm-publish-beta', (done) => {
-	return run('npm publish --tag beta').exec();
-	done();
+  return run('npm publish --tag beta').exec();
+  done();
 });
 
 gulp.task('git-add', (done) => {
-	return run('git add .').exec();
-	done();
+  return run('git add .').exec();
+  done();
 });
 
 gulp.task('git-commit', (done) => {
-	return run('git commit -m "publishing"').exec();
+  return run('git commit -m "publishing"').exec();
 
-	done();
+  done();
 });
 
 gulp.task('git-push', (done) => {
-	return run('git push origin master').exec();
-	done();
+  return run('git push origin master').exec();
+  done();
 });
 
 gulp.task('git-push-beta', (done) => {
-  return run('git push origin 5-with-sizable-icons').exec();
+  return run('git push origin 5-with-raster-layers').exec();
 });
 
 gulp.task('forExpo', (done) => {
@@ -124,11 +110,14 @@ gulp.task('build', gulp.series('webpack', 'copy-build-files'));
 gulp.task(
   'prod',
   gulp.series(
-		'forNPM',
-		'build',
-		gulp.parallel(gulp.series('git-add', 'git-commit', 'git-push'), 'npm-publish'),
-		'forExpo'
-	)
+    'forNPM',
+    'build',
+    gulp.parallel(
+      gulp.series('git-add', 'git-commit', 'git-push'),
+      'npm-publish'
+    ),
+    'forExpo'
+  )
 );
 
 gulp.task(
@@ -136,10 +125,7 @@ gulp.task(
   gulp.series(
     'forNPM',
     'build',
-    gulp.parallel(
-      gulp.series('git-add', 'git-commit', 'git-push-beta'),
-      'npm-publish-beta'
-    ),
+    'npm-publish-beta',
     'forExpo',
     'copy-build-files'
   )

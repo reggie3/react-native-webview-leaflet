@@ -1,14 +1,6 @@
 import Leaflet from 'leaflet';
-import React, { Component, StrictMode, createRef } from 'react';
-import {
-  Map,
-  TileLayer,
-  WMSTileLayer,
-  Marker,
-  ImageOverlay,
-  VideoOverlay,
-  LayersControl
-} from 'react-leaflet';
+import React, { Component, createRef } from 'react';
+import { Map, Marker, LayersControl, LayerGroup } from 'react-leaflet';
 import L from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
@@ -19,8 +11,9 @@ import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 
+import ControlsLayer from './ControlsLayer';
+import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
-
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
 
@@ -277,137 +270,107 @@ class mapComponent extends Component {
 
   render() {
     return (
-      <StrictMode>
-        <Map
-          style={{
-            width: '100%',
-            backgroundColor: 'lightblue'
-          }}
-          ref={this.mapRef}
-          center={this.state.centerPosition}
-          attributionControl={this.state.showAttributionControl}
-          zoomControl={this.state.showZoomControl}
-          panToLocation={this.state.panToLocation}
-          zoom={this.state.zoom}
-          onClick={(event) => {
-            this.onMapEvent('onMapClicked', {
-              coords: [event.latlng.lat, event.latlng.lng]
-            });
-          }}
-          onZoomLevelsChange={() => {
-            this.onMapEvent('onZoomLevelsChange', null);
-          }}
-          onResize={() => {
-            this.onMapEvent('onResize', null);
-          }}
-          onZoomStart={() => {
-            this.onMapEvent('onZoomStart', null);
-          }}
-          onMoveStart={() => {
-            this.onMapEvent('onMoveStart', null);
-          }}
-          onZoom={() => {
-            this.onMapEvent('onZoomLevelsChange', null);
-          }}
-          onMove={() => {
-            this.onMapEvent('onResize', null);
-          }}
-          onZoomEnd={() => {
-            this.onMapEvent('onZoomStart', null);
-          }}
-          onMoveEnd={() => {
-            this.onMapEvent('onMoveStart', null);
-          }}
-          onUnload={() => {
-            this.onMapEvent('onUnload', null);
-          }}
-          onViewReset={() => {
-            this.onMapEvent('onViewReset', null);
-          }}
-        >
-          <LayersControl position="topright">
-            {this.state.mapLayers.map((layer, index) => {
-              if (layer.type === 'TileLayer') {
-                return (
-                  <LayersControl.BaseLayer
-                    name={layer.name}
-                    checked={layer.checked || false}
-                  >
-                    <TileLayer
-                      attribution={layer.attribution}
-                      url={layer.url}
-                      zIndex={layer.zIndex || 0}
-                      key={index}
-                    />
-                  </LayersControl.BaseLayer>
-                );
-              } else if (layer.type === 'WMSTileLayer') {
-                this.printElement('layer.type === WMSTileLayer');
-                return <WMSTileLayer url={layer.url} />;
-              } else if (layer.type === 'ImageOverlay') {
-                this.printElement('layer.type === ImageOverlay');
-                return (
-                  <ImageOverlay
-                    url={layer.url}
-                    bounds={layer.bounds}
-                    opacity={layer.opacity || 1}
-                    zIndex={layer.zIndex || 0}
-                    key={index}
-                  />
-                );
-              } else if (layer.type === 'VideoOverlay') {
-                this.printElement('layer.type === VideoOverlay');
-
-                return (
-                  <VideoOverlay
-                    url={layer.url}
-                    bounds={layer.bounds}
-                    opacity={layer.opacity || 1}
-                    play={layer.play || true}
-                    zIndex={layer.zIndex || 0}
-                    key={index}
-                  />
-                );
-              }
-            })}
-          </LayersControl>
-
-          {this.state.markers.map((marker) => {
-            return (
-              <Marker
-                key={marker.id}
-                position={marker.coords}
-                icon={marker.divIcon}
-                onClick={() => {
-                  this.onMapEvent('onMapMarkerClicked', { id: marker.id });
-                }}
-              />
-            );
-          })}
-        </Map>
-        {SHOW_DEBUG_INFORMATION ? (
-          <div
+      <React.StrictMode>
+        <React.Fragment>
+          <Map
             style={{
-              backgroundColor: 'orange',
-              maxHeight: '200px',
-              overflow: 'auto',
-              padding: 5,
-              position: 'fixed',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              zIndex: 15000
+              width: '100%',
+              backgroundColor: 'lightblue'
             }}
-            id="messages"
+            ref={this.mapRef}
+            center={this.state.centerPosition}
+            attributionControl={this.state.showAttributionControl}
+            zoomControl={this.state.showZoomControl}
+            panToLocation={this.state.panToLocation}
+            zoom={this.state.zoom}
+            onClick={(event) => {
+              this.onMapEvent('onMapClicked', {
+                coords: [event.latlng.lat, event.latlng.lng]
+              });
+            }}
+            onZoomLevelsChange={() => {
+              this.onMapEvent('onZoomLevelsChange', null);
+            }}
+            onResize={() => {
+              this.onMapEvent('onResize', null);
+            }}
+            onZoomStart={() => {
+              this.onMapEvent('onZoomStart', null);
+            }}
+            onMoveStart={() => {
+              this.onMapEvent('onMoveStart', null);
+            }}
+            onZoom={() => {
+              this.onMapEvent('onZoomLevelsChange', null);
+            }}
+            onMove={() => {
+              this.onMapEvent('onResize', null);
+            }}
+            onZoomEnd={() => {
+              this.onMapEvent('onZoomStart', null);
+            }}
+            onMoveEnd={() => {
+              this.onMapEvent('onMoveStart', null);
+            }}
+            onUnload={() => {
+              this.onMapEvent('onUnload', null);
+            }}
+            onViewReset={() => {
+              this.onMapEvent('onViewReset', null);
+            }}
           >
-            <ul>
-              {this.state.debugMessages.map((message, index) => {
-                return <li key={index}>{message}</li>;
-              })}
-            </ul>
-          </div>
-        ) : null}
-      </StrictMode>
+            {this.state.mapLayers.length === 1 ? (
+              <RasterLayer layer={this.state.mapLayers[0]} />
+            ) : (
+              <LayersControl position="topright">
+                <ControlsLayer mapLayers={this.state.mapLayers} />
+              </LayersControl>
+            )}
+            <LayersControl position="topleft">
+              <LayersControl.Overlay name="Markers">
+              <LayerGroup>
+                {this.state.markers.map((marker) => {
+                  return (
+                    <Marker
+                      key={marker.id}
+                      position={marker.coords}
+                      icon={marker.divIcon}
+                      onClick={() => {
+                        this.onMapEvent('onMapMarkerClicked', {
+                          id: marker.id
+                        });
+                      }}
+                    />
+                  );
+                })}
+                </LayerGroup>
+              </LayersControl.Overlay>
+            </LayersControl>
+          </Map>
+          {SHOW_DEBUG_INFORMATION ? (
+            <div
+              style={{
+                backgroundColor: 'orange',
+                maxHeight: '200px',
+                overflow: 'auto',
+                padding: 5,
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 15000
+              }}
+              id="messages"
+            >
+              <ul>
+                {this.state.debugMessages.map((message, index) => {
+                  return <li key={index}>{message}</li>;
+                })}
+              </ul>
+            </div>
+          ) : null}
+        </React.Fragment>
+      </React.StrictMode>
     );
   }
 }
