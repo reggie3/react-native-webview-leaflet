@@ -2,7 +2,7 @@
 
 ## A Leaflet map component with no native code for React Native applications
 
-### ⚠️ This is version 2 of this library.  It's API includes breaking changes from version 1.  Version 1 can be found in the version 1 branch
+### ⚠️ This is version 2 of this library.  Its API includes breaking changes from version 1.  Version 1 can be found in the version 1 branch
 
 #### Difference Between Versions
 
@@ -14,7 +14,7 @@ This component is useful if you want to display HTML elements on an interactive 
 
 ### Why Not Use This Library
 
-You may know want to use this library if you'd rather use Google map tiles and data vice the tiles and map data from Open Street Maps.
+You may not want to use this library if you'd rather use Google map tiles and data or the tiles and map data from Open Street Maps.
 
 [![npm](https://img.shields.io/npm/v/react-native-webview-leaflet.svg)](https://www.npmjs.com/package/react-native-webview-leaflet)
 [![npm](https://img.shields.io/npm/dm/react-native-webview-leaflet.svg)](https://www.npmjs.com/package/react-native-webview-leaflet)
@@ -114,7 +114,7 @@ A [react-leaflet](https://react-leaflet.js.org/en/) component makes up the map t
 
 ### Creating Map Markers
 
-The map builds and displays its markers based on the value of the `locations` key in its own state.  You can update the value of it's `locations` by sending a message containing an object containing a key of `locations` and a value that is an array of location objects like the one shown below. An example of such a call and a location object is show below.
+The map builds and displays its markers based on the value of the `locations` key in its own state.  You can update the value of its `locations` by sending a message containing an object containing a key of `locations` and a value that is an array of location objects like the one shown below. An example of such a call and a location object is show below.
 
 ```javascript
 // sending locations to the map
