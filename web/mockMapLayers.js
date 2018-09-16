@@ -1,7 +1,7 @@
 import { mapboxToken } from '../secrets';
 
 const mapLayers = [
-  {
+   {
     name: 'OpenStreetMap',
     checked: 'true',
     type: 'TileLayer',
@@ -27,7 +27,7 @@ const mapLayers = [
     url: `https://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
     attribution:
       '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  },
+  }, 
   {
     name: 'dark',
     type: 'TileLayer',
