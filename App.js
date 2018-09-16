@@ -223,6 +223,7 @@ export default class App extends React.Component {
     console.log('onViewReset received : ', event);
   };
   onLoad = (event) => {
+    debugger;
     console.log('onLoad received : ', event);
     this.setState(
       {
@@ -317,6 +318,7 @@ export default class App extends React.Component {
         </Text>
         <WebViewLeaflet
           ref={(component) => (this.webViewLeaflet = component)}
+          onLoad={this.onLoad}
           eventReceiver={this} // the component that will receive map events
         />
         <View

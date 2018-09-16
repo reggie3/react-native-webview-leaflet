@@ -76,7 +76,7 @@ class mapComponent extends Component {
           bounds: this.mapRef.current.leafletElement.getBounds(),
           zoom: this.mapRef.current.leafletElement.getZoom()
         });
-      }, 500);
+      }, 1000);
       setTimeout(() => {
         // this.onMapEvent('onRef', {ref: this.mapRef});
       }, 500);

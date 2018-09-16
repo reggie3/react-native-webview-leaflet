@@ -8,6 +8,7 @@ import {
 
 const RasterLayer = (props) => {
   console.log({ props });
+  if(props.layer){
   if (props.layer.type === 'TileLayer') {
     return (
       <TileLayer
@@ -47,7 +48,8 @@ const RasterLayer = (props) => {
         {...props}
       />
     );
-  }
+  }}
+  return null;
 };
 
 export default RasterLayer;
