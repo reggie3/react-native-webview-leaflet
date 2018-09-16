@@ -141,7 +141,7 @@ export default class WebViewLeaflet extends React.Component {
               this.webview = ref;
             }}
             source={INDEX_FILE}
-            onLoadEnd={this.onWebViewLoaded}
+            onLoadEnd={ this.props.eventReceiver.onWebViewLoaded}
             onMessage={this.handleMessage}
             startInLoadingState={true}
             renderLoading={this.renderLoading}
