@@ -162,7 +162,8 @@ class mapComponent extends Component {
             location.animation || null,
             location.size || [24, 24]
           )
-        : this.getUnanimatedHTMLString(location.icon, location.size)
+        : this.getUnanimatedHTMLString(location.icon, location.size),
+        iconAnchor: location.iconAnchor || null
     });
     return divIcon;
   };
