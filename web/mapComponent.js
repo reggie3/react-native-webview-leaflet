@@ -163,7 +163,7 @@ class mapComponent extends Component {
             location.size || [24, 24]
           )
         : this.getUnanimatedHTMLString(location.icon, location.size),
-        iconAnchor: location.iconAnchor || null
+      iconAnchor: location.iconAnchor || null
     });
     return divIcon;
   };
@@ -242,6 +242,7 @@ class mapComponent extends Component {
         msgData.hasOwnProperty('prefix') &&
         msgData.prefix === MESSAGE_PREFIX
       ) {
+        this.printElement(`Received: `, msgData.payload);
         this.setState({ ...this.state, ...msgData.payload });
       }
     } catch (err) {
@@ -273,81 +274,85 @@ class mapComponent extends Component {
     return (
       <React.StrictMode>
         <React.Fragment>
-          <Map
-            style={{
-              width: '100%',
-              backgroundColor: 'lightblue'
-            }}
-            ref={this.mapRef}
-            center={this.state.centerPosition}
-            attributionControl={this.state.showAttributionControl}
-            zoomControl={this.state.showZoomControl}
-            panToLocation={this.state.panToLocation}
-            zoom={this.state.zoom}
-            onClick={(event) => {
-              this.onMapEvent('onMapClicked', {
-                coords: [event.latlng.lat, event.latlng.lng]
-              });
-            }}
-            onZoomLevelsChange={() => {
-              this.onMapEvent('onZoomLevelsChange', null);
-            }}
-            onResize={() => {
-              this.onMapEvent('onResize', null);
-            }}
-            onZoomStart={() => {
-              this.onMapEvent('onZoomStart', null);
-            }}
-            onMoveStart={() => {
-              this.onMapEvent('onMoveStart', null);
-            }}
-            onZoom={() => {
-              this.onMapEvent('onZoomLevelsChange', null);
-            }}
-            onMove={() => {
-              this.onMapEvent('onResize', null);
-            }}
-            onZoomEnd={() => {
-              this.onMapEvent('onZoomStart', null);
-            }}
-            onMoveEnd={() => {
-              this.onMapEvent('onMoveStart', null);
-            }}
-            onUnload={() => {
-              this.onMapEvent('onUnload', null);
-            }}
-            onViewReset={() => {
-              this.onMapEvent('onViewReset', null);
-            }}
-          >
-            {this.state.mapLayers.length <= 1 ? (
-              <RasterLayer layer={this.state.mapLayers[0]} />
-            ) : (
-              <LayersControl position="topright">
-                <ControlsLayer mapLayers={this.state.mapLayers} />
+          {this.state.mapLayers.length < 1 ? (
+            <div>waiting on map layers</div>
+          ) : (
+            <Map
+              style={{
+                width: '100%',
+                backgroundColor: 'lightblue'
+              }}
+              ref={this.mapRef}
+              center={this.state.centerPosition}
+              attributionControl={this.state.showAttributionControl}
+              zoomControl={this.state.showZoomControl}
+              panToLocation={this.state.panToLocation}
+              zoom={this.state.zoom}
+              onClick={(event) => {
+                this.onMapEvent('onMapClicked', {
+                  coords: [event.latlng.lat, event.latlng.lng]
+                });
+              }}
+              onZoomLevelsChange={() => {
+                this.onMapEvent('onZoomLevelsChange', null);
+              }}
+              onResize={() => {
+                this.onMapEvent('onResize', null);
+              }}
+              onZoomStart={() => {
+                this.onMapEvent('onZoomStart', null);
+              }}
+              onMoveStart={() => {
+                this.onMapEvent('onMoveStart', null);
+              }}
+              onZoom={() => {
+                this.onMapEvent('onZoomLevelsChange', null);
+              }}
+              onMove={() => {
+                this.onMapEvent('onResize', null);
+              }}
+              onZoomEnd={() => {
+                this.onMapEvent('onZoomStart', null);
+              }}
+              onMoveEnd={() => {
+                this.onMapEvent('onMoveStart', null);
+              }}
+              onUnload={() => {
+                this.onMapEvent('onUnload', null);
+              }}
+              onViewReset={() => {
+                this.onMapEvent('onViewReset', null);
+              }}
+            >
+              {this.state.mapLayers.length <= 1 ? (
+                <RasterLayer layer={this.state.mapLayers[0]} />
+              ) : (
+                <LayersControl position="topright">
+                  <ControlsLayer mapLayers={this.state.mapLayers} />
+                </LayersControl>
+              )}
+              <LayersControl position="topleft">
+                <LayersControl.Overlay name="Markers">
+                  <LayerGroup>
+                    {this.state.markers.map((marker) => {
+                      return (
+                        <Marker
+                          key={marker.id}
+                          position={marker.coords}
+                          icon={marker.divIcon}
+                          onClick={() => {
+                            this.onMapEvent('onMapMarkerClicked', {
+                              id: marker.id
+                            });
+                          }}
+                        />
+                      );
+                    })}
+                  </LayerGroup>
+                </LayersControl.Overlay>
               </LayersControl>
-            )}
-            <LayersControl position="topleft">
-              <LayersControl.Overlay name="Markers">
-              <LayerGroup>
-                {this.state.markers.map((marker) => {
-                  return (
-                    <Marker
-                      key={marker.id}
-                      position={marker.coords}
-                      icon={marker.divIcon}
-                      onClick={() => {
-                        this.onMapEvent('onMapMarkerClicked', {
-                          id: marker.id
-                        });
-                      }}
-                    />
-                  );
-                })}
-                </LayerGroup>
-              </LayersControl.Overlay>
-            </LayersControl>
-          </Map>
+            </Map>
+          )}
           {SHOW_DEBUG_INFORMATION ? (
             <div
               style={{

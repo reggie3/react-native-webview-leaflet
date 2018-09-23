@@ -223,6 +223,7 @@ export default class App extends React.Component {
     console.log('onViewReset received : ', event);
   };
   onLoad = (event) => {
+    debugger;
     console.log('onLoad received : ', event);
     this.setState(
       {

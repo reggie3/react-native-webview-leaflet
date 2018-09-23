@@ -147,6 +147,11 @@ export default class WebViewLeaflet extends React.Component {
             onError={this.onError}
             scalesPageToFit={false}
             mixedContentMode={'always'}
+            onLoadEnd={
+              this.props.eventReceiver.hasOwnProperty('onLoad')
+                ? this.props.eventReceiver.onLoad
+                : null
+            }
           />
           {this.props.centerButton ? (
             <View
