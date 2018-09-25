@@ -10,6 +10,7 @@ const gutil = require('gulp-util');
 
 // dependencies for npm publishing
 const npmDeps = {
+  expo: '^30.0.0',
   'is-valid-coordinates': '^1.0.0',
   leaflet: '^1.3.1',
   'leaflet.markercluster': '^1.3.0',

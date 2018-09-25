@@ -64,13 +64,24 @@ export default class WebViewLeaflet extends React.Component {
   //
   handleMessage = (event) => {
     let msgData;
-    if (event && event.nativeData && event.nativeData.data) {
-      msgData = JSON.parse(event.nativeEvent.data);
+    // Look for both nativeData and nativeEvent because at some point nativeData
+    // worked and then the information was in nativeEvent.  The switch
+    // seemed to coincide with adding Expo.Asset to bring in the HTML file.
+    if (
+      (event && event.nativeData && event.nativeData.data) ||
+      (event && event.nativeEvent && event.nativeEvent.data)
+    ) {
+      if (event && event.nativeData && event.nativeData.data) {
+        msgData = JSON.parse(event.nativeData.data);
+      } else if (event && event.nativeEvent && event.nativeEvent.data) {
+        msgData = JSON.parse(event.nativeEvent.data);
+      }
+
       if (
         msgData.hasOwnProperty('prefix') &&
         msgData.prefix === MESSAGE_PREFIX
       ) {
-        console.log(`WebViewLeaflet: received message: `, msgData.payload);
+        // console.log(`WebViewLeaflet: received message: `, msgData.payload);
 
         // if we receive an event, then pass it to the parent by calling
         // the parent function wtith the same name as the event, and passing
@@ -175,9 +186,7 @@ export default class WebViewLeaflet extends React.Component {
         }}
         scalesPageToFit={false}
         mixedContentMode={'always'}
-        onMessage={() => {
-          this.handleMessage();
-        }}
+        onMessage={this.handleMessage}
         onLoadStart={() => {}}
         onLoadEnd={() => {
           if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
