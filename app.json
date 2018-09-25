@@ -14,14 +14,31 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "packagerOpts": {
       "assetExts": ["html"]
     },
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "react-native-webview-leaflet",
+            "project": "react-native",
+            "authToken": "970297191dc04411bfe95b43a00e33a28d06da933dae4b05aa09cd8933a4402d"
+          }
+        }
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.reggie3.reactnativewebviewleaflet",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.reggie3.reactnativewebviewleaflet"
+    }
   }
+  
 }

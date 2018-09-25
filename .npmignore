@@ -21,3 +21,4 @@ locations.js
 lib
 secrets.js
 setupTests.js
+expo/**/*

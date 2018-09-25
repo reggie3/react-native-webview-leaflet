@@ -14,6 +14,9 @@ import './markers.css';
 import ControlsLayer from './ControlsLayer';
 import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
+import * as Sentry from '@sentry/browser';
+Sentry.init({dsn: 'https://7c3f99af3d07471e81541289d056200a@sentry.io/1286697'});
+
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
 
@@ -50,10 +53,10 @@ class mapComponent extends Component {
     // add the event listeners
     if (document) {
       document.addEventListener('message', this.handleMessage), false;
-      // this.printElement('using document');
+       this.printElement('using document');
     } else if (window) {
       window.addEventListener('message', this.handleMessage), false;
-      // this.printElement('using window');
+       this.printElement('using window');
     } else {
       console.log('unable to add event listener');
       return;
@@ -69,18 +72,22 @@ class mapComponent extends Component {
     }
 
     try {
+
+      this.printElement('try sending on load message');
       setTimeout(() => {
+        this.printElement('sending on load message after timeout');
         this.onMapEvent('onLoad', {
           loaded: true,
           center: this.mapRef.current.leafletElement.getCenter(),
           bounds: this.mapRef.current.leafletElement.getBounds(),
           zoom: this.mapRef.current.leafletElement.getZoom()
         });
+        this.printElement('sent onload event');
+
       }, 1000);
-      setTimeout(() => {
-        // this.onMapEvent('onRef', {ref: this.mapRef});
-      }, 500);
+
     } catch (error) {
+      Sentry.captureException(error);
       this.printElement(error);
     }
   };
@@ -139,6 +146,15 @@ class mapComponent extends Component {
   // print passed information in an html element; useful for debugging
   // since console.log and debug statements won't work in a conventional way
   printElement = (data) => {
+
+    let message = '';
+    if (typeof data === 'object') {
+      message = util.inspect(data, { showHidden: false, depth: null });
+    } else if (typeof data === 'string') {
+      message = data;
+    }
+    Sentry.captureMessage(message)
+
     if (SHOW_DEBUG_INFORMATION) {
       let message = '';
       if (typeof data === 'object') {
@@ -209,7 +225,7 @@ class mapComponent extends Component {
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
   sendMessage = (payload) => {
-    // this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
+    this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
 
     const message = JSON.stringify({
       prefix: MESSAGE_PREFIX,
@@ -223,17 +239,17 @@ class mapComponent extends Component {
     } else {
       console.log('unable to find postMessage');
     }
-    // this.printElement(`sending message: ${JSON.stringify(message)}`);
+    this.printElement(`sending message: ${JSON.stringify(message)}`);
   };
 
   handleMessage = (event) => {
-    /* this.printElement(`received message ${JSON.stringify(event)}`);
+    this.printElement(`received message ${JSON.stringify(event)}`);
     this.printElement(
       util.inspect(event.data, {
         showHidden: false,
         depth: null
       })
-    ); */
+    );
 
     let msgData;
     try {
@@ -252,25 +268,29 @@ class mapComponent extends Component {
   };
 
   onMapEvent = (event, payload) => {
-    // build a payload if one is not provided
-    if (!payload) {
-      payload = {
-        center: this.mapRef.current.leafletElement.getCenter(),
-        bounds: this.mapRef.current.leafletElement.getBounds(),
-        zoom: this.mapRef.current.leafletElement.getZoom()
-      };
-    }
-    /* this.printElement(
+   
+      // build a payload if one is not provided
+      if (!payload) {
+        payload = {
+          center: this.mapRef.current.leafletElement.getCenter(),
+          bounds: this.mapRef.current.leafletElement.getBounds(),
+          zoom: this.mapRef.current.leafletElement.getZoom()
+        };
+      }
+      this.printElement(
       `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
-    ); */
+    );
 
-    this.sendMessage({
-      event,
-      payload
-    });
+      this.sendMessage({
+        event,
+        payload
+      });
+    
   };
 
   render() {
+    this.printElement('in mapComponent Render');
+
     return (
       <React.StrictMode>
         <React.Fragment>

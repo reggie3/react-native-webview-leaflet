@@ -9,18 +9,59 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from './Button';
+import Sentry from 'sentry-expo';
+import {Asset} from 'expo';
 
+// Remove this once Sentry is correctly setup.
+Sentry.enableInExpoDevelopment = true;
+Sentry.config(
+  'https://7b95bce77b1d4dbbaf10a8569f60c5f3@sentry.io/1286693'
+).install();
+
+const util = require('util');
 const isValidCoordinates = require('is-valid-coordinates');
 const uniqby = require('lodash.uniqby');
-const INDEX_FILE = require(`./assets/dist/index.html`);
+
+// look up these issues related to including index.html
+// https://github.com/facebook/react-native/issues/8996
+// https://github.com/facebook/react-native/issues/16133
+
+const INDEX_FILE_PATH=`./assets/dist/index.html`;
+const INDEX_FILE_ASSET_URI = Asset.fromModule(require(INDEX_FILE_PATH)).uri;
+
+// const INDEX_FILE = require(INDEX_FILE_PATH);
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mapLoaded: false
+      mapLoaded: false,
+      webviewErrorMessages: [],
+      hasError: false,
+      hasErrorMessage: '',
+      hasErrorInfo: ''
     };
+/*     Sentry.captureMessage('INDEX_FILE: ' + util.inspect(INDEX_FILE, {
+      showHidden: false,
+      depth: null
+    })) */
+  }
+
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({
+      hasError: true,
+      hasErrorMessage: error,
+      hasErrorInfo: info
+    });
+    // You can also log the error to an error reporting service
+    /* Sentry.configureScope((scope) => {
+      Object.keys(info).forEach((key) => {
+        scope.setExtra(key, info[key]);
+      });
+    }); */
+    Sentry.captureException(error);
   }
 
   // data to send is an object containing key value pairs that will be
@@ -41,7 +82,7 @@ export default class WebViewLeaflet extends React.Component {
   //
   handleMessage = (event) => {
     let msgData;
-    try {
+    if(event && event.nativeData && event.nativeData.data){
       msgData = JSON.parse(event.nativeEvent.data);
       if (
         msgData.hasOwnProperty('prefix') &&
@@ -72,10 +113,7 @@ export default class WebViewLeaflet extends React.Component {
           });
         }
       }
-    } catch (err) {
-      console.warn(err);
-      return;
-    }
+    } 
   };
 
   validateLocations = (locations) => {
@@ -93,21 +131,15 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   onError = (error) => {
-    return (
-      <View style={styles.activityOverlayStyle}>
-        <Text>WebViewError</Text>
-        <Text>{error}</Text>
-      </View>
-    );
+    this.setState({
+      webviewErrorMessages: [...this.state.webviewErrorMessages, error]
+    });
   };
 
   renderError = (error) => {
-    return (
-      <View style={styles.activityOverlayStyle}>
-        <Text>RenderError</Text>
-        <Text>{error}</Text>
-      </View>
-    );
+    this.setState({
+      webviewErrorMessages: [...this.state.webviewErrorMessages, error]
+    });
   };
 
   renderLoadingIndicator = () => {
@@ -123,6 +155,79 @@ export default class WebViewLeaflet extends React.Component {
     );
   };
 
+  maybeRenderMap = () => {
+    Sentry.captureMessage('rendering map in WebViewLeflet');
+    return (
+      <WebView
+        style={{
+          ...StyleSheet.absoluteFillObject
+        }}
+        ref={(ref) => {
+          this.webview = ref;
+        }}
+        /* source={INDEX_FILE} */
+        source={Platform.OS === 'ios' ? require('./assets/dist/index.html') : {uri: INDEX_FILE_ASSET_URI}}
+        startInLoadingState={true}
+        renderLoading={this.renderLoading}
+        renderError={(error)=>{
+          Sentry.captureMessage('RENDER ERROR: ' +  util.inspect(error, {
+            showHidden: false,
+            depth: null
+          }));
+        }}
+        javaScriptEnabled={true}
+        onError={(error)=>{
+          Sentry.captureMessage('ERROR: ' +  util.inspect(error, {
+            showHidden: false,
+            depth: null
+          }));
+        }}
+        scalesPageToFit={false}
+        mixedContentMode={'always'}
+        onMessage={() => {
+          Sentry.captureMessage('onMessage called');
+          this.handleMessage();
+        }}
+        onLoadStart={() => {
+          Sentry.captureMessage('onLoadStart called');
+        }}
+        onLoadEnd={() => {
+          Sentry.captureMessage('onLoadEnd called');
+          if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
+            this.props.eventReceiver.onLoad();
+          }
+        }}
+        domStorageEnabled={true}
+      />
+    );
+  };
+
+  maybeRenderWebviewError = () => {
+    if (this.state.webviewErrorMessages.length > 0) {
+      return (
+        <View style={{ zIndex: 2000, backgroundColor: 'orange', margin: 4 }}>
+          {this.state.webviewErrorMessages.map((errorMessage, index) => {
+            return <Text key={index}>{errorMessage}</Text>;
+          })}
+        </View>
+      );
+    }
+    return null;
+  };
+
+  maybeRenderErrorBoundaryMessage = () => {
+    if (this.state.hasError)
+      return (
+        <View style={{ zIndex: 2000, backgroundColor: 'red', margin: 5 }}>
+          <Button
+            onPress={() => Sentry.showReportDialog()}
+            title="Report feedback"
+          />
+        </View>
+      );
+    return null;
+  };
+
   render() {
     return (
       <View
@@ -130,29 +235,15 @@ export default class WebViewLeaflet extends React.Component {
           flex: 1
         }}
       >
-        <View style={{ ...StyleSheet.absoluteFillObject }}>
-          <WebView
-            style={{
-              ...StyleSheet.absoluteFillObject
-            }}
-            ref={(ref) => {
-              this.webview = ref;
-            }}
-            source={INDEX_FILE}
-            onMessage={this.handleMessage}
-            startInLoadingState={true}
-            renderLoading={this.renderLoading}
-            renderError={this.renderError}
-            javaScriptEnabled={true}
-            onError={this.onError}
-            scalesPageToFit={false}
-            mixedContentMode={'always'}
-            onLoadEnd={
-              this.props.eventReceiver.hasOwnProperty('onLoad')
-                ? this.props.eventReceiver.onLoad
-                : null
-            }
-          />
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: '#fff1ad'
+          }}
+        >
+          {this.maybeRenderMap()}
+          {this.maybeRenderErrorBoundaryMessage()}
+          {this.maybeRenderWebviewError()}
           {this.props.centerButton ? (
             <View
               style={{

@@ -17,15 +17,26 @@ const npmDeps = {
   util: '^0.10.3',
   'lodash.uniqby': '^4.7.0',
   geolib: '^2.0.24',
-  'react-leaflet': '^2.0.0-rc.1'
+  'react-leaflet': '^2.0.0-rc.1',
+  "@sentry/browser": "^4.0.4",
+  "sentry-expo": "^1.9.0"
 };
+
+const npmPeerDeps={
+  "react": "16.3.1",
+  "react-dom": "^16.3.1",
+  "react-native": "^0.57.1"
+}
+
 // additional dependencies for expo app
 const expoDeps = {
-  expo: '^28.0.0',
+  expo: '^30.0.0',
   react: '16.3.1',
   'react-dom': '^16.3.1',
-  'react-native': `https://github.com/expo/react-native/archive/sdk-28.0.0.tar.gz`
+  'react-native': `https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz`
 };
+
+
 
 // main for npm publishing
 const npmMain = 'index.js';
@@ -40,6 +51,7 @@ gulp.task('forNPM', (done) => {
     .pipe(
       jeditor(function(json) {
         json.dependencies = npmDeps;
+        json.peerDependencies = npmPeerDeps;
         json.main = npmMain;
         return json;
       })
@@ -91,7 +103,8 @@ gulp.task('forExpo', (done) => {
     .pipe(
       jeditor({
         dependencies: expoDeps,
-        main: expoMain
+        main: expoMain,
+        peerDependencies: {}
       })
     )
     .pipe(concat('package.json'))
