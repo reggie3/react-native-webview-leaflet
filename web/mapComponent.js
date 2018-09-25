@@ -22,8 +22,8 @@ const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 // Leaflet.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-const SHOW_DEBUG_INFORMATION = true;
-const ENABLE_BROWSER_TESTING = true;
+const SHOW_DEBUG_INFORMATION = false;
+const ENABLE_BROWSER_TESTING = false;
 
 class mapComponent extends Component {
   constructor(props) {
