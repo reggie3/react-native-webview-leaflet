@@ -7,7 +7,7 @@ import Button from './Button';
 import mapLayers from './web/mockMapLayers';
 
 const geolib = require('geolib');
-const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+const emoji = ['😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 
 let parkLocations = {
@@ -310,7 +310,7 @@ export default class App extends React.Component {
           style={{
             margin: 10,
             fontSize: 24,
-            color: 'white'
+            color: 'black'
           }}
         >
           Animated Map Markers App
@@ -348,12 +348,6 @@ export default class App extends React.Component {
             fontSize={30}
             text={'👑'}
           />
-          <Button
-            onPress={this.setBoundsForAllMarkers}
-            borderWidth={0}
-            fontSize={30}
-            text={'🗺️'}
-          />
         </View>
       </View>
     );
@@ -363,7 +357,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#7b337c',
+    backgroundColor: '#ddff3c',
+
     display: 'flex'
   },
   statusBar: {

@@ -20,11 +20,10 @@ const util = require('util');
 
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
-Leaflet.Icon.Default.imagePath =
-  '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
+// Leaflet.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-const SHOW_DEBUG_INFORMATION = false;
-const ENABLE_BROWSER_TESTING = false;
+const SHOW_DEBUG_INFORMATION = true;
+const ENABLE_BROWSER_TESTING = true;
 
 class mapComponent extends Component {
   constructor(props) {
@@ -51,10 +50,10 @@ class mapComponent extends Component {
     // add the event listeners
     if (document) {
       document.addEventListener('message', this.handleMessage), false;
-       this.printElement('using document');
+      this.printElement('using document');
     } else if (window) {
       window.addEventListener('message', this.handleMessage), false;
-       this.printElement('using window');
+      this.printElement('using window');
     } else {
       console.log('unable to add event listener');
       return;
@@ -64,13 +63,12 @@ class mapComponent extends Component {
 
     if (ENABLE_BROWSER_TESTING) {
       this.setState({
-        locations: [...testLocations],
+        locations: ENABLE_BROWSER_TESTING ? testLocations : [],
         mapLayers
       });
     }
 
     try {
-
       this.printElement('try sending on load message');
       setTimeout(() => {
         this.printElement('sending on load message after timeout');
@@ -81,9 +79,7 @@ class mapComponent extends Component {
           zoom: this.mapRef.current.leafletElement.getZoom()
         });
         this.printElement('sent onload event');
-
       }, 1000);
-
     } catch (error) {
       this.printElement(error);
     }
@@ -143,7 +139,6 @@ class mapComponent extends Component {
   // print passed information in an html element; useful for debugging
   // since console.log and debug statements won't work in a conventional way
   printElement = (data) => {
-
     if (SHOW_DEBUG_INFORMATION) {
       let message = '';
       if (typeof data === 'object') {
@@ -177,11 +172,6 @@ class mapComponent extends Component {
   Get the HTML string containing the icon div, and animation parameters
   */
   getAnimatedHTMLString = (icon, animation, size = [24, 24]) => {
-    let iconSizeString = `<div style='font-size: ${Math.max(
-      size[0],
-      size[1]
-    )}px'>`;
-
     return `<div class='animationContainer' style="
       animation-name: ${animation.name ? animation.name : 'bounce'}; 
       animation-duration: ${animation.duration ? animation.duration : 1}s ;
@@ -192,25 +182,33 @@ class mapComponent extends Component {
       animation-iteration-count: ${
         animation.interationCount ? animation.interationCount : 'infinite'
       }">
-      ${iconSizeString}
-      ${icon}
-      </div>
+      ${this.getIconFromEmojiOrImageOrSVG(icon, size)}
+
       </div>`;
   };
 
   getUnanimatedHTMLString = (icon, animation, size = [24, 24]) => {
-    let iconSizeString = `<div style='font-size: ${Math.max(
-      size[0],
-      size[1]
-    )}px'>`;
-
     return `<div class='unanimatedIconContainer' >
-      ${iconSizeString}
-      ${icon}
-      </div>
+      ${this.getIconFromEmojiOrImageOrSVG(icon, size)}
+
       </div>`;
   };
 
+  getIconFromEmojiOrImageOrSVG = (icon, size) => {
+    if (icon.includes('svg') || icon.includes('SVG')) {
+      return ` <div style='font-size: ${Math.max(size[0], size[1])}px'>
+      ${icon}
+      </div>`;
+    } else if (icon.includes('//') || icon.includes('base64')) {
+      return `<img src="${icon}" style="width:${size[0]}px;height:${
+        size[1]
+      }px;">`;
+    } else {
+      return ` <div style='font-size: ${Math.max(size[0], size[1])}px'>
+    ${icon}
+    </div>`;
+    }
+  };
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
   sendMessage = (payload) => {
@@ -257,29 +255,25 @@ class mapComponent extends Component {
   };
 
   onMapEvent = (event, payload) => {
-   
-      // build a payload if one is not provided
-      if (!payload) {
-        payload = {
-          center: this.mapRef.current.leafletElement.getCenter(),
-          bounds: this.mapRef.current.leafletElement.getBounds(),
-          zoom: this.mapRef.current.leafletElement.getZoom()
-        };
-      }
-      this.printElement(
+    // build a payload if one is not provided
+    if (!payload) {
+      payload = {
+        center: this.mapRef.current.leafletElement.getCenter(),
+        bounds: this.mapRef.current.leafletElement.getBounds(),
+        zoom: this.mapRef.current.leafletElement.getZoom()
+      };
+    }
+    this.printElement(
       `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
     );
 
-      this.sendMessage({
-        event,
-        payload
-      });
-    
+    this.sendMessage({
+      event,
+      payload
+    });
   };
 
   render() {
-    this.printElement('in mapComponent Render');
-
     return (
       <React.StrictMode>
         <React.Fragment>
@@ -341,7 +335,7 @@ class mapComponent extends Component {
                 </LayersControl>
               )}
               <LayersControl position="topleft">
-                <LayersControl.Overlay name="Markers">
+                <LayersControl.Overlay name="Markers" checked="true">
                   <LayerGroup>
                     {this.state.markers.map((marker) => {
                       return (

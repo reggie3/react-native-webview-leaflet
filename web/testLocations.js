@@ -21,17 +21,17 @@ const locations = [
   {
     id: 1,
     coords: [36.46410354, -75.6432701],
-    icon: '😴',
+    icon: 'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
     size: [32, 32],
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
+      name: 'bounce',
       duration,
       delay,
       interationCount
     }
   },
   {
-    id: Math.floor(Math.random() * 1000),
+    id: 100,
     coords: [37.23310632, -76.23518332],
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
@@ -54,7 +54,7 @@ const locations = [
     }
   },*/
    {
-    id: Math.floor(Math.random() * 1000),
+    id: 1000,
     coords: [36.60061515, -76.48888338],
     icon: svgIcons.greenCircle,
     animation: {
