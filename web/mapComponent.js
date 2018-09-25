@@ -14,8 +14,6 @@ import './markers.css';
 import ControlsLayer from './ControlsLayer';
 import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
-import * as Sentry from '@sentry/browser';
-Sentry.init({dsn: 'https://7c3f99af3d07471e81541289d056200a@sentry.io/1286697'});
 
 const isValidCoordinates = require('is-valid-coordinates');
 const util = require('util');
@@ -87,7 +85,6 @@ class mapComponent extends Component {
       }, 1000);
 
     } catch (error) {
-      Sentry.captureException(error);
       this.printElement(error);
     }
   };
@@ -146,14 +143,6 @@ class mapComponent extends Component {
   // print passed information in an html element; useful for debugging
   // since console.log and debug statements won't work in a conventional way
   printElement = (data) => {
-
-    let message = '';
-    if (typeof data === 'object') {
-      message = util.inspect(data, { showHidden: false, depth: null });
-    } else if (typeof data === 'string') {
-      message = data;
-    }
-    Sentry.captureMessage(message)
 
     if (SHOW_DEBUG_INFORMATION) {
       let message = '';

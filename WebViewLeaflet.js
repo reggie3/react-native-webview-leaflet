@@ -9,14 +9,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from './Button';
-import Sentry from 'sentry-expo';
-import {Asset} from 'expo';
-
-// Remove this once Sentry is correctly setup.
-Sentry.enableInExpoDevelopment = true;
-Sentry.config(
-  'https://7b95bce77b1d4dbbaf10a8569f60c5f3@sentry.io/1286693'
-).install();
+import { Asset } from 'expo';
 
 const util = require('util');
 const isValidCoordinates = require('is-valid-coordinates');
@@ -26,7 +19,7 @@ const uniqby = require('lodash.uniqby');
 // https://github.com/facebook/react-native/issues/8996
 // https://github.com/facebook/react-native/issues/16133
 
-const INDEX_FILE_PATH=`./assets/dist/index.html`;
+const INDEX_FILE_PATH = `./assets/dist/index.html`;
 const INDEX_FILE_ASSET_URI = Asset.fromModule(require(INDEX_FILE_PATH)).uri;
 
 // const INDEX_FILE = require(INDEX_FILE_PATH);
@@ -42,10 +35,6 @@ export default class WebViewLeaflet extends React.Component {
       hasErrorMessage: '',
       hasErrorInfo: ''
     };
-/*     Sentry.captureMessage('INDEX_FILE: ' + util.inspect(INDEX_FILE, {
-      showHidden: false,
-      depth: null
-    })) */
   }
 
   componentDidCatch(error, info) {
@@ -55,13 +44,6 @@ export default class WebViewLeaflet extends React.Component {
       hasErrorMessage: error,
       hasErrorInfo: info
     });
-    // You can also log the error to an error reporting service
-    /* Sentry.configureScope((scope) => {
-      Object.keys(info).forEach((key) => {
-        scope.setExtra(key, info[key]);
-      });
-    }); */
-    Sentry.captureException(error);
   }
 
   // data to send is an object containing key value pairs that will be
@@ -82,7 +64,7 @@ export default class WebViewLeaflet extends React.Component {
   //
   handleMessage = (event) => {
     let msgData;
-    if(event && event.nativeData && event.nativeData.data){
+    if (event && event.nativeData && event.nativeData.data) {
       msgData = JSON.parse(event.nativeEvent.data);
       if (
         msgData.hasOwnProperty('prefix') &&
@@ -113,7 +95,7 @@ export default class WebViewLeaflet extends React.Component {
           });
         }
       }
-    } 
+    }
   };
 
   validateLocations = (locations) => {
@@ -156,7 +138,6 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   maybeRenderMap = () => {
-    Sentry.captureMessage('rendering map in WebViewLeflet');
     return (
       <WebView
         style={{
@@ -166,33 +147,39 @@ export default class WebViewLeaflet extends React.Component {
           this.webview = ref;
         }}
         /* source={INDEX_FILE} */
-        source={Platform.OS === 'ios' ? require('./assets/dist/index.html') : {uri: INDEX_FILE_ASSET_URI}}
+        source={
+          Platform.OS === 'ios'
+            ? require('./assets/dist/index.html')
+            : { uri: INDEX_FILE_ASSET_URI }
+        }
         startInLoadingState={true}
         renderLoading={this.renderLoading}
-        renderError={(error)=>{
-          Sentry.captureMessage('RENDER ERROR: ' +  util.inspect(error, {
-            showHidden: false,
-            depth: null
-          }));
+        renderError={(error) => {
+          console.log(
+            'RENDER ERROR: ',
+            util.inspect(error, {
+              showHidden: false,
+              depth: null
+            })
+          );
         }}
         javaScriptEnabled={true}
-        onError={(error)=>{
-          Sentry.captureMessage('ERROR: ' +  util.inspect(error, {
-            showHidden: false,
-            depth: null
-          }));
+        onError={(error) => {
+          console.log(
+            'ERROR: ',
+            util.inspect(error, {
+              showHidden: false,
+              depth: null
+            })
+          );
         }}
         scalesPageToFit={false}
         mixedContentMode={'always'}
         onMessage={() => {
-          Sentry.captureMessage('onMessage called');
           this.handleMessage();
         }}
-        onLoadStart={() => {
-          Sentry.captureMessage('onLoadStart called');
-        }}
+        onLoadStart={() => {}}
         onLoadEnd={() => {
-          Sentry.captureMessage('onLoadEnd called');
           if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
             this.props.eventReceiver.onLoad();
           }
@@ -219,10 +206,10 @@ export default class WebViewLeaflet extends React.Component {
     if (this.state.hasError)
       return (
         <View style={{ zIndex: 2000, backgroundColor: 'red', margin: 5 }}>
-          <Button
-            onPress={() => Sentry.showReportDialog()}
-            title="Report feedback"
-          />
+          {util.inspect(this.state.webviewErrorMessages, {
+            showHidden: false,
+            depth: null
+          })}
         </View>
       );
     return null;
