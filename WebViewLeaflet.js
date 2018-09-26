@@ -141,6 +141,7 @@ export default class WebViewLeaflet extends React.Component {
         <View style={styles.activityIndicatorContainer}>
           <ActivityIndicator
             size="large"
+            color="#0000ff"
             animating={!this.props.eventReceiver.state.mapsState.mapLoaded}
           />
         </View>
@@ -234,10 +235,10 @@ export default class WebViewLeaflet extends React.Component {
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: '#fff1ad'
+            backgroundColor: 'rgba(0,0,0,0)'
           }}
         >
-          {this.maybeRenderMap()}
+          {this.maybeRenderMap()} 
           {this.maybeRenderErrorBoundaryMessage()}
           {this.maybeRenderWebviewError()}
           {this.props.centerButton ? (
