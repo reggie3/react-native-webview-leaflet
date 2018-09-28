@@ -19,8 +19,6 @@ const npmDeps = {
   'lodash.uniqby': '^4.7.0',
   geolib: '^2.0.24',
   'react-leaflet': '^2.0.0-rc.1',
-  "@sentry/browser": "^4.0.4",
-  "sentry-expo": "^1.9.0"
 };
 
 const npmPeerDeps={
