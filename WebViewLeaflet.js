@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -6,14 +6,14 @@ import {
   WebView,
   Platform,
   Text
-} from 'react-native';
-import PropTypes from 'prop-types';
-import Button from './Button';
-import { Asset } from 'expo';
+} from "react-native";
+import PropTypes from "prop-types";
+import Button from "./Button";
+import { Asset } from "expo";
 
-const util = require('util');
-const isValidCoordinates = require('is-valid-coordinates');
-const uniqby = require('lodash.uniqby');
+const util = require("util");
+const isValidCoordinates = require("is-valid-coordinates");
+const uniqby = require("lodash.uniqby");
 
 // look up these issues related to including index.html
 // https://github.com/facebook/react-native/issues/8996
@@ -23,7 +23,7 @@ const INDEX_FILE_PATH = `./assets/dist/index.html`;
 const INDEX_FILE_ASSET_URI = Asset.fromModule(require(INDEX_FILE_PATH)).uri;
 
 // const INDEX_FILE = require(INDEX_FILE_PATH);
-const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+const MESSAGE_PREFIX = "react-native-webview-leaflet";
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -32,8 +32,8 @@ export default class WebViewLeaflet extends React.Component {
       mapLoaded: false,
       webviewErrorMessages: [],
       hasError: false,
-      hasErrorMessage: '',
-      hasErrorInfo: ''
+      hasErrorMessage: "",
+      hasErrorInfo: ""
     };
   }
 
@@ -46,9 +46,118 @@ export default class WebViewLeaflet extends React.Component {
     });
   }
 
+  componentDidUpdate = (prevProps, prevState) => {
+    // check that centerPosition prop exists,
+    // that the current centerPosition does not equal the previous one,
+    // and that the centerPosition is a valid lat, lng
+    // if so, send a message to the map to update its current position
+    if (
+      this.props.centerPosition &&
+      this.props.centerPosition.length == 2 &&
+      prevProps.centerPosition !== this.props.centerPosition
+    ) {
+      if (
+        isValidCoordinates(
+          this.props.centerPosition[1],
+          this.props.centerPosition[0]
+        )
+      ) {
+        this.sendMessage({ centerPosition: this.props.centerPosition });
+        // store the center position so that we can ensure the map gets it upon
+        // its loading since it is possible that the position might
+        // be availible before the map has been loaded
+        this.setState({ centerPosition: this.props.centerPosition });
+      } else {
+        console.warn(
+          "Invalid coordinates provided to centerPosition: ",
+          this.props.centerPosition
+        );
+      }
+    }
+
+    // handle updates to own position
+    if (
+      this.props.ownPositionMarker &&
+      this.props.ownPositionMarker.coords &&
+      this.props.ownPositionMarker.coords.length === 2 &&
+      prevProps.ownPositionMarker !== this.props.ownPositionMarker
+    ) {
+      if (
+        isValidCoordinates(
+          this.props.ownPositionMarker.coords[1],
+          this.props.ownPositionMarker.coords[0]
+        )
+      ) {
+        this.sendMessage({ ownPositionMarker: this.props.ownPositionMarker });
+        // store the center position so that we can ensure the map gets it upon
+        // its loading since it is possible that the position might
+        // be availible before the map has been loaded
+        this.setState({ ownPositionMarker: this.props.ownPositionMarker });
+      } else {
+        console.warn(
+          "Invalid coordinates provided to ownPositionMarker: ",
+          this.props.ownPositionMarker.coords
+        );
+      }
+    }
+
+    // handle updates to map markers array
+    if (this.props.markers && prevProps.markers !== this.props.markers) {
+      let validMarkers = this.props.markers.filter(marker => {
+        return isValidCoordinates(marker.coords[1], marker.coords[0]);
+      });
+
+      this.sendMessage({ markers: validMarkers });
+      // store the center position so that we can ensure the map gets it upon
+      // its loading since it is possible that the position might
+      // be availible before the map has been loaded
+      this.setState({ markers: validMarkers });
+    }
+
+    if (!prevState.mapLoaded && this.state.mapLoaded) {
+      // Here is our chance to send stuff to the map once it has loaded
+      // Create an object that will have the update that the map will
+      // get once it has loaded
+      let onMapLoadedUpdate = {};
+      // Check the state for any items that may have been received prior to
+      // the map loading, and send them to the map
+      // check if we have a center position
+      if (this.state.centerPosition) {
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          centerPosition: this.state.centerPosition
+        };
+      }
+
+      // do the same for ownPostionMarker
+      if (this.state.ownPositionMarker) {
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          ownPositionMarker: this.state.ownPositionMarker
+        };
+      }
+
+      // do the same for map markers
+      if (this.state.markers) {
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          locations: this.state.markers
+        };
+      }
+      if (Object.keys(onMapLoadedUpdate).length > 0) {
+        this.sendMessage(onMapLoadedUpdate);
+      }
+    }
+  };
+
+  centerMapOnCurrentPosition = () => {
+    debugger;
+    this.sendMessage({ centerPosition: this.state.centerPosition });
+  };
+
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
-  sendMessage = (payload) => {
+  sendMessage = payload => {
     // if (this.state.mapLoaded) {
     // only send message when webview is loaded
     const message = JSON.stringify({
@@ -56,18 +165,24 @@ export default class WebViewLeaflet extends React.Component {
       payload
     });
 
+    // If the user has sent a centering messaging, then store the location
+    // so that we can refer to it later if the built in centering button
+    // is pressed
+    if (payload.centerPosition) {
+      this.setState({ centerPosition: payload.centerPosition });
+    }
     console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
-    this.webview.postMessage(message, '*');
+    this.webview.postMessage(message, "*");
     // }
   };
 
   //
-  handleMessage = (event) => {
+  handleMessage = event => {
     let msgData;
     if (event && event.nativeData && event.nativeData.data) {
       msgData = JSON.parse(event.nativeEvent.data);
       if (
-        msgData.hasOwnProperty('prefix') &&
+        msgData.hasOwnProperty("prefix") &&
         msgData.prefix === MESSAGE_PREFIX
       ) {
         console.log(`WebViewLeaflet: received message: `, msgData.payload);
@@ -98,27 +213,27 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  validateLocations = (locations) => {
+  validateLocations = locations => {
     // confirm the location coordinates are valid
-    const validCoordLocations = locations.filter((location) => {
+    const validCoordLocations = locations.filter(location => {
       return isValidCoordinates(location.coords[1], location.coords[0]);
     });
     // remove any locations that are already in the component state's "locations"
     // create a new array containing all the locations
     let combinedArray = [...this.state.locations, ...validCoordLocations];
     // remove duplicate locations
-    const deDupedLocations = uniqby(combinedArray, 'id');
+    const deDupedLocations = uniqby(combinedArray, "id");
     this.sendLocations(deDupedLocations);
     this.setState({ locations: deDupedLocations });
   };
 
-  onError = (error) => {
+  onError = error => {
     this.setState({
       webviewErrorMessages: [...this.state.webviewErrorMessages, error]
     });
   };
 
-  renderError = (error) => {
+  renderError = error => {
     this.setState({
       webviewErrorMessages: [...this.state.webviewErrorMessages, error]
     });
@@ -143,20 +258,20 @@ export default class WebViewLeaflet extends React.Component {
         style={{
           ...StyleSheet.absoluteFillObject
         }}
-        ref={(ref) => {
+        ref={ref => {
           this.webview = ref;
         }}
         /* source={INDEX_FILE} */
         source={
-          Platform.OS === 'ios'
-            ? require('./assets/dist/index.html')
+          Platform.OS === "ios"
+            ? require("./assets/dist/index.html")
             : { uri: INDEX_FILE_ASSET_URI }
         }
         startInLoadingState={true}
         renderLoading={this.renderLoading}
-        renderError={(error) => {
+        renderError={error => {
           console.log(
-            'RENDER ERROR: ',
+            "RENDER ERROR: ",
             util.inspect(error, {
               showHidden: false,
               depth: null
@@ -164,9 +279,9 @@ export default class WebViewLeaflet extends React.Component {
           );
         }}
         javaScriptEnabled={true}
-        onError={(error) => {
+        onError={error => {
           console.log(
-            'ERROR: ',
+            "ERROR: ",
             util.inspect(error, {
               showHidden: false,
               depth: null
@@ -174,15 +289,19 @@ export default class WebViewLeaflet extends React.Component {
           );
         }}
         scalesPageToFit={false}
-        mixedContentMode={'always'}
+        mixedContentMode={"always"}
         onMessage={() => {
           this.handleMessage();
         }}
         onLoadStart={() => {}}
         onLoadEnd={() => {
-          if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
+          if (this.props.eventReceiver.hasOwnProperty("onLoad")) {
             this.props.eventReceiver.onLoad();
           }
+          // Set the component state to showw that the map has been loaded.
+          // This will let us do things during component update once the map
+          // is loaded.
+          this.setState({ mapLoaded: true });
         }}
         domStorageEnabled={true}
       />
@@ -192,7 +311,7 @@ export default class WebViewLeaflet extends React.Component {
   maybeRenderWebviewError = () => {
     if (this.state.webviewErrorMessages.length > 0) {
       return (
-        <View style={{ zIndex: 2000, backgroundColor: 'orange', margin: 4 }}>
+        <View style={{ zIndex: 2000, backgroundColor: "orange", margin: 4 }}>
           {this.state.webviewErrorMessages.map((errorMessage, index) => {
             return <Text key={index}>{errorMessage}</Text>;
           })}
@@ -205,7 +324,7 @@ export default class WebViewLeaflet extends React.Component {
   maybeRenderErrorBoundaryMessage = () => {
     if (this.state.hasError)
       return (
-        <View style={{ zIndex: 2000, backgroundColor: 'red', margin: 5 }}>
+        <View style={{ zIndex: 2000, backgroundColor: "red", margin: 5 }}>
           {util.inspect(this.state.webviewErrorMessages, {
             showHidden: false,
             depth: null
@@ -213,6 +332,44 @@ export default class WebViewLeaflet extends React.Component {
         </View>
       );
     return null;
+  };
+
+  renderCenterOnOwnPositionMarkerButton = () => {
+    if (this.props.ownPositionMarker) {
+      if (
+        this.props.ownPositionMarker.coords &&
+        isValidCoordinates(
+          this.props.ownPositionMarker.coords[1],
+          this.props.ownPositionMarker.coords[0]
+        )
+      ) {
+        return (
+          <View
+            style={{
+              position: "absolute",
+              right: 10,
+              bottom: 20,
+              padding: 10
+            }}
+          >
+            <Button
+              onPress={() => {
+                this.sendMessage({
+                  centerPosition: this.props.ownPositionMarker.coords
+                });
+              }}
+              text={"🎯"}
+            />
+          </View>
+        );
+      }
+      return null;
+    } else {
+      console.warn(
+        "Prop 'ownPositionMarker' must be passed in order to display the center on own position button."
+      );
+      return null;
+    }
   };
 
   render() {
@@ -225,24 +382,15 @@ export default class WebViewLeaflet extends React.Component {
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: '#fff1ad'
+            backgroundColor: "#fff1ad"
           }}
         >
           {this.maybeRenderMap()}
           {this.maybeRenderErrorBoundaryMessage()}
           {this.maybeRenderWebviewError()}
-          {this.props.centerButton ? (
-            <View
-              style={{
-                position: 'absolute',
-                right: 10,
-                bottom: 20,
-                padding: 10
-              }}
-            >
-              <Button onPress={this.centerMapOnCurrentPosition} text={'🎯'} />
-            </View>
-          ) : null}
+          {this.props.centerButton
+            ? this.renderCenterOnOwnPositionMarkerButton()
+            : null}
         </View>
       </View>
     );
@@ -269,18 +417,18 @@ WebViewLeaflet.defaultProps = {
   defaultIconSize: [36, 36],
   zoom: 5,
   showZoomControls: true,
-  centerButton: true,
+  centerButton: false,
   panToLocation: false,
   showMapAttribution: false,
   currentPosition: [38.89511, -77.03637],
   currentPositionMarkerStyle: {
-    icon: '❤️',
+    icon: "❤️",
     animation: {
-      name: 'beat',
+      name: "beat",
       duration: 0.25,
       delay: 0,
-      interationCount: 'infinite',
-      direction: 'alternate'
+      interationCount: "infinite",
+      direction: "alternate"
     },
     size: [36, 36]
   }
@@ -289,18 +437,18 @@ WebViewLeaflet.defaultProps = {
 const styles = StyleSheet.create({
   activityOverlayStyle: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, .5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
+    backgroundColor: "rgba(255, 255, 255, .5)",
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "center",
     borderRadius: 5
   },
   activityIndicatorContainer: {
-    backgroundColor: 'lightgray',
+    backgroundColor: "lightgray",
     padding: 10,
     borderRadius: 50,
-    alignSelf: 'center',
-    shadowColor: '#000000',
+    alignSelf: "center",
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -313,7 +461,7 @@ const styles = StyleSheet.create({
     android: {
       elevation: 4,
       // Material design blue from https://material.google.com/style/color.html#color-color-palette
-      backgroundColor: '#2196F3',
+      backgroundColor: "#2196F3",
       borderRadius: 2
     }
   })
