@@ -22,7 +22,7 @@ const MESSAGE_PREFIX = "react-native-webview-leaflet";
 
 // Leaflet.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
 
-const SHOW_DEBUG_INFORMATION = true;
+const SHOW_DEBUG_INFORMATION = false;
 const ENABLE_BROWSER_TESTING = false;
 
 class mapComponent extends Component {
@@ -39,7 +39,8 @@ class mapComponent extends Component {
       locations: [],
       markers: [],
       showAttributionControl: false,
-      mapLayers: []
+      mapLayers: [],
+      combinedLocations: [] // array to contain the locations that will be turned into markers and ownPostionMarker
     };
   }
 
@@ -59,10 +60,20 @@ class mapComponent extends Component {
     }
 
     this.eventListenersAdded = true;
-
     if (ENABLE_BROWSER_TESTING) {
       this.setState({
-        locations: ENABLE_BROWSER_TESTING ? testLocations : [],
+        locations: testLocations,
+        ownPositionMarker: {
+          coords: this.state.centerPosition,
+          icon: "🎃",
+          size: [24, 24],
+          animation: {
+            name: "pulse",
+            duration: ".5",
+            delay: 0,
+            interationCount: "infinite"
+          }
+        },
         mapLayers
       });
     }
@@ -100,12 +111,8 @@ class mapComponent extends Component {
       );
     }
 
-    // update the locations if they have changed
-    if (
-      JSON.stringify(this.state.locations) !==
-      JSON.stringify(prevState.locations)
-    ) {
-      let markers = this.state.locations.map(location => {
+    if (prevState.combinedLocations !== this.state.combinedLocations) {
+      let markers = this.state.combinedLocations.map(location => {
         if (isValidCoordinates(location.coords[1], location.coords[0])) {
           return {
             id: location.id,
@@ -130,21 +137,43 @@ class mapComponent extends Component {
       );
     }
 
+    // update the combined locations if the ownPositionMarker object has changed
+    // in state
     if (this.state.ownPositionMarker !== prevState.ownPositionMarker) {
+      this.updateLocations();
+    }
+
+    // update the combined locations if the locations array has changed
+    // in state
+    if (
+      JSON.stringify(this.state.locations) !==
+      JSON.stringify(prevState.locations)
+    ) {
+      this.updateLocations();
+    }
+  };
+
+  // update the array of combined locations when we detect either a new
+  // ownPositionMarker or list of locations in state
+  updateLocations = () => {
+    if (this.state.locations && this.state.ownPositionMarker) {
       this.setState({
-        locations: [
-          { id: 0, ...this.state.ownPositionMarker },
-          ...this.state.locations
+        combinedLocations: [
+          ...this.state.locations,
+          { id: "ownPositionMarker", ...this.state.ownPositionMarker }
+        ]
+      });
+    } else if (this.state.locations) {
+      this.setState({
+        combinedLocations: this.state.locations
+      });
+    } else if (this.state.ownPositionMarker) {
+      this.setState({
+        combinedLocations: [
+          { id: "ownPositionMarker", ...this.state.ownPositionMarker }
         ]
       });
     }
-
-    // see if a reference to the map is available, and if so send it
-    /* if (!prevState.map && this.state.map) {
-      this.printElement(`map reference availabile`);
-
-      this.onMapEvent('onMapReference', this.state.map);
-    } */
   };
 
   // print passed information in an html element; useful for debugging

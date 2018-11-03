@@ -103,15 +103,15 @@ export default class WebViewLeaflet extends React.Component {
 
     // handle updates to map markers array
     if (this.props.markers && prevProps.markers !== this.props.markers) {
-      let validMarkers = this.props.markers.filter(marker => {
+      let validLocations = this.props.markers.filter(marker => {
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
       });
 
-      this.sendMessage({ markers: validMarkers });
+      this.sendMessage({ locations: validLocations });
       // store the center position so that we can ensure the map gets it upon
       // its loading since it is possible that the position might
       // be availible before the map has been loaded
-      this.setState({ markers: validMarkers });
+      this.setState({ locations: validLocations });
     }
 
     if (!prevState.mapLoaded && this.state.mapLoaded) {
@@ -141,18 +141,13 @@ export default class WebViewLeaflet extends React.Component {
       if (this.state.markers) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          locations: this.state.markers
+          locations: this.state.locations
         };
       }
       if (Object.keys(onMapLoadedUpdate).length > 0) {
         this.sendMessage(onMapLoadedUpdate);
       }
     }
-  };
-
-  centerMapOnCurrentPosition = () => {
-    debugger;
-    this.sendMessage({ centerPosition: this.state.centerPosition });
   };
 
   // data to send is an object containing key value pairs that will be

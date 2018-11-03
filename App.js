@@ -62,12 +62,12 @@ export default class App extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({});
     console.log("getCurrentPositionAsync returned: ", { location });
-    let locations = this.createRandomMarkers(location.coords, 0, 50000);
-
+    let markers = this.createRandomMarkers(location.coords, 5, 50000);
+    
     // center random markers around Washington DC
     // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
     this.setState({
-      locations: [...locations],
+      markers,
       location,
 
       // center around Washington DC
@@ -79,7 +79,6 @@ export default class App extends React.Component {
 
   // create set of location objects centered around the current user location
   createRandomMarkers = (center, numberOfMarkers, radius) => {
-    // debugger;
     let newMarkers = [];
     for (let i = 0; i < numberOfMarkers; i++) {
       // get a random location centered around the current postion
@@ -100,7 +99,7 @@ export default class App extends React.Component {
       let foundLongitude = x0 + x1;
 
       newMarkers.push({
-        id: i,
+        id: i + 200,
         // coords: [33.946, -91.000],
         coords: [foundLatitude, foundLongitude],
         icon: emoji[Math.floor(Math.random() * emoji.length)],
