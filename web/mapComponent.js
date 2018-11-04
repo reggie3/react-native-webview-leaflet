@@ -252,21 +252,30 @@ class mapComponent extends Component {
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
   sendMessage = payload => {
-    //  this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
+    // this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
 
     const message = JSON.stringify({
       prefix: MESSAGE_PREFIX,
       payload: payload
     });
 
-    if (document.hasOwnProperty("postMessage")) {
-      document.postMessage(message, "*");
-    } else if (window.hasOwnProperty("postMessage")) {
-      window.postMessage(message, "*");
-    } else {
-      console.log("unable to find postMessage");
+    this.printElement(`message to send = ${message}`);
+
+    try {
+      if (document.hasOwnProperty("postMessage")) {
+        document.postMessage(message, "*");
+      } else if (window.hasOwnProperty("postMessage")) {
+        window.postMessage(message, "*");
+      } else {
+        console.log("unable to find postMessage");
+        this.printElement(`unable to find postMessage`);
+
+      }
+    } catch (error) {
+      this.printElement(`error sending message: ${JSON.stringify(error)}`);
     }
-    // this.printElement(`sending message: ${JSON.stringify(message)}`);
+   
+    this.printElement(`sent message: ${message}`);
   };
 
   handleMessage = event => {

@@ -48890,21 +48890,29 @@ var mapComponent = function (_Component) {
     };
 
     _this.sendMessage = function (payload) {
-      //  this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
+      // this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
 
       var message = JSON.stringify({
         prefix: MESSAGE_PREFIX,
         payload: payload
       });
 
-      if (document.hasOwnProperty("postMessage")) {
-        document.postMessage(message, "*");
-      } else if (window.hasOwnProperty("postMessage")) {
-        window.postMessage(message, "*");
-      } else {
-        console.log("unable to find postMessage");
+      _this.printElement("message to send = " + message);
+
+      try {
+        if (document.hasOwnProperty("postMessage")) {
+          document.postMessage(message, "*");
+        } else if (window.hasOwnProperty("postMessage")) {
+          window.postMessage(message, "*");
+        } else {
+          console.log("unable to find postMessage");
+          _this.printElement("unable to find postMessage");
+        }
+      } catch (error) {
+        _this.printElement("error sending message: " + JSON.stringify(error));
       }
-      // this.printElement(`sending message: ${JSON.stringify(message)}`);
+
+      _this.printElement("sent message: " + message);
     };
 
     _this.handleMessage = function (event) {

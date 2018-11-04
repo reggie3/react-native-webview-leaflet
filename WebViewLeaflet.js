@@ -37,7 +37,6 @@ export default class WebViewLeaflet extends React.Component {
     };
   }
 
-  
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({
@@ -52,7 +51,6 @@ export default class WebViewLeaflet extends React.Component {
     // that the current centerPosition does not equal the previous one,
     // and that the centerPosition is a valid lat, lng
     // if so, send a message to the map to update its current position
-    debugger;
     if (
       this.props.centerPosition &&
       this.props.centerPosition.length == 2 &&
@@ -120,41 +118,32 @@ export default class WebViewLeaflet extends React.Component {
       // Here is our chance to send stuff to the map once it has loaded
       // Create an object that will have the update that the map will
       // get once it has loaded
-      // Always send the map layers when the map loads
       let onMapLoadedUpdate = {
         mapLayers: this.props.mapLayers
       };
       // Check the state for any items that may have been received prior to
       // the map loading, and send them to the map
       // check if we have a center position
-      if (this.props.centerPosition  && isValidCoordinates(this.props.centerPosition[1], this.props.centerPosition[0])) {
+      if (this.state.centerPosition) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          centerPosition: this.props.centerPosition
-        };
-      }
-
-      // set the initial zoom
-      if(this.props.zoom){
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          zoom: this.props.zoom
+          centerPosition: this.state.centerPosition
         };
       }
 
       // do the same for ownPostionMarker
-      if (this.props.ownPositionMarker) {
+      if (this.state.ownPositionMarker) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          ownPositionMarker: this.props.ownPositionMarker
+          ownPositionMarker: this.state.ownPositionMarker
         };
       }
 
       // do the same for map markers
-      if (this.props.locations) {
+      if (this.state.markers) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          locations: this.props.locations
+          locations: this.state.locations
         };
       }
       if (Object.keys(onMapLoadedUpdate).length > 0) {
@@ -185,38 +174,35 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   //
-  handleMessage = event => {
+  handleMessage = data => {
+    debugger;
     let msgData;
-    if (event && event.nativeData && event.nativeData.data) {
-      msgData = JSON.parse(event.nativeEvent.data);
-      if (
-        msgData.hasOwnProperty("prefix") &&
-        msgData.prefix === MESSAGE_PREFIX
-      ) {
-        console.log(`WebViewLeaflet: received message: `, msgData.payload);
+    console.log({ data });
+    msgData = JSON.parse(data);
+    if (msgData.hasOwnProperty("prefix") && msgData.prefix === MESSAGE_PREFIX) {
+      console.log(`WebViewLeaflet: received message: `, msgData.payload);
 
-        // if we receive an event, then pass it to the parent by calling
-        // the parent function wtith the same name as the event, and passing
-        // the entire payload as a parameter
-        if (
-          msgData.payload.event &&
-          this.props.eventReceiver.hasOwnProperty(msgData.payload.event)
-        ) {
-          this.props.eventReceiver[msgData.payload.event](msgData.payload);
-        }
-        // WebViewLeaflet will also need to know of some state changes, such as
-        // when the mapComponent is mounted
-        else {
-          this.props.eventReceiver.setState({
-            state: {
-              ...this.props.eventReceiver.state,
-              mapState: {
-                ...this.props.eventReceiver.mapState,
-                ...msgData.payload
-              }
+      // if we receive an event, then pass it to the parent by calling
+      // the parent function wtith the same name as the event, and passing
+      // the entire payload as a parameter
+      if (
+        msgData.payload.event &&
+        this.props.eventReceiver.hasOwnProperty(msgData.payload.event)
+      ) {
+        this.props.eventReceiver[msgData.payload.event](msgData.payload);
+      }
+      // WebViewLeaflet will also need to know of some state changes, such as
+      // when the mapComponent is mounted
+      else {
+        this.props.eventReceiver.setState({
+          state: {
+            ...this.props.eventReceiver.state,
+            mapState: {
+              ...this.props.eventReceiver.mapState,
+              ...msgData.payload
             }
-          });
-        }
+          }
+        });
       }
     }
   };
@@ -298,8 +284,10 @@ export default class WebViewLeaflet extends React.Component {
         }}
         scalesPageToFit={false}
         mixedContentMode={"always"}
-        onMessage={() => {
-          this.handleMessage();
+        onMessage={event => {
+          if (event && event.nativeEvent && event.nativeEvent.data) {
+            this.handleMessage(event.nativeEvent.data);
+          }
         }}
         onLoadStart={() => {}}
         onLoadEnd={() => {
@@ -423,7 +411,7 @@ WebViewLeaflet.propTypes = {
 
 WebViewLeaflet.defaultProps = {
   defaultIconSize: [36, 36],
-  zoom: 8,
+  zoom: 5,
   showZoomControls: true,
   centerButton: false,
   panToLocation: false,

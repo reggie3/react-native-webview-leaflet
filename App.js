@@ -131,12 +131,14 @@ export default class App extends React.Component {
   };
 
   onMapClicked = ({ payload }) => {
-    // console.log(`Map Clicked: app received: ${payload.coords}`);
+    debugger;
+     console.log(`Map Clicked: app received: ${payload.coords}`);
     this.showAlert("Map Clicked", `Coordinates = ${payload.coords}`);
   };
 
   onMapMarkerClicked = ({ payload }) => {
-    // console.log(`Marker Clicked: ${payload.id}`);
+    debugger;
+    console.log(`Marker Clicked: ${payload.id}`);
     this.showAlert("Marker Clicked", `Marker ID = ${payload.id}`);
     this.setState(
       {
