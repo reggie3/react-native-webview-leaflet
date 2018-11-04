@@ -24,7 +24,7 @@ const npmDeps = {
 
 const npmPeerDeps={
   "react": "16.5.0",
-  "react-dom": "^16.6.0",
+  "react-dom": "^16.5.0",
   "react-native":  "^0.57.1"
 }
 
@@ -32,7 +32,7 @@ const npmPeerDeps={
 const expoDeps = {
   expo: '^31.0.0',
   react: '16.5.0',
-  'react-dom': '^16.6.0',
+  'react-dom': '^16.5.0',
   'react-native': `https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz`
 };
 

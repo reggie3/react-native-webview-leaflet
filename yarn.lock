@@ -8749,7 +8749,7 @@ lead@^1.0.0:
   dependencies:
     flush-write-stream "^1.0.2"
 
-leaflet.markercluster@^1.3.0:
+leaflet.markercluster@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/leaflet.markercluster/-/leaflet.markercluster-1.4.1.tgz#b53f2c4f2ca7306ddab1dbb6f1861d5e8aa6c5e5"
   integrity sha512-ZSEpE/EFApR0bJ1w/dUGwTSUvWlpalKqIzkaYdYB7jaftQA/Y2Jav+eT4CMtEYFj+ZK4mswP13Q2acnPBnhGOw==
@@ -11296,7 +11296,7 @@ react-dom@^15.4.0:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-dom@^16.3.1:
+react-dom@^16.6.0:
   version "16.6.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.6.0.tgz#6375b8391e019a632a89a0988bce85f0cc87a92f"
   integrity sha512-Stm2D9dXEUUAQdvpvhvFj/DEXwC2PAL/RwEMhoN4dvvD2ikTlJegEXf97xryg88VIAU22ZAP7n842l+9BTz6+w==
@@ -11311,7 +11311,7 @@ react-is@^16.3.2, react-is@^16.5.2, react-is@^16.6.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.0.tgz#456645144581a6e99f6816ae2bd24ee94bdd0c01"
   integrity sha512-q8U7k0Fi7oxF1HvQgyBjPwDXeMplEsArnKt2iYhuIF86+GBbgLHdAmokL3XUFjTd7Q363OSNG55FOGUdONVn1g==
 
-react-leaflet@^2.0.0-rc.1:
+react-leaflet@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-2.1.1.tgz#f4acbc5e7050ae2e312ac2c69244b68536eac14f"
   integrity sha512-ZbSiGt32UV4M9NNUAmFdMKzC7i9OdfQEDsoiCEM0FYeLFFTRPRl+BiAqU71v8NwIHFaqVIBqPQcriJYIErj+gA==
@@ -11408,6 +11408,22 @@ react-native-view-shot@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-2.5.0.tgz#428a997f470d3148d0067c5b46abd988ef1aa4c0"
   integrity sha512-xFJA+N7wh8Ik/17I4QB24e0a0L3atg1ScVehvtYR5UBTgHdzTFA0ZylvXp9gkZt7V+AT5Pni0H3NQItpqSKFoQ==
+
+react-native-webview-leaflet@^4.0.51:
+  version "4.0.51"
+  resolved "https://registry.yarnpkg.com/react-native-webview-leaflet/-/react-native-webview-leaflet-4.0.51.tgz#85e0cadd14d586fd49123cbb0c9d8d50ad6f6098"
+  integrity sha512-C7L6Jf6qO4P1tO3/N/2FYMiq/xKdgm52X7e7Ky7EMcif7fI3rBHZiJAjzOg51ffqodYtggBATFKbDxxjl3gOdA==
+  dependencies:
+    "@sentry/browser" "^4.0.4"
+    geolib "^2.0.24"
+    is-valid-coordinates "^1.0.0"
+    leaflet "^1.3.1"
+    leaflet.markercluster "^1.4.1"
+    lodash.uniqby "^4.7.0"
+    prop-types "^15.6.0"
+    react-leaflet "^2.1.1"
+    sentry-expo "^1.9.0"
+    util "^0.10.3"
 
 "react-native@https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz":
   version "0.57.1"

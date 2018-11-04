@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "4.0.5",
+  "version": "4.0.54",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -36,7 +36,7 @@
   },
   "peerDependencies": {
     "react": "16.5.0",
-    "react-dom": "^16.6.0",
+    "react-dom": "^16.5.0",
     "react-native": "^0.57.1"
   },
   "devDependencies": {

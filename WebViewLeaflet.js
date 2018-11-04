@@ -37,6 +37,7 @@ export default class WebViewLeaflet extends React.Component {
     };
   }
 
+  
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({
@@ -51,6 +52,7 @@ export default class WebViewLeaflet extends React.Component {
     // that the current centerPosition does not equal the previous one,
     // and that the centerPosition is a valid lat, lng
     // if so, send a message to the map to update its current position
+    debugger;
     if (
       this.props.centerPosition &&
       this.props.centerPosition.length == 2 &&
@@ -125,26 +127,34 @@ export default class WebViewLeaflet extends React.Component {
       // Check the state for any items that may have been received prior to
       // the map loading, and send them to the map
       // check if we have a center position
-      if (this.state.centerPosition) {
+      if (this.props.centerPosition  && isValidCoordinates(this.props.centerPosition[1], this.props.centerPosition[0])) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          centerPosition: this.state.centerPosition
+          centerPosition: this.props.centerPosition
+        };
+      }
+
+      // set the initial zoom
+      if(this.props.zoom){
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          zoom: this.props.zoom
         };
       }
 
       // do the same for ownPostionMarker
-      if (this.state.ownPositionMarker) {
+      if (this.props.ownPositionMarker) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          ownPositionMarker: this.state.ownPositionMarker
+          ownPositionMarker: this.props.ownPositionMarker
         };
       }
 
       // do the same for map markers
-      if (this.state.markers) {
+      if (this.props.locations) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          locations: this.state.locations
+          locations: this.props.locations
         };
       }
       if (Object.keys(onMapLoadedUpdate).length > 0) {
@@ -413,7 +423,7 @@ WebViewLeaflet.propTypes = {
 
 WebViewLeaflet.defaultProps = {
   defaultIconSize: [36, 36],
-  zoom: 5,
+  zoom: 8,
   showZoomControls: true,
   centerButton: false,
   panToLocation: false,
