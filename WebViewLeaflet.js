@@ -132,10 +132,10 @@ export default class WebViewLeaflet extends React.Component {
       }
 
       // do the same for ownPostionMarker
-      if (this.state.ownPositionMarker) {
+      if (this.props.ownPositionMarker) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          ownPositionMarker: this.state.ownPositionMarker
+          ownPositionMarker: this.props.ownPositionMarker
         };
       }
 
@@ -144,6 +144,13 @@ export default class WebViewLeaflet extends React.Component {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
           locations: this.state.locations
+        };
+      }
+      // do the same for zoom
+      if (this.props.zoom) {
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          zoom: this.props.zoom
         };
       }
       if (Object.keys(onMapLoadedUpdate).length > 0) {
