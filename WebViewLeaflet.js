@@ -118,7 +118,10 @@ export default class WebViewLeaflet extends React.Component {
       // Here is our chance to send stuff to the map once it has loaded
       // Create an object that will have the update that the map will
       // get once it has loaded
-      let onMapLoadedUpdate = {};
+      // Always send the map layers when the map loads
+      let onMapLoadedUpdate = {
+        mapLayers: this.props.mapLayers
+      };
       // Check the state for any items that may have been received prior to
       // the map loading, and send them to the map
       // check if we have a center position

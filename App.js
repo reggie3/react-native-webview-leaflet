@@ -61,7 +61,7 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    console.log("getCurrentPositionAsync returned: ", { location });
+    // console.log("getCurrentPositionAsync returned: ", { location });
     let markers = this.createRandomMarkers(location.coords, 5, 50000);
     
     // center random markers around Washington DC
@@ -118,7 +118,7 @@ export default class App extends React.Component {
   }
 
   updateMarkerSpeed = () => {
-    // console.log('altering markers');
+    // // console.log('altering markers');
     let updatedLocations = this.state.locations.map(location => {
       let updatedLocation = Object.assign({}, location, {
         animation: Object.assign({}, location.animation, {
@@ -131,12 +131,12 @@ export default class App extends React.Component {
   };
 
   onMapClicked = ({ payload }) => {
-    console.log(`Map Clicked: app received: ${payload.coords}`);
+    // console.log(`Map Clicked: app received: ${payload.coords}`);
     this.showAlert("Map Clicked", `Coordinates = ${payload.coords}`);
   };
 
   onMapMarkerClicked = ({ payload }) => {
-    console.log(`Marker Clicked: ${payload.id}`);
+    // console.log(`Marker Clicked: ${payload.id}`);
     this.showAlert("Marker Clicked", `Marker ID = ${payload.id}`);
     this.setState(
       {
@@ -180,56 +180,51 @@ export default class App extends React.Component {
   };
 
   onZoomLevelsChange = event => {
-    console.log("onZoomLevelsChange received : ", event);
+    // console.log("onZoomLevelsChange received : ", event);
   };
   onResize = event => {
-    console.log("onResize received : ", event);
+    // console.log("onResize received : ", event);
   };
   onUnload = event => {
-    console.log("onUnload received : ", event);
+    // console.log("onUnload received : ", event);
   };
   onViewReset = event => {
-    console.log("onViewReset received : ", event);
+    // console.log("onViewReset received : ", event);
   };
   onLoad = event => {
-    console.log("onLoad received : ", event);
+    // console.log("onLoad received : ", event);
     this.setState(
       {
         ...this.state,
         mapState: { ...this.state.mapState, mapLoaded: true }
-      },
-      () => {
-        this.webViewLeaflet.sendMessage({
-          mapLayers
-        });
       }
     );
   };
   onZoomStart = event => {
-    console.log("onZoomEnd received : ", event);
+    // console.log("onZoomEnd received : ", event);
   };
   onMoveStart = event => {
-    console.log("onMoveStart received : ", event);
+    // console.log("onMoveStart received : ", event);
   };
   onZoom = event => {
-    console.log("onZoom received : ", event);
+    // console.log("onZoom received : ", event);
   };
   onMove = event => {
-    console.log("onMove received : ", event);
+    // console.log("onMove received : ", event);
   };
   onZoomEnd = event => {
-    console.log("onZoomEnd received : ", event);
+    // console.log("onZoomEnd received : ", event);
   };
   onMoveEnd = event => {
-    console.log("onMoveEnd received : ", event);
+    // console.log("onMoveEnd received : ", event);
   };
 
   onCurrentPositionClicked = () => {
-    console.log("onCurrentPositionClicked received");
+    // console.log("onCurrentPositionClicked received");
   };
 
   centerMap = parkInitials => {
-    console.log(parkInitials);
+    // console.log(parkInitials);
     switch (parkInitials) {
       case "dw":
         this.setState({ mapCenterPosition: parkLocations.dw });
@@ -278,11 +273,11 @@ export default class App extends React.Component {
         <Text
           style={{
             margin: 10,
-            fontSize: 24,
+            fontSize: 18,
             color: "black"
           }}
         >
-          Animated Map Markers App
+          react-native-webview-leaflet Demo
         </Text>
         <WebViewLeaflet
           ref={component => (this.webViewLeaflet = component)}
@@ -290,6 +285,7 @@ export default class App extends React.Component {
           eventReceiver={this} // the component that will receive map events
           centerPosition={this.state.mapCenterPosition}
           markers={this.state.markers}
+          mapLayers={mapLayers}
           ownPositionMarker={{
             coords: this.state.currentLocation,
             icon: "❤️",

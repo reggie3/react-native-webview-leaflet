@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -25,18 +25,18 @@
   "dependencies": {
     "is-valid-coordinates": "^1.0.0",
     "leaflet": "^1.3.1",
-    "leaflet.markercluster": "^1.3.0",
+    "leaflet.markercluster": "^1.4.1",
     "prop-types": "^15.6.0",
     "util": "^0.10.3",
     "lodash.uniqby": "^4.7.0",
     "geolib": "^2.0.24",
-    "react-leaflet": "^2.0.0-rc.1",
+    "react-leaflet": "^2.1.1",
     "@sentry/browser": "^4.0.4",
     "sentry-expo": "^1.9.0"
   },
   "peerDependencies": {
-    "react": "16.3.1",
-    "react-dom": "^16.3.1",
+    "react": "16.5.0",
+    "react-dom": "^16.6.0",
     "react-native": "^0.57.1"
   },
   "devDependencies": {
