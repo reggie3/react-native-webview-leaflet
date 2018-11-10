@@ -1,5 +1,5 @@
 {
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
   "version": "3.1.50",
@@ -31,7 +31,10 @@
     "util": "^0.10.3",
     "lodash.uniqby": "^4.7.0",
     "geolib": "^2.0.24",
-    "react-leaflet": "^2.0.0-rc.1"
+    "react-leaflet": "^2.0.0-rc.1",
+    "react": "16.3.1",
+    "react-dom": "^16.3.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz"
   },
   "peerDependencies": {
     "react": "16.3.1",
