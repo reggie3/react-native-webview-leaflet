@@ -45743,7 +45743,54 @@ const mapboxToken = 'pk.eyJ1IjoicmVnZ2llMyIsImEiOiJjamp1aDhjbzgwZXdrM3FtYjVicDFr
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _jsxFileName='C:\\Users\\regin\\Dropbox\\react-native-webview-leaflet\\web\\ControlsLayer.js';var _react=__webpack_require__(/*! react */ "./node_modules/react/index.js");var _react2=_interopRequireDefault(_react);var _reactLeaflet=__webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");var _RasterLayer=__webpack_require__(/*! ./RasterLayer */ "./web/RasterLayer.js");var _RasterLayer2=_interopRequireDefault(_RasterLayer);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}var ControlsLayer=function ControlsLayer(props){return props.mapLayers.map(function(layer,index){console.log({layer:layer});if(layer.baseLayer){return _react2.default.createElement(_reactLeaflet.LayersControl.BaseLayer,_extends({name:layer.name,checked:layer.checked||false,key:index},props,{__source:{fileName:_jsxFileName,lineNumber:12}}),_react2.default.createElement(_RasterLayer2.default,_extends({layer:layer},props,{__source:{fileName:_jsxFileName,lineNumber:18}})));}else{return _react2.default.createElement(_reactLeaflet.LayersControl.Overlay,_extends({name:layer.name,checked:layer.checked||false,key:index},props,{__source:{fileName:_jsxFileName,lineNumber:23}}),_react2.default.createElement(_RasterLayer2.default,_extends({layer:layer},props,{__source:{fileName:_jsxFileName,lineNumber:29}})));}});};exports.default=ControlsLayer;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactLeaflet = __webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");
+
+var _RasterLayer = __webpack_require__(/*! ./RasterLayer */ "./web/RasterLayer.js");
+
+var _RasterLayer2 = _interopRequireDefault(_RasterLayer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ControlsLayer = function ControlsLayer(props) {
+  return props.mapLayers.map(function (layer, index) {
+    console.log({ layer: layer });
+    if (layer.baseLayer) {
+      return _react2.default.createElement(
+        _reactLeaflet.LayersControl.BaseLayer,
+        _extends({
+          name: layer.name,
+          checked: layer.checked || false,
+          key: index
+        }, props),
+        _react2.default.createElement(_RasterLayer2.default, _extends({ layer: layer }, props))
+      );
+    } else {
+      return _react2.default.createElement(
+        _reactLeaflet.LayersControl.Overlay,
+        _extends({
+          name: layer.name,
+          checked: layer.checked || false,
+          key: index
+        }, props),
+        _react2.default.createElement(_RasterLayer2.default, _extends({ layer: layer }, props))
+      );
+    }
+  });
+};
+
+exports.default = ControlsLayer;
 
 /***/ }),
 
@@ -45755,7 +45802,58 @@ Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.ass
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _jsxFileName='C:\\Users\\regin\\Dropbox\\react-native-webview-leaflet\\web\\RasterLayer.js';var _react=__webpack_require__(/*! react */ "./node_modules/react/index.js");var _react2=_interopRequireDefault(_react);var _reactLeaflet=__webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}var RasterLayer=function RasterLayer(props){console.log({props:props});if(props.layer){if(props.layer.type==='TileLayer'){return _react2.default.createElement(_reactLeaflet.TileLayer,_extends({attribution:props.layer.attribution,url:props.layer.url,zIndex:props.layer.zIndex||0},props,{__source:{fileName:_jsxFileName,lineNumber:14}}));}else if(props.layer.type==='WMSTileLayer'){return _react2.default.createElement(_reactLeaflet.WMSTileLayer,_extends({url:props.layer.url,layers:props.layer.layers},props,{__source:{fileName:_jsxFileName,lineNumber:23}}));}else if(props.layer.type==='ImageOverlay'){debugger;return _react2.default.createElement(_reactLeaflet.ImageOverlay,_extends({url:props.layer.url,bounds:props.layer.bounds,opacity:props.layer.opacity||1,zIndex:props.layer.zIndex||0},props,{__source:{fileName:_jsxFileName,lineNumber:32}}));}else if(props.layer.type==='VideoOverlay'){return _react2.default.createElement(_reactLeaflet.VideoOverlay,_extends({url:props.layer.url,bounds:props.layer.bounds,opacity:props.layer.opacity||1,play:props.layer.play||true,zIndex:props.layer.zIndex||0},props,{__source:{fileName:_jsxFileName,lineNumber:42}}));}}return null;};exports.default=RasterLayer;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactLeaflet = __webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RasterLayer = function RasterLayer(props) {
+  console.log({ props: props });
+  if (props.layer) {
+    if (props.layer.type === 'TileLayer') {
+      return _react2.default.createElement(_reactLeaflet.TileLayer, _extends({
+        attribution: props.layer.attribution,
+        url: props.layer.url,
+        zIndex: props.layer.zIndex || 0
+      }, props));
+    } else if (props.layer.type === 'WMSTileLayer') {
+      return _react2.default.createElement(_reactLeaflet.WMSTileLayer, _extends({
+        url: props.layer.url,
+        layers: props.layer.layers
+      }, props));
+    } else if (props.layer.type === 'ImageOverlay') {
+      debugger;
+      return _react2.default.createElement(_reactLeaflet.ImageOverlay, _extends({
+        url: props.layer.url,
+        bounds: props.layer.bounds,
+        opacity: props.layer.opacity || 1,
+        zIndex: props.layer.zIndex || 0
+      }, props));
+    } else if (props.layer.type === 'VideoOverlay') {
+      return _react2.default.createElement(_reactLeaflet.VideoOverlay, _extends({
+        url: props.layer.url,
+        bounds: props.layer.bounds,
+        opacity: props.layer.opacity || 1,
+        play: props.layer.play || true,
+        zIndex: props.layer.zIndex || 0
+      }, props));
+    }
+  }
+  return null;
+};
+
+exports.default = RasterLayer;
 
 /***/ }),
 
@@ -45767,7 +45865,23 @@ Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.ass
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var _jsxFileName='C:\\Users\\regin\\Dropbox\\react-native-webview-leaflet\\web\\index.js';var _react=__webpack_require__(/*! react */ "./node_modules/react/index.js");var _react2=_interopRequireDefault(_react);var _reactDom=__webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");var _reactDom2=_interopRequireDefault(_reactDom);var _mapComponent=__webpack_require__(/*! ./mapComponent */ "./web/mapComponent.js");var _mapComponent2=_interopRequireDefault(_mapComponent);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}_reactDom2.default.render(_react2.default.createElement(_mapComponent2.default,{__source:{fileName:_jsxFileName,lineNumber:5}}),document.getElementById('app'));
+
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _mapComponent = __webpack_require__(/*! ./mapComponent */ "./web/mapComponent.js");
+
+var _mapComponent2 = _interopRequireDefault(_mapComponent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_reactDom2.default.render(_react2.default.createElement(_mapComponent2.default, null), document.getElementById('app'));
 
 /***/ }),
 
@@ -45779,7 +45893,496 @@ var _jsxFileName='C:\\Users\\regin\\Dropbox\\react-native-webview-leaflet\\web\\
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _jsxFileName='C:\\Users\\regin\\Dropbox\\react-native-webview-leaflet\\web\\mapComponent.js';var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _typeof=typeof Symbol==="function"&&typeof(typeof Symbol==='function'?Symbol.iterator:'@@iterator')==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==(typeof Symbol==='function'?Symbol.prototype:'@@prototype')?"symbol":typeof obj;};var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value"in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _leaflet=__webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js");var _leaflet2=_interopRequireDefault(_leaflet);var _react=__webpack_require__(/*! react */ "./node_modules/react/index.js");var _react2=_interopRequireDefault(_react);var _reactLeaflet=__webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");var _testLocations=__webpack_require__(/*! ./testLocations */ "./web/testLocations.js");var _testLocations2=_interopRequireDefault(_testLocations);__webpack_require__(/*! ./markerAnimations.css */ "./web/markerAnimations.css");__webpack_require__(/*! ./normalize.min.css */ "./web/normalize.min.css");__webpack_require__(/*! leaflet/dist/leaflet.css */ "./node_modules/leaflet/dist/leaflet.css");__webpack_require__(/*! leaflet/dist/images/marker-icon-2x.png */ "./node_modules/leaflet/dist/images/marker-icon-2x.png");__webpack_require__(/*! leaflet/dist/images/marker-shadow.png */ "./node_modules/leaflet/dist/images/marker-shadow.png");__webpack_require__(/*! ./markers.css */ "./web/markers.css");var _ControlsLayer=__webpack_require__(/*! ./ControlsLayer */ "./web/ControlsLayer.js");var _ControlsLayer2=_interopRequireDefault(_ControlsLayer);var _RasterLayer=__webpack_require__(/*! ./RasterLayer */ "./web/RasterLayer.js");var _RasterLayer2=_interopRequireDefault(_RasterLayer);var _mockMapLayers=__webpack_require__(/*! ./mockMapLayers */ "./web/mockMapLayers.js");var _mockMapLayers2=_interopRequireDefault(_mockMapLayers);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _toConsumableArray(arr){if(Array.isArray(arr)){for(var i=0,arr2=Array(arr.length);i<arr.length;i++){arr2[i]=arr[i];}return arr2;}else{return Array.from(arr);}}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&(typeof call==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var isValidCoordinates=__webpack_require__(/*! is-valid-coordinates */ "./node_modules/is-valid-coordinates/index.js");var util=__webpack_require__(/*! util */ "./node_modules/util/util.js");var MESSAGE_PREFIX='react-native-webview-leaflet';var SHOW_DEBUG_INFORMATION=false;var ENABLE_BROWSER_TESTING=false;var mapComponent=function(_Component){_inherits(mapComponent,_Component);function mapComponent(props){_classCallCheck(this,mapComponent);var _this=_possibleConstructorReturn(this,(mapComponent.__proto__||Object.getPrototypeOf(mapComponent)).call(this,props));_this.componentDidMount=function(){_this.printElement('leafletReactHTML.js componentDidMount');if(document){document.addEventListener('message',_this.handleMessage),false;_this.printElement('using document');}else if(window){window.addEventListener('message',_this.handleMessage),false;_this.printElement('using window');}else{console.log('unable to add event listener');return;}_this.eventListenersAdded=true;if(ENABLE_BROWSER_TESTING){_this.setState({locations:ENABLE_BROWSER_TESTING?_testLocations2.default:[],mapLayers:_mockMapLayers2.default});}try{_this.printElement('try sending on load message');setTimeout(function(){_this.printElement('sending on load message after timeout');_this.onMapEvent('onLoad',{loaded:true,center:_this.mapRef.current.leafletElement.getCenter(),bounds:_this.mapRef.current.leafletElement.getBounds(),zoom:_this.mapRef.current.leafletElement.getZoom()});_this.printElement('sent onload event');},1000);}catch(error){_this.printElement(error);}};_this.componentWillUnmount=function(){if(document){document.removeEventListener('message',_this.handleMessage);}else if(window){window.removeEventListener('message',_this.handleMessage);}};_this.componentDidUpdate=function(prevProps,prevState){var that=_this;if(_this.state.coords!==prevState.coords){_this.printElement('updating coords to '+_this.state.coords);}if(JSON.stringify(_this.state.locations)!==JSON.stringify(prevState.locations)){var markers=_this.state.locations.map(function(location){if(isValidCoordinates(location.coords[1],location.coords[0])){return{id:location.id,coords:location.coords,divIcon:that.createDivIcon(location)};}});_this.setState({markers:markers},function(){console.log(_this.state.markers);});}if(JSON.stringify(_this.state.bounds)!==JSON.stringify(prevState.bounds)){_this.state.map.leafletElement.fitBounds(_this.state.bounds,_this.state.padding);}};_this.printElement=function(data){if(SHOW_DEBUG_INFORMATION){var message='';if((typeof data==='undefined'?'undefined':_typeof(data))==='object'){message=util.inspect(data,{showHidden:false,depth:null});}else if(typeof data==='string'){message=data;}_this.setState({debugMessages:[].concat(_toConsumableArray(_this.state.debugMessages),[message])});console.log(message);}};_this.createDivIcon=function(location){var divIcon=_leaflet2.default.divIcon({className:'clearMarkerContainer',html:location.animation?_this.getAnimatedHTMLString(location.icon||'📍',location.animation||null,location.size||[24,24]):_this.getUnanimatedHTMLString(location.icon,location.size),iconAnchor:location.iconAnchor||null});return divIcon;};_this.getAnimatedHTMLString=function(icon,animation){var size=arguments.length>2&&arguments[2]!==undefined?arguments[2]:[24,24];return'<div class=\'animationContainer\' style="\n      animation-name: '+(animation.name?animation.name:'bounce')+'; \n      animation-duration: '+(animation.duration?animation.duration:1)+'s ;\n      animation-delay: '+(animation.delay?animation.delay:0)+'s;\n      animation-direction: '+(animation.direction?animation.direction:'normal')+';\n      animation-iteration-count: '+(animation.interationCount?animation.interationCount:'infinite')+'">\n      '+_this.getIconFromEmojiOrImageOrSVG(icon,size)+'\n\n      </div>';};_this.getUnanimatedHTMLString=function(icon,animation){var size=arguments.length>2&&arguments[2]!==undefined?arguments[2]:[24,24];return'<div class=\'unanimatedIconContainer\' >\n      '+_this.getIconFromEmojiOrImageOrSVG(icon,size)+'\n\n      </div>';};_this.getIconFromEmojiOrImageOrSVG=function(icon,size){if(icon.includes('svg')||icon.includes('SVG')){return' <div style=\'font-size: '+Math.max(size[0],size[1])+'px\'>\n      '+icon+'\n      </div>';}else if(icon.includes('//')||icon.includes('base64')){return'<img src="'+icon+'" style="width:'+size[0]+'px;height:'+size[1]+'px;">';}else{return' <div style=\'font-size: '+Math.max(size[0],size[1])+'px\'>\n    '+icon+'\n    </div>';}};_this.sendMessage=function(payload){_this.printElement('in send message payload = '+JSON.stringify(payload));var message=JSON.stringify({prefix:MESSAGE_PREFIX,payload:payload});if(document.hasOwnProperty('postMessage')){document.postMessage(message,'*');}else if(window.hasOwnProperty('postMessage')){window.postMessage(message,'*');}else{console.log('unable to find postMessage');}_this.printElement('sending message: '+JSON.stringify(message));};_this.handleMessage=function(event){_this.printElement('received message '+JSON.stringify(event));_this.printElement(util.inspect(event.data,{showHidden:false,depth:null}));var msgData=void 0;try{msgData=JSON.parse(event.data);if(msgData.hasOwnProperty('prefix')&&msgData.prefix===MESSAGE_PREFIX){_this.printElement('Received: ',msgData.payload);_this.setState(_extends({},_this.state,msgData.payload));}}catch(err){_this.printElement('leafletReactHTML error: '+err);return;}};_this.onMapEvent=function(event,payload){if(!payload){payload={center:_this.mapRef.current.leafletElement.getCenter(),bounds:_this.mapRef.current.leafletElement.getBounds(),zoom:_this.mapRef.current.leafletElement.getZoom()};}_this.printElement('onMapEvent: event = '+event+', payload = '+JSON.stringify(payload));_this.sendMessage({event:event,payload:payload});};_this.mapMarkerDictionary={};_this.mapRef=(0,_react.createRef)();_this.state={ownPosition:{},ownPositionMarker:{},centerPosition:[36.8860065,-76.4096611],zoom:8,debugMessages:[],locations:[],markers:[],showAttributionControl:false,mapLayers:[]};return _this;}_createClass(mapComponent,[{key:'render',value:function render(){var _this2=this;return _react2.default.createElement(_react2.default.StrictMode,{__source:{fileName:_jsxFileName,lineNumber:278}},_react2.default.createElement(_react2.default.Fragment,{__source:{fileName:_jsxFileName,lineNumber:279}},this.state.mapLayers.length<1?_react2.default.createElement('div',{__source:{fileName:_jsxFileName,lineNumber:281}},'waiting on map layers'):_react2.default.createElement(_reactLeaflet.Map,{style:{width:'100%',backgroundColor:'lightblue'},ref:this.mapRef,center:this.state.centerPosition,attributionControl:this.state.showAttributionControl,zoomControl:this.state.showZoomControl,panToLocation:this.state.panToLocation,zoom:this.state.zoom,onClick:function onClick(event){_this2.onMapEvent('onMapClicked',{coords:[event.latlng.lat,event.latlng.lng]});},onZoomLevelsChange:function onZoomLevelsChange(){_this2.onMapEvent('onZoomLevelsChange',null);},onResize:function onResize(){_this2.onMapEvent('onResize',null);},onZoomStart:function onZoomStart(){_this2.onMapEvent('onZoomStart',null);},onMoveStart:function onMoveStart(){_this2.onMapEvent('onMoveStart',null);},onZoom:function onZoom(){_this2.onMapEvent('onZoomLevelsChange',null);},onMove:function onMove(){_this2.onMapEvent('onResize',null);},onZoomEnd:function onZoomEnd(){_this2.onMapEvent('onZoomStart',null);},onMoveEnd:function onMoveEnd(){_this2.onMapEvent('onMoveStart',null);},onUnload:function onUnload(){_this2.onMapEvent('onUnload',null);},onViewReset:function onViewReset(){_this2.onMapEvent('onViewReset',null);},__source:{fileName:_jsxFileName,lineNumber:283}},this.state.mapLayers.length<=1?_react2.default.createElement(_RasterLayer2.default,{layer:this.state.mapLayers[0],__source:{fileName:_jsxFileName,lineNumber:331}}):_react2.default.createElement(_reactLeaflet.LayersControl,{position:'topright',__source:{fileName:_jsxFileName,lineNumber:333}},_react2.default.createElement(_ControlsLayer2.default,{mapLayers:this.state.mapLayers,__source:{fileName:_jsxFileName,lineNumber:334}})),_react2.default.createElement(_reactLeaflet.LayersControl,{position:'topleft',__source:{fileName:_jsxFileName,lineNumber:337}},_react2.default.createElement(_reactLeaflet.LayersControl.Overlay,{name:'Markers',checked:'true',__source:{fileName:_jsxFileName,lineNumber:338}},_react2.default.createElement(_reactLeaflet.LayerGroup,{__source:{fileName:_jsxFileName,lineNumber:339}},this.state.markers.map(function(marker){return _react2.default.createElement(_reactLeaflet.Marker,{key:marker.id,position:marker.coords,icon:marker.divIcon,onClick:function onClick(){_this2.onMapEvent('onMapMarkerClicked',{id:marker.id});},__source:{fileName:_jsxFileName,lineNumber:342}});}))))),SHOW_DEBUG_INFORMATION?_react2.default.createElement('div',{style:{backgroundColor:'orange',maxHeight:'200px',overflow:'auto',padding:5,position:'fixed',bottom:0,left:0,right:0,zIndex:15000},id:'messages',__source:{fileName:_jsxFileName,lineNumber:360}},_react2.default.createElement('ul',{__source:{fileName:_jsxFileName,lineNumber:374}},this.state.debugMessages.map(function(message,index){return _react2.default.createElement('li',{key:index,__source:{fileName:_jsxFileName,lineNumber:376}},message);}))):null));}}]);return mapComponent;}(_react.Component);exports.default=mapComponent;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _leaflet = __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js");
+
+var _leaflet2 = _interopRequireDefault(_leaflet);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactLeaflet = __webpack_require__(/*! react-leaflet */ "./node_modules/react-leaflet/es/index.js");
+
+var _testLocations = __webpack_require__(/*! ./testLocations */ "./web/testLocations.js");
+
+var _testLocations2 = _interopRequireDefault(_testLocations);
+
+__webpack_require__(/*! ./markerAnimations.css */ "./web/markerAnimations.css");
+
+__webpack_require__(/*! ./normalize.min.css */ "./web/normalize.min.css");
+
+__webpack_require__(/*! leaflet/dist/leaflet.css */ "./node_modules/leaflet/dist/leaflet.css");
+
+__webpack_require__(/*! leaflet/dist/images/marker-icon-2x.png */ "./node_modules/leaflet/dist/images/marker-icon-2x.png");
+
+__webpack_require__(/*! leaflet/dist/images/marker-shadow.png */ "./node_modules/leaflet/dist/images/marker-shadow.png");
+
+__webpack_require__(/*! ./markers.css */ "./web/markers.css");
+
+var _ControlsLayer = __webpack_require__(/*! ./ControlsLayer */ "./web/ControlsLayer.js");
+
+var _ControlsLayer2 = _interopRequireDefault(_ControlsLayer);
+
+var _RasterLayer = __webpack_require__(/*! ./RasterLayer */ "./web/RasterLayer.js");
+
+var _RasterLayer2 = _interopRequireDefault(_RasterLayer);
+
+var _mockMapLayers = __webpack_require__(/*! ./mockMapLayers */ "./web/mockMapLayers.js");
+
+var _mockMapLayers2 = _interopRequireDefault(_mockMapLayers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var isValidCoordinates = __webpack_require__(/*! is-valid-coordinates */ "./node_modules/is-valid-coordinates/index.js");
+var util = __webpack_require__(/*! util */ "./node_modules/util/util.js");
+
+var MESSAGE_PREFIX = "react-native-webview-leaflet";
+
+// Leaflet.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/';
+
+var SHOW_DEBUG_INFORMATION = false;
+var ENABLE_BROWSER_TESTING = false;
+
+var mapComponent = function (_Component) {
+  _inherits(mapComponent, _Component);
+
+  function mapComponent(props) {
+    _classCallCheck(this, mapComponent);
+
+    var _this = _possibleConstructorReturn(this, (mapComponent.__proto__ || Object.getPrototypeOf(mapComponent)).call(this, props));
+
+    _this.componentDidMount = function () {
+      _this.printElement("leafletReactHTML.js componentDidMount");
+
+      // add the event listeners
+      if (document) {
+        document.addEventListener("message", _this.handleMessage), false;
+        _this.printElement("using document");
+      } else if (window) {
+        window.addEventListener("message", _this.handleMessage), false;
+        _this.printElement("using window");
+      } else {
+        console.log("unable to add event listener");
+        return;
+      }
+
+      _this.eventListenersAdded = true;
+      if (ENABLE_BROWSER_TESTING) {
+        _this.setState({
+          locations: _testLocations2.default,
+          ownPositionMarker: {
+            coords: _this.state.centerPosition,
+            icon: "🎃",
+            size: [24, 24],
+            animation: {
+              name: "pulse",
+              duration: ".5",
+              delay: 0,
+              interationCount: "infinite"
+            }
+          },
+          mapLayers: _mockMapLayers2.default
+        });
+      }
+
+      try {
+        _this.printElement("trying to send on load message");
+        setTimeout(function () {
+          _this.printElement("sending on load message after timeout");
+          _this.onMapEvent("onLoad", {
+            loaded: true,
+            center: _this.mapRef.current.leafletElement.getCenter(),
+            bounds: _this.mapRef.current.leafletElement.getBounds(),
+            zoom: _this.mapRef.current.leafletElement.getZoom()
+          });
+          _this.printElement("sent onload event");
+        }, 1000);
+      } catch (error) {
+        _this.printElement(error);
+      }
+    };
+
+    _this.componentWillUnmount = function () {
+      if (document) {
+        document.removeEventListener("message", _this.handleMessage);
+      } else if (window) {
+        window.removeEventListener("message", _this.handleMessage);
+      }
+    };
+
+    _this.componentDidUpdate = function (prevProps, prevState) {
+      var that = _this;
+      if (_this.state.centerPosition !== prevState.centerPosition) {
+        _this.printElement("updating centerPosition to " + _this.state.centerPosition);
+      }
+
+      if (prevState.combinedLocations !== _this.state.combinedLocations) {
+        var markers = _this.state.combinedLocations.map(function (location) {
+          if (isValidCoordinates(location.coords[1], location.coords[0])) {
+            return {
+              id: location.id,
+              coords: location.coords,
+              divIcon: that.createDivIcon(location)
+            };
+          }
+        });
+
+        _this.setState({ markers: markers }, function () {
+          console.log(_this.state.markers);
+        });
+      }
+
+      // update the bounds if they have changed
+      if (JSON.stringify(_this.state.bounds) !== JSON.stringify(prevState.bounds)) {
+        _this.state.map.leafletElement.fitBounds(_this.state.bounds, _this.state.padding);
+      }
+
+      // update the combined locations if the ownPositionMarker object has changed
+      // in state
+      if (_this.state.ownPositionMarker !== prevState.ownPositionMarker) {
+        _this.updateLocations();
+      }
+
+      // update the combined locations if the locations array has changed
+      // in state
+      if (JSON.stringify(_this.state.locations) !== JSON.stringify(prevState.locations)) {
+        _this.updateLocations();
+      }
+    };
+
+    _this.updateLocations = function () {
+      if (_this.state.locations && _this.state.ownPositionMarker) {
+        _this.setState({
+          combinedLocations: [].concat(_toConsumableArray(_this.state.locations), [_extends({ id: "ownPositionMarker" }, _this.state.ownPositionMarker)])
+        });
+      } else if (_this.state.locations) {
+        _this.setState({
+          combinedLocations: _this.state.locations
+        });
+      } else if (_this.state.ownPositionMarker) {
+        _this.setState({
+          combinedLocations: [_extends({ id: "ownPositionMarker" }, _this.state.ownPositionMarker)]
+        });
+      }
+    };
+
+    _this.printElement = function (data) {
+      if (SHOW_DEBUG_INFORMATION) {
+        var message = "";
+        if ((typeof data === "undefined" ? "undefined" : _typeof(data)) === "object") {
+          message = util.inspect(data, { showHidden: false, depth: null });
+        } else if (typeof data === "string") {
+          message = data;
+        }
+        _this.setState({
+          debugMessages: [].concat(_toConsumableArray(_this.state.debugMessages), [message])
+        });
+        console.log(message);
+      }
+    };
+
+    _this.createDivIcon = function (location) {
+      var divIcon = _leaflet2.default.divIcon({
+        className: "clearMarkerContainer",
+        html: location.animation ? _this.getAnimatedHTMLString(location.icon || "📍", location.animation || null, location.size || [24, 24]) : _this.getUnanimatedHTMLString(location.icon, location.size),
+        iconAnchor: location.iconAnchor || null
+      });
+      return divIcon;
+    };
+
+    _this.getAnimatedHTMLString = function (icon, animation) {
+      var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [24, 24];
+
+      return "<div class='animationContainer' style=\"\n      animation-name: " + (animation.name ? animation.name : "bounce") + "; \n      animation-duration: " + (animation.duration ? animation.duration : 1) + "s ;\n      animation-delay: " + (animation.delay ? animation.delay : 0) + "s;\n      animation-direction: " + (animation.direction ? animation.direction : "normal") + ";\n      animation-iteration-count: " + (animation.interationCount ? animation.interationCount : "infinite") + "\">\n      " + _this.getIconFromEmojiOrImageOrSVG(icon, size) + "\n\n      </div>";
+    };
+
+    _this.getUnanimatedHTMLString = function (icon, animation) {
+      var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [24, 24];
+
+      return "<div class='unanimatedIconContainer' >\n      " + _this.getIconFromEmojiOrImageOrSVG(icon, size) + "\n\n      </div>";
+    };
+
+    _this.getIconFromEmojiOrImageOrSVG = function (icon, size) {
+      if (icon.includes("svg") || icon.includes("SVG")) {
+        return " <div style='font-size: " + Math.max(size[0], size[1]) + "px'>\n      " + icon + "\n      </div>";
+      } else if (icon.includes("//") || icon.includes("base64")) {
+        return "<img src=\"" + icon + "\" style=\"width:" + size[0] + "px;height:" + size[1] + "px;\">";
+      } else {
+        return " <div style='font-size: " + Math.max(size[0], size[1]) + "px'>\n    " + icon + "\n    </div>";
+      }
+    };
+
+    _this.sendMessage = function (payload) {
+      // this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
+
+      var message = JSON.stringify({
+        prefix: MESSAGE_PREFIX,
+        payload: payload
+      });
+
+      _this.printElement("message to send = " + message);
+
+      try {
+        if (document.hasOwnProperty("postMessage")) {
+          document.postMessage(message, "*");
+        } else if (window.hasOwnProperty("postMessage")) {
+          window.postMessage(message, "*");
+        } else {
+          console.log("unable to find postMessage");
+          _this.printElement("unable to find postMessage");
+        }
+      } catch (error) {
+        _this.printElement("error sending message: " + JSON.stringify(error));
+      }
+
+      _this.printElement("sent message: " + message);
+    };
+
+    _this.handleMessage = function (event) {
+      _this.printElement("received message " + util.inspect(event.data, {
+        showHidden: false,
+        depth: null
+      }));
+
+      var msgData = void 0;
+      try {
+        msgData = JSON.parse(event.data);
+        if (msgData.hasOwnProperty("prefix") && msgData.prefix === MESSAGE_PREFIX) {
+          _this.printElement("Received: " + JSON.stringify(msgData));
+          _this.setState(_extends({}, _this.state, msgData.payload), function () {
+            // this.printElement(`state: ${JSON.stringify(this.state)}`);
+          });
+        }
+      } catch (err) {
+        _this.printElement("leafletReactHTML error: " + err);
+        return;
+      }
+    };
+
+    _this.onMapEvent = function (event, payload) {
+      // build a payload if one is not provided
+      var mapCenterPosition = [_this.mapRef.current.leafletElement.getCenter().lat, _this.mapRef.current.leafletElement.getCenter().lng];
+      var mapBounds = _this.mapRef.current.leafletElement.getBounds();
+      var mapZoom = _this.mapRef.current.leafletElement.getZoom();
+
+      if (!payload) {
+        payload = {
+          center: mapCenterPosition,
+          bounds: mapBounds,
+          zoom: mapZoom
+        };
+      }
+      _this.printElement("onMapEvent: event = " + event + ", payload = " + JSON.stringify(payload));
+
+      _this.sendMessage({
+        event: event,
+        payload: payload
+      });
+
+      // update the map's center in state if it has moved
+      // The map's center in state (centerPosition) is used by react.leaflet
+      // to center the map.  Centering the map component on the actual
+      // map center will allow us to recenter the map by updating the centerPosition
+      // item in state ourself
+      if (event === "onMoveEnd") {
+        _this.setState({ centerPosition: mapCenterPosition }, function () {
+          /*  this.printElement(
+            `************** Updated centerPosition = ${this.state.centerPosition}`
+          ); */
+        });
+      }
+      if (event === "onZoomEnd") {
+        _this.setState({ zoom: mapZoom }, function () {
+          /*  this.printElement(
+            `************** Updated mapZoom = ${this.state.zoom}`
+          ); */
+        });
+      }
+    };
+
+    _this.mapMarkerDictionary = {};
+    _this.mapRef = (0, _react.createRef)();
+    _this.state = {
+      ownPositionMarker: {},
+      centerPosition: [36.8860065, -76.4096611],
+      zoom: 8,
+      debugMessages: [],
+      locations: [],
+      markers: [],
+      showAttributionControl: false,
+      mapLayers: [],
+      combinedLocations: [] // array to contain the locations that will be turned into markers and ownPostionMarker
+    };
+    return _this;
+  }
+
+  // update the array of combined locations when we detect either a new
+  // ownPositionMarker or list of locations in state
+
+
+  // print passed information in an html element; useful for debugging
+  // since console.log and debug statements won't work in a conventional way
+
+
+  /*
+  Get the HTML string containing the icon div, and animation parameters
+  */
+
+  // data to send is an object containing key value pairs that will be
+  // spread into the destination's state
+
+
+  _createClass(mapComponent, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        _react2.default.StrictMode,
+        null,
+        _react2.default.createElement(
+          _react2.default.Fragment,
+          null,
+          this.state.mapLayers.length < 1 ? _react2.default.createElement(
+            "div",
+            null,
+            "waiting on map layers"
+          ) : _react2.default.createElement(
+            _reactLeaflet.Map,
+            {
+              style: {
+                width: "100%",
+                backgroundColor: "lightblue"
+              },
+              ref: this.mapRef,
+              center: this.state.centerPosition,
+              attributionControl: this.state.showAttributionControl,
+              zoomControl: this.state.showZoomControl,
+              panToLocation: this.state.panToLocation,
+              zoom: this.state.zoom,
+              onClick: function onClick(event) {
+                _this2.onMapEvent("onMapClicked", {
+                  coords: [event.latlng.lat, event.latlng.lng]
+                });
+              },
+              onZoomLevelsChange: function onZoomLevelsChange() {
+                _this2.onMapEvent("onZoomLevelsChange", null);
+              },
+              onResize: function onResize() {
+                _this2.onMapEvent("onResize", null);
+              },
+              onZoomStart: function onZoomStart() {
+                _this2.onMapEvent("onZoomStart", null);
+              },
+              onMoveStart: function onMoveStart() {
+                _this2.onMapEvent("onMoveStart", null);
+              },
+              onZoom: function onZoom() {
+                _this2.onMapEvent("onZoom", null);
+              },
+              onMove: function onMove() {
+                _this2.onMapEvent("onMove", null);
+              },
+              onZoomEnd: function onZoomEnd() {
+                _this2.onMapEvent("onZoomEnd", null);
+              },
+              onMoveEnd: function onMoveEnd() {
+                _this2.onMapEvent("onMoveEnd", null);
+              },
+              onUnload: function onUnload() {
+                _this2.onMapEvent("onUnload", null);
+              },
+              onViewReset: function onViewReset() {
+                _this2.onMapEvent("onViewReset", null);
+              }
+            },
+            this.state.mapLayers.length <= 1 ? _react2.default.createElement(_RasterLayer2.default, { layer: this.state.mapLayers[0] }) : _react2.default.createElement(
+              _reactLeaflet.LayersControl,
+              { position: "topright" },
+              _react2.default.createElement(_ControlsLayer2.default, { mapLayers: this.state.mapLayers })
+            ),
+            _react2.default.createElement(
+              _reactLeaflet.LayersControl,
+              { position: "topleft" },
+              _react2.default.createElement(
+                _reactLeaflet.LayersControl.Overlay,
+                { name: "Markers", checked: "true" },
+                _react2.default.createElement(
+                  _reactLeaflet.LayerGroup,
+                  null,
+                  this.state.markers.map(function (marker) {
+                    return _react2.default.createElement(_reactLeaflet.Marker, {
+                      key: marker.id,
+                      position: marker.coords,
+                      icon: marker.divIcon,
+                      onClick: function onClick() {
+                        _this2.onMapEvent("onMapMarkerClicked", {
+                          id: marker.id
+                        });
+                      }
+                    });
+                  })
+                )
+              )
+            )
+          ),
+          SHOW_DEBUG_INFORMATION ? _react2.default.createElement(
+            "div",
+            {
+              style: {
+                backgroundColor: "orange",
+                maxHeight: "200px",
+                overflow: "auto",
+                padding: 5,
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 15000
+              },
+              id: "messages"
+            },
+            _react2.default.createElement(
+              "ul",
+              null,
+              this.state.debugMessages.map(function (message, index) {
+                return _react2.default.createElement(
+                  "li",
+                  { key: index },
+                  message
+                );
+              })
+            )
+          ) : null
+        )
+      );
+    }
+  }]);
+
+  return mapComponent;
+}(_react.Component);
+
+exports.default = mapComponent;
 
 /***/ }),
 
@@ -45851,7 +46454,57 @@ if(false) {}
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _secrets=__webpack_require__(/*! ../secrets */ "./secrets.js");var mapLayers=[{name:'OpenStreetMap',checked:'true',type:'TileLayer',baseLayer:true,url:'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'},{name:'streets',type:'TileLayer',baseLayer:true,url:'https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token='+_secrets.mapboxToken,attribution:'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'},{name:'light',type:'TileLayer',baseLayer:true,url:'https://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token='+_secrets.mapboxToken,attribution:'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'},{name:'dark',type:'TileLayer',baseLayer:true,url:'https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token='+_secrets.mapboxToken,attribution:'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'},{name:'WMS Tile Layer',type:'WMSTileLayer',url:"https://demo.boundlessgeo.com/geoserver/ows",layers:'nasa:bluemarble'}];exports.default=mapLayers;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _secrets = __webpack_require__(/*! ../secrets */ "./secrets.js");
+
+var mapLayers = [{
+  name: 'OpenStreetMap',
+  checked: 'true',
+  type: 'TileLayer',
+  baseLayer: true,
+  url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'streets',
+  type: 'TileLayer',
+  baseLayer: true,
+  //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + _secrets.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'light',
+  type: 'TileLayer',
+  baseLayer: true,
+  //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=' + _secrets.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'dark',
+  type: 'TileLayer',
+  baseLayer: true,
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=' + _secrets.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+},
+/* {
+    name: 'image',
+    type: 'ImageOverlay',
+    baseLayer: true,
+    url: 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+    bounds: [[40.712216, -74.22655], [40.773941, -74.12544]]
+  }, */
+{
+  name: 'WMS Tile Layer',
+  type: 'WMSTileLayer',
+  url: "https://demo.boundlessgeo.com/geoserver/ows",
+  layers: 'nasa:bluemarble'
+}];
+
+exports.default = mapLayers;
 
 /***/ }),
 
@@ -45893,7 +46546,12 @@ if(false) {}
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var greenCircle=exports.greenCircle="<svg xmlns=\"http://www.w3.org/2000/svg\">\n    <circle id=\"greencircle\" cx=\"30\" cy=\"30\" r=\"30\" fill=\"green\" />\n</svg>";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var greenCircle = exports.greenCircle = "<svg xmlns=\"http://www.w3.org/2000/svg\">\n    <circle id=\"greencircle\" cx=\"30\" cy=\"30\" r=\"30\" fill=\"green\" />\n</svg>";
 
 /***/ }),
 
@@ -45905,7 +46563,272 @@ Object.defineProperty(exports,"__esModule",{value:true});var greenCircle=exports
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _svgIcons=__webpack_require__(/*! ./svgIcons */ "./web/svgIcons.js");var svgIcons=_interopRequireWildcard(_svgIcons);function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}else{var newObj={};if(obj!=null){for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key))newObj[key]=obj[key];}}newObj.default=obj;return newObj;}}var emoji=['😴','😄','😃','⛔','🎠','🚓','🚇'];var animations=['bounce','fade','pulse','jump','waggle','spin'];var duration=Math.floor(Math.random()*3)+1;var delay=Math.floor(Math.random())*0.5;var interationCount='infinite';var locations=[{id:2,coords:[37.06452161,-75.67364786],icon:'😴',size:[64,64]},{id:1,coords:[36.46410354,-75.6432701],icon:'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',size:[32,32],animation:{name:'bounce',duration:duration,delay:delay,interationCount:interationCount}},{id:100,coords:[37.23310632,-76.23518332],icon:emoji[Math.floor(Math.random()*emoji.length)],animation:{name:animations[Math.floor(Math.random()*animations.length)],duration:duration,delay:delay,interationCount:interationCount}},{id:1000,coords:[36.60061515,-76.48888338],icon:svgIcons.greenCircle,animation:{name:animations[Math.floor(Math.random()*animations.length)],duration:duration,delay:delay,interationCount:interationCount}}];exports.default=locations;
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _svgIcons = __webpack_require__(/*! ./svgIcons */ "./web/svgIcons.js");
+
+var svgIcons = _interopRequireWildcard(_svgIcons);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+var duration = Math.floor(Math.random() * 3) + 1;
+var delay = Math.floor(Math.random()) * 0.5;
+var interationCount = 'infinite';
+
+
+var locations = [{
+	id: 2,
+	coords: [37.06452161, -75.67364786],
+	icon: '😴',
+	size: [64, 64] /* ,
+                animation: {
+                name: animations[Math.floor(Math.random() * animations.length)],
+                duration,
+                delay,
+                interationCount
+                } */
+}, {
+	id: 1,
+	coords: [36.46410354, -75.6432701],
+	icon: 'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
+	size: [32, 32],
+	animation: {
+		name: 'bounce',
+		duration: duration,
+		delay: delay,
+		interationCount: interationCount
+	}
+}, {
+	id: 100,
+	coords: [37.23310632, -76.23518332],
+	icon: emoji[Math.floor(Math.random() * emoji.length)],
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: duration,
+		delay: delay,
+		interationCount: interationCount
+	}
+},
+/* {
+  id: 1,
+  coords: [36.46410354, -75.6432701],
+  icon: '😴',
+  size: [32, 32],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration,
+    delay,
+    interationCount
+  }
+},*/
+{
+	id: 1000,
+	coords: [36.60061515, -76.48888338],
+	icon: svgIcons.greenCircle,
+	animation: {
+		name: animations[Math.floor(Math.random() * animations.length)],
+		duration: duration,
+		delay: delay,
+		interationCount: interationCount
+	}
+
+	/* {
+   id: Math.floor(Math.random() * 1000),
+   coords: [37.0580835, -75.82318747],
+   icon: 'Fish',
+   animation: {
+     name: animations[Math.floor(Math.random() * animations.length)],
+     duration,
+     delay,
+     interationCount
+   }
+ },
+ {
+   id: Math.floor(Math.random() * 1000),
+   coords: [37.23310632, -76.23518332],
+   icon: emoji[Math.floor(Math.random() * emoji.length)],
+   size: [4, 4],
+   animation: {
+     name: animations[Math.floor(Math.random() * animations.length)],
+     duration,
+     delay,
+     interationCount
+   }
+ } */
+	/*
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.94994253, -76.64318409],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.19810239, -76.28058546],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.02416165, -76.56052521],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.91541467, -75.49279245],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.70503123, -76.32755185],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.31605891, -76.45141618],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.59436803, -76.89486842],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.35740877, -75.77910112],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.31509182, -76.76693784],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.91815909, -76.06707072],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.611917, -75.76758822],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.79520769, -76.3959497],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.42854666, -75.95883052],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [36.78673099, -76.90459724],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ },
+ {
+ id: Math.floor(Math.random() * 1000),
+ coords: [37.20966767, -75.58799685],
+ icon: emoji[Math.floor(Math.random() * emoji.length)],
+ animation: {
+ 	name: animations[Math.floor(Math.random() * animations.length)],
+ 	duration: Math.floor(Math.random() * 3) + 1,
+ 	delay: Math.floor(Math.random()) * 0.5,
+ 	interationCount
+ }
+ } */
+}];
+exports.default = locations;
 
 /***/ })
 

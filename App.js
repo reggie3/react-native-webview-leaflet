@@ -1,14 +1,14 @@
-import React from 'react';
-import { StyleSheet, Text, View, Platform, Alert } from 'react-native';
-import { Constants, Location, Permissions } from 'expo';
-import WebViewLeaflet from './WebViewLeaflet';
-import testLocations from './web/testLocations';
-import Button from './Button';
-import mapLayers from './web/mockMapLayers';
+import React from "react";
+import { StyleSheet, Text, View, Platform, Alert } from "react-native";
+import { Constants, Location, Permissions } from "expo";
+import WebViewLeaflet from "./WebViewLeaflet";
+import testLocations from "./web/testLocations";
+import Button from "./Button";
+import mapLayers from "./web/mockMapLayers";
 
-const geolib = require('geolib');
-const emoji = ['😄', '😃', '⛔', '🎠', '🚓', '🚇'];
-const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+const geolib = require("geolib");
+const emoji = ["😄", "😃", "⛔", "🎠", "🚓", "🚇"];
+const animations = ["bounce", "fade", "pulse", "jump", "waggle", "spin"];
 
 let parkLocations = {
   dw: [28.417839, -81.563808],
@@ -18,7 +18,7 @@ let parkLocations = {
 
 const duration = Math.floor(Math.random() * 3) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
-const interationCount = 'infinite';
+const interationCount = "infinite";
 
 export default class App extends React.Component {
   constructor() {
@@ -26,8 +26,10 @@ export default class App extends React.Component {
     this.state = {
       location: null,
       errorMessage: null,
-      locations: [...testLocations],
-      coords: undefined,
+      // locations: [...testLocations],
+      locations: [],
+      currentLocation: undefined,
+      mapCenterPosition: undefined,
       showEmojiSelectorModal: false,
       mapState: {
         showAttributionControl: false,
@@ -39,37 +41,39 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
+    if (Platform.OS === "android" && !Constants.isDevice) {
       this.setState({
         errorMessage:
-          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
       });
     } else {
-      this._getLocationAsync();
+      this.getLocationAsync();
     }
   }
 
-  _getLocationAsync = async () => {
+  getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
+    if (status !== "granted") {
+      console.warn("Permission to access location was denied");
       this.setState({
-        errorMessage: 'Permission to access location was denied'
+        errorMessage: "Permission to access location was denied"
       });
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    let locations = this.createRandomMarkers(location.coords, 0, 50000);
-
+    // console.log("getCurrentPositionAsync returned: ", { location });
+    let markers = this.createRandomMarkers(location.coords, 5, 50000);
+    
     // center random markers around Washington DC
     // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
-
     this.setState({
-      locations: [...this.state.locations, ...locations],
+      markers,
       location,
 
       // center around Washington DC
       // coords: [38.889931, -77.009003]
-      coords: [location.coords.latitude, location.coords.longitude]
+      mapCenterPosition: [location.coords.latitude, location.coords.longitude],
+      currentLocation: [location.coords.latitude, location.coords.longitude]
     });
   };
 
@@ -95,7 +99,7 @@ export default class App extends React.Component {
       let foundLongitude = x0 + x1;
 
       newMarkers.push({
-        id: i,
+        id: i + 200,
         // coords: [33.946, -91.000],
         coords: [foundLatitude, foundLongitude],
         icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -111,46 +115,11 @@ export default class App extends React.Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    // do these things once the map has loaded
-    if (!prevState.mapState.mapLoaded && this.state.mapState.mapLoaded) {
-      this.webViewLeaflet.sendMessage({
-        zoom: 6,
-        locations: this.state.locations,
-        showAttributionControl: this.state.mapState.showAttributionControl,
-        showZoomControl: this.state.mapState.showZoomControl
-      });
-    }
-
-    // do these things only if the map has been loaded
-    if (this.state.mapState.mapLoaded) {
-      // if the user's location has changed
-      if (prevState.coords !== this.state.coords) {
-        this.webViewLeaflet.sendMessage({
-          centerPosition: this.state.coords,
-
-          locations: [
-            ...this.state.locations,
-            {
-              id: 0,
-              coords: this.state.coords,
-              icon: '❤️',
-              size: [24, 24],
-              animation: {
-                name: 'pulse',
-                duration: '.5',
-                delay: 0,
-                interationCount: 'infinite'
-              }
-            }
-          ]
-        });
-      }
-    }
-  };
+  }
 
   updateMarkerSpeed = () => {
-    // console.log('altering markers');
-    let updatedLocations = this.state.locations.map((location) => {
+    // // console.log('altering markers');
+    let updatedLocations = this.state.locations.map(location => {
       let updatedLocation = Object.assign({}, location, {
         animation: Object.assign({}, location.animation, {
           duration: location.animation.duration + 0.5
@@ -162,21 +131,23 @@ export default class App extends React.Component {
   };
 
   onMapClicked = ({ payload }) => {
-    console.log(`Map Clicked: app received: ${payload.coords}`);
-    this.showAlert('Map Clicked', `Coordinates = ${payload.coords}`);
+    debugger;
+     console.log(`Map Clicked: app received: ${payload.coords}`);
+    this.showAlert("Map Clicked", `Coordinates = ${payload.coords}`);
   };
 
   onMapMarkerClicked = ({ payload }) => {
+    debugger;
     console.log(`Marker Clicked: ${payload.id}`);
-    this.showAlert('Marker Clicked', `Marker ID = ${payload.id}`);
+    this.showAlert("Marker Clicked", `Marker ID = ${payload.id}`);
     this.setState(
       {
         clickedMarkerID: payload.id,
-        locations: this.state.locations.map((location) => {
+        locations: this.state.locations.map(location => {
           if (location.id === payload.id) {
             return {
               ...location,
-              icon: (location.icon = '✖️')
+              icon: (location.icon = "✖️")
             };
           }
           return location;
@@ -184,14 +155,14 @@ export default class App extends React.Component {
       },
       () => {
         // send the updated locations
-        this.webViewLeaflet.sendMessage({
+        /* this.webViewLeaflet.sendMessage({
           locations: this.state.locations
-        });
+        }); */
       }
     );
   };
 
-  setEmojiForMarker = (emoji) => {
+  setEmojiForMarker = emoji => {
     debugger;
   };
   onCloseEmojiSelectorModal = () => {
@@ -205,77 +176,72 @@ export default class App extends React.Component {
     Alert.alert(
       title,
       body,
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
       { cancelable: false }
     );
   };
 
-  onZoomLevelsChange = (event) => {
-    console.log('onZoomLevelsChange received : ', event);
+  onZoomLevelsChange = event => {
+    // console.log("onZoomLevelsChange received : ", event);
   };
-  onResize = (event) => {
-    console.log('onResize received : ', event);
+  onResize = event => {
+    // console.log("onResize received : ", event);
   };
-  onUnload = (event) => {
-    console.log('onUnload received : ', event);
+  onUnload = event => {
+    // console.log("onUnload received : ", event);
   };
-  onViewReset = (event) => {
-    console.log('onViewReset received : ', event);
+  onViewReset = event => {
+    // console.log("onViewReset received : ", event);
   };
-  onLoad = (event) => {
-    console.log('onLoad received : ', event);
+  onLoad = event => {
+    // console.log("onLoad received : ", event);
     this.setState(
       {
         ...this.state,
         mapState: { ...this.state.mapState, mapLoaded: true }
-      },
-      () => {
-        this.webViewLeaflet.sendMessage({
-          mapLayers
-        });
       }
     );
-  }
-  onZoomStart = (event) => {
-    console.log('onZoomEnd received : ', event);
   };
-  onMoveStart = (event) => {
-    console.log('onMoveStart received : ', event);
+  onZoomStart = event => {
+    // console.log("onZoomEnd received : ", event);
   };
-  onZoom = (event) => {
-    console.log('onZoom received : ', event);
+  onMoveStart = event => {
+    // console.log("onMoveStart received : ", event);
   };
-  onMove = (event) => {
-    console.log('onMove received : ', event);
+  onZoom = event => {
+    // console.log("onZoom received : ", event);
   };
-  onZoomEnd = (event) => {
-    console.log('onZoomEnd received : ', event);
+  onMove = event => {
+    // console.log("onMove received : ", event);
   };
-  onMoveEnd = (event) => {
-    console.log('onMoveEnd received : ', event);
+  onZoomEnd = event => {
+    // console.log("onZoomEnd received : ", event);
+  };
+  onMoveEnd = event => {
+    // console.log("onMoveEnd received : ", event);
   };
 
   onCurrentPositionClicked = () => {
-    console.log('onCurrentPositionClicked received');
+    // console.log("onCurrentPositionClicked received");
   };
 
-  centerMap = (parkInitials) => {
-    console.log(parkInitials);
+  centerMap = parkInitials => {
+    // console.log(parkInitials);
     switch (parkInitials) {
-      case 'dw':
-        this.setState({ coords: parkLocations.dw });
+      case "dw":
+        this.setState({ mapCenterPosition: parkLocations.dw });
         break;
-      case 'bg':
-        this.setState({ coords: parkLocations.bg });
+      case "bg":
+        this.setState({ mapCenterPosition: parkLocations.bg });
         break;
-      case 'kd':
-        this.setState({ coords: parkLocations.kd });
+      case "kd":
+        this.setState({ mapCenterPosition: parkLocations.kd });
         break;
     }
   };
 
   setBoundsForAllMarkers = () => {
-    let boundsArray = this.state.locations.map((location) => {
+    let boundsArray = this.state.locations.map(location => {
       return {
         latitude: location.coords[0],
         longitude: location.coords[1]
@@ -295,7 +261,7 @@ export default class App extends React.Component {
   };
 
   // update the map object in the component's state
-  onUpdateMapState = (data) => {
+  onUpdateMapState = data => {
     this.setState({
       ...this.state,
       mapState: { ...this.mapState, ...data }
@@ -309,44 +275,59 @@ export default class App extends React.Component {
         <Text
           style={{
             margin: 10,
-            fontSize: 24,
-            color: 'black'
+            fontSize: 18,
+            color: "black"
           }}
         >
-          Animated Map Markers App
+          react-native-webview-leaflet Demo
         </Text>
         <WebViewLeaflet
-          ref={(component) => (this.webViewLeaflet = component)}
+          ref={component => (this.webViewLeaflet = component)}
           onLoad={this.onLoad}
           eventReceiver={this} // the component that will receive map events
+          centerPosition={this.state.mapCenterPosition}
+          markers={this.state.markers}
+          mapLayers={mapLayers}
+          ownPositionMarker={{
+            coords: this.state.currentLocation,
+            icon: "❤️",
+            size: [24, 24],
+            animation: {
+              name: "pulse",
+              duration: ".5",
+              delay: 0,
+              interationCount: "infinite"
+            }
+          }}
+          centerButton={true}
         />
         <View
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
             paddingVertical: 8,
-            backgroundColor: 'rgba(255,255,255,.50)'
+            backgroundColor: "rgba(255,255,255,.50)"
           }}
         >
           <Button
-            onPress={() => this.centerMap('dw')}
+            onPress={() => this.centerMap("dw")}
             borderWidth={0}
             fontSize={30}
-            text={'🏰'}
+            text={"🏰"}
           />
           <Button
-            onPress={() => this.centerMap('bg')}
+            onPress={() => this.centerMap("bg")}
             borderWidth={0}
             fontSize={30}
-            text={'🍺'}
+            text={"🍺"}
           />
           <Button
-            onPress={() => this.centerMap('kd')}
+            onPress={() => this.centerMap("kd")}
             borderWidth={0}
             fontSize={30}
-            text={'👑'}
+            text={"👑"}
           />
         </View>
       </View>
@@ -357,9 +338,9 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#ddff3c',
+    backgroundColor: "#00ffff",
 
-    display: 'flex'
+    display: "flex"
   },
   statusBar: {
     height: Constants.statusBarHeight
@@ -368,6 +349,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     borderRadius: 5,
-    backgroundColor: 'dodgerblue'
+    backgroundColor: "dodgerblue"
   }
 });

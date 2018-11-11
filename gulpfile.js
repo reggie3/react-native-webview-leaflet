@@ -10,29 +10,30 @@ const gutil = require('gulp-util');
 
 // dependencies for npm publishing
 const npmDeps = {
-  expo: '^30.0.0',
-  'is-valid-coordinates': '^1.0.0',
-  leaflet: '^1.3.1',
-  'leaflet.markercluster': '^1.3.0',
-  'prop-types': '^15.6.0',
-  util: '^0.10.3',
-  'lodash.uniqby': '^4.7.0',
-  geolib: '^2.0.24',
-  'react-leaflet': '^2.0.0-rc.1',
+  "is-valid-coordinates": "^1.0.0",
+  "leaflet": "^1.3.1",
+  "leaflet.markercluster": "^1.4.1",
+  "prop-types": "^15.6.0",
+  "util": "^0.10.3",
+  "lodash.uniqby": "^4.7.0",
+  "geolib": "^2.0.24",
+  "react-leaflet": "^2.1.1",
+  "@sentry/browser": "^4.0.4",
+  "sentry-expo": "^1.9.0"
 };
 
 const npmPeerDeps={
-  "react": "16.3.1",
-  "react-dom": "^16.3.1",
-  "react-native": "^0.57.1"
+  "react": "16.5.0",
+  "react-dom": "^16.5.0",
+  "react-native":  "^0.57.1"
 }
 
 // additional dependencies for expo app
 const expoDeps = {
-  expo: '^30.0.0',
-  react: '16.3.1',
-  'react-dom': '^16.3.1',
-  'react-native': `https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz`
+  expo: '^31.0.0',
+  react: '16.5.0',
+  'react-dom': '^16.5.0',
+  'react-native': `https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz`
 };
 
 
