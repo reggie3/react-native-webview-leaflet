@@ -124,10 +124,10 @@ export default class WebViewLeaflet extends React.Component {
       // Check the state for any items that may have been received prior to
       // the map loading, and send them to the map
       // check if we have a center position
-      if (this.state.centerPosition) {
+      if (this.props.centerPosition) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
-          centerPosition: this.state.centerPosition
+          centerPosition: this.props.centerPosition
         };
       }
 
