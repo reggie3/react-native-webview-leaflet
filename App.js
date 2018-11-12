@@ -193,7 +193,7 @@ export default class App extends React.Component {
     // console.log("onViewReset received : ", event);
   };
   onLoad = (event) => {
-    console.log('onLoad received ');
+    // console.log('onLoad received ');
     this.setState({
       ...this.state,
       mapState: { ...this.state.mapState, mapLoaded: true }
