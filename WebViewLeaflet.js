@@ -113,6 +113,10 @@ export default class WebViewLeaflet extends React.Component {
       this.setState({ locations: validLocations });
     }
 
+    if(this.props.useMarkerClustering){
+      this.sendMessage({ useMarkerClustering: this.props.useMarkerClustering });
+    }
+
     if (!prevState.mapLoaded && this.state.mapLoaded) {
       // Here is our chance to send stuff to the map once it has loaded
       // Create an object that will have the update that the map will
@@ -170,6 +174,15 @@ export default class WebViewLeaflet extends React.Component {
           zoom: this.props.zoom
         };
       }
+
+      // do the same for using marker clustering
+      if(this.props.useMarkerClustering){
+        onMapLoadedUpdate = {
+          ...onMapLoadedUpdate,
+          useMarkerClustering: this.props.useMarkerClustering
+        };
+      }
+
       if (Object.keys(onMapLoadedUpdate).length > 0) {
         this.sendMessage(onMapLoadedUpdate);
       }
@@ -452,7 +465,8 @@ WebViewLeaflet.defaultProps = {
       direction: 'alternate'
     },
     size: [36, 36]
-  }
+  },
+  useMarkerClustering: false
 };
 
 const styles = StyleSheet.create({

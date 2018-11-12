@@ -130,13 +130,13 @@ export default class App extends React.Component {
   };
 
   onMapClicked = ({ payload }) => {
-    debugger;
+    // debugger;
     console.log(`Map Clicked: app received: ${payload.coords}`);
     this.showAlert('Map Clicked', `Coordinates = ${payload.coords}`);
   };
 
   onMapMarkerClicked = ({ payload }) => {
-    debugger;
+    // debugger;
     console.log(`Marker Clicked: ${payload.id}`);
     this.showAlert('Marker Clicked', `Marker ID = ${payload.id}`);
     this.setState(
@@ -297,6 +297,7 @@ export default class App extends React.Component {
             }
           }}
           centerButton={true}
+          useMarkerClustering={true}
         />
         <View
           style={{

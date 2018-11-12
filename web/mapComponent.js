@@ -44,7 +44,8 @@ class mapComponent extends Component {
       markers: [],
       showAttributionControl: false,
       mapLayers: [],
-      combinedLocations: [] // array to contain the locations that will be turned into markers and ownPostionMarker
+      combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
+      useMarkerClustering: false
     };
   }
 
@@ -353,6 +354,53 @@ class mapComponent extends Component {
     }
   };
 
+
+  // render the markers to the map as part of a layergroup.  Use
+  // clustering if 
+  renderMarkers = () => {
+    if (this.state.useMarkerClustering) {
+      return (
+        <LayerGroup>
+          <MarkerClusterGroup>
+            {this.state.markers.map((marker) => {
+              return (
+                <Marker
+                  key={marker.id}
+                  position={marker.coords}
+                  icon={marker.divIcon}
+                  onClick={() => {
+                    this.onMapEvent('onMapMarkerClicked', {
+                      id: marker.id
+                    });
+                  }}
+                />
+              );
+            })}
+          </MarkerClusterGroup>
+        </LayerGroup>
+      );
+    } else {
+      return (
+        <LayerGroup>
+          {this.state.markers.map((marker) => {
+            return (
+              <Marker
+                key={marker.id}
+                position={marker.coords}
+                icon={marker.divIcon}
+                onClick={() => {
+                  this.onMapEvent('onMapMarkerClicked', {
+                    id: marker.id
+                  });
+                }}
+              />
+            );
+          })}
+        </LayerGroup>
+      );
+    }
+  };
+
   render() {
     return (
       <React.StrictMode>
@@ -417,24 +465,7 @@ class mapComponent extends Component {
               )}
               <LayersControl position="topleft">
                 <LayersControl.Overlay name="Markers" checked="true">
-                  <LayerGroup>
-                    <MarkerClusterGroup>
-                      {this.state.markers.map((marker) => {
-                        return (
-                          <Marker
-                            key={marker.id}
-                            position={marker.coords}
-                            icon={marker.divIcon}
-                            onClick={() => {
-                              this.onMapEvent('onMapMarkerClicked', {
-                                id: marker.id
-                              });
-                            }}
-                          />
-                        );
-                      })}
-                    </MarkerClusterGroup>
-                  </LayerGroup>
+                  {this.renderMarkers()}
                 </LayersControl.Overlay>
               </LayersControl>
             </Map>

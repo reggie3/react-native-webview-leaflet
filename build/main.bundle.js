@@ -52554,6 +52554,48 @@ var mapComponent = function (_Component) {
       }
     };
 
+    _this.renderMarkers = function () {
+      if (_this.state.useMarkerClustering) {
+        return _react2.default.createElement(
+          _reactLeaflet.LayerGroup,
+          null,
+          _react2.default.createElement(
+            _reactLeafletMarkercluster2.default,
+            null,
+            _this.state.markers.map(function (marker) {
+              return _react2.default.createElement(_reactLeaflet.Marker, {
+                key: marker.id,
+                position: marker.coords,
+                icon: marker.divIcon,
+                onClick: function onClick() {
+                  _this.onMapEvent('onMapMarkerClicked', {
+                    id: marker.id
+                  });
+                }
+              });
+            })
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          _reactLeaflet.LayerGroup,
+          null,
+          _this.state.markers.map(function (marker) {
+            return _react2.default.createElement(_reactLeaflet.Marker, {
+              key: marker.id,
+              position: marker.coords,
+              icon: marker.divIcon,
+              onClick: function onClick() {
+                _this.onMapEvent('onMapMarkerClicked', {
+                  id: marker.id
+                });
+              }
+            });
+          })
+        );
+      }
+    };
+
     _this.mapMarkerDictionary = {};
     _this.mapRef = (0, _react.createRef)();
     _this.state = {
@@ -52565,7 +52607,8 @@ var mapComponent = function (_Component) {
       markers: [],
       showAttributionControl: false,
       mapLayers: [],
-      combinedLocations: [] // array to contain the locations that will be turned into markers and ownPostionMarker
+      combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
+      useMarkerClustering: false
     };
     return _this;
   }
@@ -52584,6 +52627,10 @@ var mapComponent = function (_Component) {
 
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
+
+
+  // render the markers to the map as part of a layergroup.  Use
+  // clustering if 
 
 
   _createClass(mapComponent, [{
@@ -52662,26 +52709,7 @@ var mapComponent = function (_Component) {
               _react2.default.createElement(
                 _reactLeaflet.LayersControl.Overlay,
                 { name: 'Markers', checked: 'true' },
-                _react2.default.createElement(
-                  _reactLeaflet.LayerGroup,
-                  null,
-                  _react2.default.createElement(
-                    _reactLeafletMarkercluster2.default,
-                    null,
-                    this.state.markers.map(function (marker) {
-                      return _react2.default.createElement(_reactLeaflet.Marker, {
-                        key: marker.id,
-                        position: marker.coords,
-                        icon: marker.divIcon,
-                        onClick: function onClick() {
-                          _this2.onMapEvent('onMapMarkerClicked', {
-                            id: marker.id
-                          });
-                        }
-                      });
-                    })
-                  )
-                )
+                this.renderMarkers()
               )
             )
           ),
