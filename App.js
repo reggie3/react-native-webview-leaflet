@@ -7,7 +7,7 @@ import Button from './Button';
 import mapLayers from './web/mockMapLayers';
 
 const geolib = require('geolib');
-const emoji = ['😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+const emoji = ['🍇', '🍋', '🍐', '🍆', '🍞', '🌮'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 
 let parkLocations = {
