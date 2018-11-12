@@ -2,7 +2,7 @@
   "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "4.0.57",
+  "version": "4.0.58",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -71,6 +71,7 @@
     "gulp-run": "^1.7.1",
     "gulp-run-command": "^0.0.9",
     "gulp-sequence": "^1.0.0",
+    "gulp-strip-debug": "^3.0.0",
     "gulp-util": "^3.0.8",
     "html-webpack-inline-source-plugin": "^0.0.10",
     "html-webpack-plugin": "^3.2.0",

@@ -7,6 +7,7 @@ const run = require('gulp-run');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
 const gutil = require('gulp-util');
+const stripDebug = require('gulp-strip-debug');
 
 // dependencies for npm publishing
 const npmDeps = {

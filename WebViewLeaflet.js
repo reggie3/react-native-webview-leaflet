@@ -193,7 +193,7 @@ export default class WebViewLeaflet extends React.Component {
     if (payload.centerPosition) {
       this.setState({ centerPosition: payload.centerPosition });
     }
-    console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
+    // console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
     this.webview.postMessage(message, '*');
     // }
   };
@@ -201,10 +201,10 @@ export default class WebViewLeaflet extends React.Component {
   //
   handleMessage = (data) => {
     let msgData;
-    console.log({ data });
+    // console.log({ data });
     msgData = JSON.parse(data);
     if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
-      console.log(`WebViewLeaflet: received message: `, msgData.payload);
+      // console.log(`WebViewLeaflet: received message: `, msgData.payload);
 
       // if we receive an event, then pass it to the parent by calling
       // the parent function wtith the same name as the event, and passing
@@ -263,7 +263,6 @@ export default class WebViewLeaflet extends React.Component {
         <View style={styles.activityIndicatorContainer}>
           <ActivityIndicator
             size="large"
-            color="#0000ff"
             animating={!this.props.eventReceiver.state.mapsState.mapLoaded}
           />
         </View>
@@ -407,7 +406,7 @@ export default class WebViewLeaflet extends React.Component {
             backgroundColor: '#fff1ad'
           }}
         >
-          {this.maybeRenderMap()} 
+          {this.maybeRenderMap()}
           {this.maybeRenderErrorBoundaryMessage()}
           {this.maybeRenderWebviewError()}
           {this.props.centerButton
