@@ -103,7 +103,9 @@ export default class WebViewLeaflet extends React.Component {
 
     // handle updates to map markers array
     if (this.props.markers && prevProps.markers !== this.props.markers) {
+      debugger;
       let validLocations = this.props.markers.filter((marker) => {
+        if (!marker || !marker.coords || marker.coords.length !== 2) return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
       });
       this.sendMessage({ locations: validLocations });
@@ -113,7 +115,7 @@ export default class WebViewLeaflet extends React.Component {
       this.setState({ locations: validLocations });
     }
 
-    if(this.props.useMarkerClustering){
+    if (this.props.useMarkerClustering) {
       this.sendMessage({ useMarkerClustering: this.props.useMarkerClustering });
     }
 
@@ -160,6 +162,7 @@ export default class WebViewLeaflet extends React.Component {
       // do the same for map markers
       if (this.props.markers) {
         let validLocations = this.props.markers.filter((marker) => {
+          if (!marker || !marker.coords || marker.coords.length !== 2) return false;
           return isValidCoordinates(marker.coords[1], marker.coords[0]);
         });
         onMapLoadedUpdate = {
@@ -176,7 +179,7 @@ export default class WebViewLeaflet extends React.Component {
       }
 
       // do the same for using marker clustering
-      if(this.props.useMarkerClustering){
+      if (this.props.useMarkerClustering) {
         onMapLoadedUpdate = {
           ...onMapLoadedUpdate,
           useMarkerClustering: this.props.useMarkerClustering
@@ -192,23 +195,23 @@ export default class WebViewLeaflet extends React.Component {
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
   sendMessage = (payload) => {
-    // if (this.state.mapLoaded) {
-    // only send message when webview is loaded
+    if (this.state.mapLoaded) {
+      // only send message when webview is loaded
 
-    const message = JSON.stringify({
-      prefix: MESSAGE_PREFIX,
-      payload
-    });
+      const message = JSON.stringify({
+        prefix: MESSAGE_PREFIX,
+        payload
+      });
 
-    // If the user has sent a centering messaging, then store the location
-    // so that we can refer to it later if the built in centering button
-    // is pressed
-    if (payload.centerPosition) {
-      this.setState({ centerPosition: payload.centerPosition });
+      // If the user has sent a centering messaging, then store the location
+      // so that we can refer to it later if the built in centering button
+      // is pressed
+      if (payload.centerPosition) {
+        this.setState({ centerPosition: payload.centerPosition });
+      }
+      console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
+      this.webview.postMessage(message, '*');
     }
-    // console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
-    this.webview.postMessage(message, '*');
-    // }
   };
 
   //

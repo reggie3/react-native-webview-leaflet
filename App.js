@@ -26,8 +26,9 @@ export default class App extends React.Component {
     this.state = {
       location: null,
       errorMessage: null,
-      // locations: [...testLocations],
-      locations: [],
+      
+      //markers: testLocations,
+      markers:[],
       currentLocation: undefined,
       mapCenterPosition: undefined,
       showEmojiSelectorModal: false,
@@ -65,7 +66,7 @@ export default class App extends React.Component {
     let markers = this.createRandomMarkers(location.coords, 5, 50000);
 
     // center random markers around Washington DC
-    // let locations = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
+    // let markers = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
     this.setState({
       markers,
       location,
@@ -118,7 +119,7 @@ export default class App extends React.Component {
 
   updateMarkerSpeed = () => {
     // // console.log('altering markers');
-    let updatedLocations = this.state.locations.map((location) => {
+    let updateMarkers = this.state.markers.map((location) => {
       let updatedLocation = Object.assign({}, location, {
         animation: Object.assign({}, location.animation, {
           duration: location.animation.duration + 0.5
@@ -126,7 +127,7 @@ export default class App extends React.Component {
       });
       return updatedLocation;
     });
-    this.setState({ locations: updatedLocations });
+    this.setState({ markers: updateMarkers });
   };
 
   onMapClicked = ({ payload }) => {
@@ -142,7 +143,7 @@ export default class App extends React.Component {
     this.setState(
       {
         clickedMarkerID: payload.id,
-        locations: this.state.locations.map((location) => {
+        markers: this.state.markers.map((location) => {
           if (location.id === payload.id) {
             return {
               ...location,
@@ -238,10 +239,10 @@ export default class App extends React.Component {
   };
 
   setBoundsForAllMarkers = () => {
-    let boundsArray = this.state.locations.map((location) => {
+    let boundsArray = this.state.markers.map((marker) => {
       return {
-        latitude: location.coords[0],
-        longitude: location.coords[1]
+        latitude: marker.coords[0],
+        longitude: marker.coords[1]
       };
     });
 
@@ -266,6 +267,7 @@ export default class App extends React.Component {
   };
 
   render() {
+    
     return (
       <View style={styles.container}>
         <View style={styles.statusBar} />
@@ -299,6 +301,40 @@ export default class App extends React.Component {
           centerButton={true}
           useMarkerClustering={true}
         />
+        {/* <WebViewLeaflet
+          ref={(component) => (this.webViewLeaflet = component)}
+          onLoad={this.onLoad}
+          eventReceiver={this}
+          mapLayers={[
+            {
+              name: 'OpenStreetMap',
+              checked: 'true',
+              type: 'TileLayer',
+              baseLayer: true,
+              url: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
+              attribution:
+                '&amp;opy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+            }
+          ]}
+          ownPositionMarker={{
+            coords: this.state.currentLocation,
+            icon: '❤️',
+            size: [24, 24],
+            animation: {
+              name: 'pulse',
+              duration: '.5',
+              delay: 0,
+              interationCount: 'infinite'
+            }
+          }}
+            markers={[
+            {
+              id: 2,
+              coords: [37.06452161, -75.67364786],
+                  icon: "⛔"
+            }
+          ]} 
+        /> */}
         <View
           style={{
             display: 'flex',

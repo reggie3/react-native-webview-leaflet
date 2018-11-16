@@ -45,7 +45,8 @@ class mapComponent extends Component {
       showAttributionControl: false,
       mapLayers: [],
       combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
-      useMarkerClustering: false
+      useMarkerClustering: false,
+      loaded: false
     };
   }
 
@@ -79,7 +80,8 @@ class mapComponent extends Component {
             interationCount: 'infinite'
           }
         },
-        mapLayers
+        mapLayers,
+        useMarkerClustering: true
       });
     }
 
@@ -354,14 +356,56 @@ class mapComponent extends Component {
     }
   };
 
-
   // render the markers to the map as part of a layergroup.  Use
-  // clustering if 
+  // clustering if
   renderMarkers = () => {
-    if (this.state.useMarkerClustering) {
-      return (
-        <LayerGroup>
-          <MarkerClusterGroup>
+    if (this.state.loaded) {
+      if (this.state.useMarkerClustering) {
+        return (
+          <LayerGroup>
+            <MarkerClusterGroup>
+              {this.state.markers.map((marker) => {
+                if (marker.id !== 'ownPositionMarker') {
+                  return (
+                    <Marker
+                      key={marker.id}
+                      position={marker.coords}
+                      icon={marker.divIcon}
+                      onClick={() => {
+                        this.onMapEvent('onMapMarkerClicked', {
+                          id: marker.id
+                        });
+                      }}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              })}
+            </MarkerClusterGroup>
+            {this.state.markers.map((marker) => {
+              if (marker.id === 'ownPositionMarker') {
+                return (
+                  <Marker
+                    key={marker.id}
+                    position={marker.coords}
+                    icon={marker.divIcon}
+                    onClick={() => {
+                      this.onMapEvent('onMapMarkerClicked', {
+                        id: marker.id
+                      });
+                    }}
+                  />
+                );
+              } else {
+                return null;
+              }
+            })}
+          </LayerGroup>
+        );
+      } else {
+        return (
+          <LayerGroup>
             {this.state.markers.map((marker) => {
               return (
                 <Marker
@@ -376,28 +420,11 @@ class mapComponent extends Component {
                 />
               );
             })}
-          </MarkerClusterGroup>
-        </LayerGroup>
-      );
+          </LayerGroup>
+        );
+      }
     } else {
-      return (
-        <LayerGroup>
-          {this.state.markers.map((marker) => {
-            return (
-              <Marker
-                key={marker.id}
-                position={marker.coords}
-                icon={marker.divIcon}
-                onClick={() => {
-                  this.onMapEvent('onMapMarkerClicked', {
-                    id: marker.id
-                  });
-                }}
-              />
-            );
-          })}
-        </LayerGroup>
-      );
+      return null;
     }
   };
 
@@ -420,6 +447,10 @@ class mapComponent extends Component {
               panToLocation={this.state.panToLocation}
               maxZoom={18}
               zoom={this.state.zoom}
+              whenReady={() => {
+                this.setState({ loaded: true });
+                this.printElement(`******* map loaded *******`);
+              }}
               onClick={(event) => {
                 this.onMapEvent('onMapClicked', {
                   coords: [event.latlng.lat, event.latlng.lng]

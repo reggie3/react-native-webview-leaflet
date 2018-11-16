@@ -52335,7 +52335,8 @@ var mapComponent = function (_Component) {
               interationCount: 'infinite'
             }
           },
-          mapLayers: _mockMapLayers2.default
+          mapLayers: _mockMapLayers2.default,
+          useMarkerClustering: true
         });
       }
 
@@ -52555,12 +52556,51 @@ var mapComponent = function (_Component) {
     };
 
     _this.renderMarkers = function () {
-      if (_this.state.useMarkerClustering) {
-        return _react2.default.createElement(
-          _reactLeaflet.LayerGroup,
-          null,
-          _react2.default.createElement(
-            _reactLeafletMarkercluster2.default,
+      if (_this.state.loaded) {
+        if (_this.state.useMarkerClustering) {
+          return _react2.default.createElement(
+            _reactLeaflet.LayerGroup,
+            null,
+            _react2.default.createElement(
+              _reactLeafletMarkercluster2.default,
+              null,
+              _this.state.markers.map(function (marker) {
+                if (marker.id !== 'ownPositionMarker') {
+                  return _react2.default.createElement(_reactLeaflet.Marker, {
+                    key: marker.id,
+                    position: marker.coords,
+                    icon: marker.divIcon,
+                    onClick: function onClick() {
+                      _this.onMapEvent('onMapMarkerClicked', {
+                        id: marker.id
+                      });
+                    }
+                  });
+                } else {
+                  return null;
+                }
+              })
+            ),
+            _this.state.markers.map(function (marker) {
+              if (marker.id === 'ownPositionMarker') {
+                return _react2.default.createElement(_reactLeaflet.Marker, {
+                  key: marker.id,
+                  position: marker.coords,
+                  icon: marker.divIcon,
+                  onClick: function onClick() {
+                    _this.onMapEvent('onMapMarkerClicked', {
+                      id: marker.id
+                    });
+                  }
+                });
+              } else {
+                return null;
+              }
+            })
+          );
+        } else {
+          return _react2.default.createElement(
+            _reactLeaflet.LayerGroup,
             null,
             _this.state.markers.map(function (marker) {
               return _react2.default.createElement(_reactLeaflet.Marker, {
@@ -52574,25 +52614,10 @@ var mapComponent = function (_Component) {
                 }
               });
             })
-          )
-        );
+          );
+        }
       } else {
-        return _react2.default.createElement(
-          _reactLeaflet.LayerGroup,
-          null,
-          _this.state.markers.map(function (marker) {
-            return _react2.default.createElement(_reactLeaflet.Marker, {
-              key: marker.id,
-              position: marker.coords,
-              icon: marker.divIcon,
-              onClick: function onClick() {
-                _this.onMapEvent('onMapMarkerClicked', {
-                  id: marker.id
-                });
-              }
-            });
-          })
-        );
+        return null;
       }
     };
 
@@ -52608,7 +52633,8 @@ var mapComponent = function (_Component) {
       showAttributionControl: false,
       mapLayers: [],
       combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
-      useMarkerClustering: false
+      useMarkerClustering: false,
+      loaded: false
     };
     return _this;
   }
@@ -52630,7 +52656,7 @@ var mapComponent = function (_Component) {
 
 
   // render the markers to the map as part of a layergroup.  Use
-  // clustering if 
+  // clustering if
 
 
   _createClass(mapComponent, [{
@@ -52662,6 +52688,10 @@ var mapComponent = function (_Component) {
               panToLocation: this.state.panToLocation,
               maxZoom: 18,
               zoom: this.state.zoom,
+              whenReady: function whenReady() {
+                _this2.setState({ loaded: true });
+                _this2.printElement('******* map loaded *******');
+              },
               onClick: function onClick(event) {
                 _this2.onMapEvent('onMapClicked', {
                   coords: [event.latlng.lat, event.latlng.lng]
