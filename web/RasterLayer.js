@@ -27,7 +27,7 @@ const RasterLayer = (props) => {
       />
     );
   } else if (props.layer.type === 'ImageOverlay') {
-    debugger;
+    // debugger;
     return (
       <ImageOverlay
         url={props.layer.url}

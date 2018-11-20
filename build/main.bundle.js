@@ -52158,7 +52158,7 @@ var RasterLayer = function RasterLayer(props) {
         layers: props.layer.layers
       }, props));
     } else if (props.layer.type === 'ImageOverlay') {
-      debugger;
+      // debugger;
       return _react2.default.createElement(_reactLeaflet.ImageOverlay, _extends({
         url: props.layer.url,
         bounds: props.layer.bounds,

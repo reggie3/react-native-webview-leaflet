@@ -103,7 +103,7 @@ export default class WebViewLeaflet extends React.Component {
 
     // handle updates to map markers array
     if (this.props.markers && prevProps.markers !== this.props.markers) {
-      debugger;
+      // debugger;
       let validLocations = this.props.markers.filter((marker) => {
         if (!marker || !marker.coords || marker.coords.length !== 2) return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);

@@ -11987,9 +11987,9 @@ rocambole-strip-console@^1.0.0:
   dependencies:
     rocambole-node-update "^1.0.0"
 
-rocambole-strip-debugger@^1.0.0:
+rocambole-strip-// debugger@^1.0.0:
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rocambole-strip-debugger/-/rocambole-strip-debugger-1.0.1.tgz#bd3e500de967a94228098c118d8a387fc4591bd8"
+  resolved "https://registry.yarnpkg.com/rocambole-strip-// debugger/-/rocambole-strip-// debugger-1.0.1.tgz#bd3e500de967a94228098c118d8a387fc4591bd8"
   integrity sha512-yBnd7R2/HUmVvhjdTnYC6R573hMizzmLaWUObxRKTGBlFT7aIFx+aMqreI6t10X508S740uz7iyCn6YjzLvrFg==
   dependencies:
     rocambole-node-remove "^1.0.0"
@@ -12808,7 +12808,7 @@ strip-debug@^3.0.0:
     rocambole "^0.7.0"
     rocambole-strip-alert "^1.0.0"
     rocambole-strip-console "^1.0.0"
-    rocambole-strip-debugger "^1.0.0"
+    rocambole-strip-// debugger "^1.0.0"
 
 strip-dirs@^1.0.0:
   version "1.1.1"
