@@ -26,9 +26,9 @@ export default class App extends React.Component {
     this.state = {
       location: null,
       errorMessage: null,
-      
+
       //markers: testLocations,
-      markers:[],
+      markers: [],
       currentLocation: undefined,
       mapCenterPosition: undefined,
       showEmojiSelectorModal: false,
@@ -199,6 +199,15 @@ export default class App extends React.Component {
       ...this.state,
       mapState: { ...this.state.mapState, mapLoaded: true }
     });
+    setTimeout(() => {
+      this.setState({
+        bounds: [
+          [56.8859948, -76.91253011988012],
+          [50.07467659353497, -76.4096857]
+        ],
+        boundsOptions: { padding: [50, 50] }
+      });
+    }, 5000);
   };
   onZoomStart = (event) => {
     // console.log("onZoomEnd received : ", event);
@@ -215,9 +224,13 @@ export default class App extends React.Component {
   onZoomEnd = (event) => {
     // console.log("onZoomEnd received : ", event);
   };
-  onMoveEnd = (event) => {
-    // console.log("onMoveEnd received : ", event);
-  };
+  onMoveEnd=()=>{
+    // have to set the bounds at the end of the initial onMove event
+    if(!this.state.initialBoundsSet){
+      this.setBoundsForAllMarkers();
+      this.setState({initialBoundsSet: true})
+    }
+  }
 
   onCurrentPositionClicked = () => {
     // console.log("onCurrentPositionClicked received");
@@ -238,26 +251,6 @@ export default class App extends React.Component {
     }
   };
 
-  setBoundsForAllMarkers = () => {
-    let boundsArray = this.state.markers.map((marker) => {
-      return {
-        latitude: marker.coords[0],
-        longitude: marker.coords[1]
-      };
-    });
-
-    boundsArray.push({
-      latitude: this.state.coords[0],
-      longitude: this.state.coords[1]
-    });
-    const bounds = geolib.getBounds(boundsArray);
-
-    this.webViewLeaflet.sendMessage({
-      bounds: [[bounds.minLat, bounds.minLng], [bounds.maxLat, bounds.maxLng]],
-      padding: [100, 100]
-    });
-  };
-
   // update the map object in the component's state
   onUpdateMapState = (data) => {
     this.setState({
@@ -267,7 +260,6 @@ export default class App extends React.Component {
   };
 
   render() {
-    
     return (
       <View style={styles.container}>
         <View style={styles.statusBar} />
@@ -300,41 +292,9 @@ export default class App extends React.Component {
           }}
           centerButton={true}
           useMarkerClustering={true}
+          bounds={this.state.bounds}
+          boundsOptions={{ padding: [100, 100] }}
         />
-        {/* <WebViewLeaflet
-          ref={(component) => (this.webViewLeaflet = component)}
-          onLoad={this.onLoad}
-          eventReceiver={this}
-          mapLayers={[
-            {
-              name: 'OpenStreetMap',
-              checked: 'true',
-              type: 'TileLayer',
-              baseLayer: true,
-              url: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
-              attribution:
-                '&amp;opy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-            }
-          ]}
-          ownPositionMarker={{
-            coords: this.state.currentLocation,
-            icon: '❤️',
-            size: [24, 24],
-            animation: {
-              name: 'pulse',
-              duration: '.5',
-              delay: 0,
-              interationCount: 'infinite'
-            }
-          }}
-            markers={[
-            {
-              id: 2,
-              coords: [37.06452161, -75.67364786],
-                  icon: "⛔"
-            }
-          ]} 
-        /> */}
         <View
           style={{
             display: 'flex',

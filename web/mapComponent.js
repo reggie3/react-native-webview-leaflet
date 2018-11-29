@@ -38,7 +38,7 @@ class mapComponent extends Component {
     this.state = {
       ownPositionMarker: {},
       centerPosition: [36.8860065, -76.4096611],
-      zoom: 8,
+      zoom: 14,
       debugMessages: [],
       locations: [],
       markers: [],
@@ -83,6 +83,16 @@ class mapComponent extends Component {
         mapLayers,
         useMarkerClustering: true
       });
+
+      setTimeout(() => {
+        this.setState({
+          bounds: [
+            [36.8859965, -76.4096793],
+            [39.07467659353497, -76.91253011988012]
+          ],
+          boundsOptions: {padding: [0,0]}
+        });
+      }, 5000);
     }
 
     try {
@@ -132,16 +142,6 @@ class mapComponent extends Component {
       this.setState({ markers }, () => {
         console.log(this.state.markers);
       });
-    }
-
-    // update the bounds if they have changed
-    if (
-      JSON.stringify(this.state.bounds) !== JSON.stringify(prevState.bounds)
-    ) {
-      this.state.map.leafletElement.fitBounds(
-        this.state.bounds,
-        this.state.padding
-      );
     }
 
     // update the combined locations if the ownPositionMarker object has changed
@@ -447,6 +447,8 @@ class mapComponent extends Component {
               panToLocation={this.state.panToLocation}
               maxZoom={18}
               zoom={this.state.zoom}
+              bounds={this.state.bounds}
+              boundsOptions={this.state.boundsOptions}
               whenReady={() => {
                 this.setState({ loaded: true });
                 this.printElement(`******* map loaded *******`);

@@ -80,15 +80,17 @@ export default class WebViewLeaflet extends React.Component {
       this.props.ownPositionMarker &&
       this.props.ownPositionMarker.coords &&
       this.props.ownPositionMarker.coords.length === 2 &&
-      prevProps.ownPositionMarker !== this.props.ownPositionMarker
+      JSON.stringify(prevProps.ownPositionMarker) !== JSON.stringify(this.props.ownPositionMarker)
     ) {
+      
       if (
         isValidCoordinates(
           this.props.ownPositionMarker.coords[1],
           this.props.ownPositionMarker.coords[0]
         )
       ) {
-        this.sendMessage({ ownPositionMarker: this.props.ownPositionMarker });
+        console.log('****** sending position');
+        // this.sendMessage({ ownPositionMarker: this.props.ownPositionMarker });
         // store the center position so that we can ensure the map gets it upon
         // its loading since it is possible that the position might
         // be availible before the map has been loaded
@@ -105,7 +107,8 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.markers && prevProps.markers !== this.props.markers) {
       // debugger;
       let validLocations = this.props.markers.filter((marker) => {
-        if (!marker || !marker.coords || marker.coords.length !== 2) return false;
+        if (!marker || !marker.coords || marker.coords.length !== 2)
+          return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
       });
       this.sendMessage({ locations: validLocations });
@@ -115,80 +118,120 @@ export default class WebViewLeaflet extends React.Component {
       this.setState({ locations: validLocations });
     }
 
-    if (this.props.useMarkerClustering) {
+    if ((this.props.useMarkerClustering)&&
+    (this.props.useMarkerClustering!== prevProps.useMarkerClustering)) {
       this.sendMessage({ useMarkerClustering: this.props.useMarkerClustering });
     }
 
+    // do the same for using map bounds
+    
+    if (
+      this.props.hasOwnProperty('bounds') &&
+      this.props.bounds !== prevProps.bounds
+    ) {
+      this.sendMessage({ bounds: this.props.bounds });
+    }
+
+     // do the same for using map boundsOptions
+    if (
+      this.props.hasOwnProperty('boundsOptions') &&
+      this.props.boundsOptions !== prevProps.boundsOptions
+    ) {
+      this.sendMessage({ boundsOptions: this.props.boundsOptions });
+    }
+    // actions to be performed one time immediately after the map
+    // completes loading
     if (!prevState.mapLoaded && this.state.mapLoaded) {
-      // Here is our chance to send stuff to the map once it has loaded
-      // Create an object that will have the update that the map will
-      // get once it has loaded
-      let onMapLoadedUpdate = {
-        mapLayers: this.props.mapLayers
+      this.doPostMapLoadedActions();
+    }
+  };
+
+  doPostMapLoadedActions = () => {
+    // Here is our chance to send stuff to the map once it has loaded
+    // Create an object that will have the update that the map will
+    // get once it has loaded
+    let onMapLoadedUpdate = {
+      mapLayers: this.props.mapLayers
+    };
+    // Check the state for any items that may have been received prior to
+    // the map loading, and send them to the map
+    // check if we have a center position
+    if (
+      this.props.centerPosition &&
+      this.props.centerPosition.length === 2 &&
+      isValidCoordinates(
+        this.props.centerPosition[1],
+        this.props.centerPosition[0]
+      )
+    ) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        centerPosition: this.props.centerPosition
       };
-      // Check the state for any items that may have been received prior to
-      // the map loading, and send them to the map
-      // check if we have a center position
-      if (
-        this.props.centerPosition &&
-        this.props.centerPosition.length === 2 &&
-        isValidCoordinates(
-          this.props.centerPosition[1],
-          this.props.centerPosition[0]
-        )
-      ) {
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          centerPosition: this.props.centerPosition
-        };
-      }
+    }
 
-      // do the same for ownPostionMarker
-      if (
-        this.props.ownPositionMarker &&
-        this.props.ownPositionMarker.coords &&
-        this.props.ownPositionMarker.coords.length == 2 &&
-        isValidCoordinates(
-          this.props.ownPositionMarker.coords[1],
-          this.props.ownPositionMarker.coords[0]
-        )
-      ) {
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          ownPositionMarker: this.props.ownPositionMarker
-        };
-      }
+    // do the same for ownPostionMarker
+    if (
+      this.props.ownPositionMarker &&
+      this.props.ownPositionMarker.coords &&
+      this.props.ownPositionMarker.coords.length == 2 &&
+      isValidCoordinates(
+        this.props.ownPositionMarker.coords[1],
+        this.props.ownPositionMarker.coords[0]
+      )
+    ) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        ownPositionMarker: this.props.ownPositionMarker
+      };
+    }
 
-      // do the same for map markers
-      if (this.props.markers) {
-        let validLocations = this.props.markers.filter((marker) => {
-          if (!marker || !marker.coords || marker.coords.length !== 2) return false;
-          return isValidCoordinates(marker.coords[1], marker.coords[0]);
-        });
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          locations: validLocations
-        };
-      }
-      // do the same for zoom
-      if (this.props.zoom) {
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          zoom: this.props.zoom
-        };
-      }
+    // do the same for map markers
+    if (this.props.markers) {
+      let validLocations = this.props.markers.filter((marker) => {
+        if (!marker || !marker.coords || marker.coords.length !== 2)
+          return false;
+        return isValidCoordinates(marker.coords[1], marker.coords[0]);
+      });
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        locations: validLocations
+      };
+    }
+    // do the same for zoom
+    if (this.props.zoom) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        zoom: this.props.zoom
+      };
+    }
 
-      // do the same for using marker clustering
-      if (this.props.useMarkerClustering) {
-        onMapLoadedUpdate = {
-          ...onMapLoadedUpdate,
-          useMarkerClustering: this.props.useMarkerClustering
-        };
-      }
+    // do the same for using marker clustering
+    if (this.props.useMarkerClustering) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        useMarkerClustering: this.props.useMarkerClustering
+      };
+    }
 
-      if (Object.keys(onMapLoadedUpdate).length > 0) {
-        this.sendMessage(onMapLoadedUpdate);
-      }
+    // do the same for using map bounds
+    if (this.props.bounds) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        ...{ bounds: this.props.bounds }
+      };
+    }
+
+    if (this.props.boundsOptions) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        ...{ boundsOptions: this.props.boundsOptions }
+      };
+    }
+
+    if (Object.keys(onMapLoadedUpdate).length > 0) {
+      // console.log({ onMapLoadedUpdate });
+      this.sendMessage(onMapLoadedUpdate);
     }
   };
 
@@ -206,10 +249,10 @@ export default class WebViewLeaflet extends React.Component {
       // If the user has sent a centering messaging, then store the location
       // so that we can refer to it later if the built in centering button
       // is pressed
-      if (payload.centerPosition) {
+      /* if (payload.centerPosition) {
         this.setState({ centerPosition: payload.centerPosition });
-      }
-      console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
+      } */
+      // console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
       this.webview.postMessage(message, '*');
     }
   };

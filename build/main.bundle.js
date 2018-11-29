@@ -52338,6 +52338,13 @@ var mapComponent = function (_Component) {
           mapLayers: _mockMapLayers2.default,
           useMarkerClustering: true
         });
+
+        setTimeout(function () {
+          _this.setState({
+            bounds: [[36.8859965, -76.4096793], [39.07467659353497, -76.91253011988012]],
+            boundsOptions: { padding: [0, 0] }
+          });
+        }, 5000);
       }
 
       try {
@@ -52385,11 +52392,6 @@ var mapComponent = function (_Component) {
         _this.setState({ markers: markers }, function () {
           console.log(_this.state.markers);
         });
-      }
-
-      // update the bounds if they have changed
-      if (JSON.stringify(_this.state.bounds) !== JSON.stringify(prevState.bounds)) {
-        _this.state.map.leafletElement.fitBounds(_this.state.bounds, _this.state.padding);
       }
 
       // update the combined locations if the ownPositionMarker object has changed
@@ -52626,7 +52628,7 @@ var mapComponent = function (_Component) {
     _this.state = {
       ownPositionMarker: {},
       centerPosition: [36.8860065, -76.4096611],
-      zoom: 8,
+      zoom: 14,
       debugMessages: [],
       locations: [],
       markers: [],
@@ -52688,6 +52690,8 @@ var mapComponent = function (_Component) {
               panToLocation: this.state.panToLocation,
               maxZoom: 18,
               zoom: this.state.zoom,
+              bounds: this.state.bounds,
+              boundsOptions: this.state.boundsOptions,
               whenReady: function whenReady() {
                 _this2.setState({ loaded: true });
                 _this2.printElement('******* map loaded *******');
