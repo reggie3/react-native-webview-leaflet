@@ -9,6 +9,12 @@ import mapLayers from './web/mockMapLayers';
 const geolib = require('geolib');
 const emoji = ['🍇', '🍋', '🍐', '🍆', '🍞', '🌮'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+const imageURLs = [
+  'https://raw.githubusercontent.com/maxogden/cats/master/cat_photos/00092f6ec7a911e1be6a12313820455d_7.png',
+  'https://raw.githubusercontent.com/maxogden/cats/master/cat_photos/0475ea02c7da11e18cf91231380fd29b_7.png',
+  'https://raw.githubusercontent.com/maxogden/cats/master/cat_photos/0502a3b2a1e111e18cf91231380fd29b_7.png',
+  'https://raw.githubusercontent.com/maxogden/cats/master/cat_photos/16cb636ed3c711e1b62722000a1e8b36_7.png'
+];
 
 let parkLocations = {
   dw: [28.417839, -81.563808],
@@ -64,6 +70,7 @@ export default class App extends React.Component {
     let location = await Location.getCurrentPositionAsync({});
     // console.log("getCurrentPositionAsync returned: ", { location });
     let markers = this.createRandomMarkers(location.coords, 5, 50000);
+    // add some image markers
 
     // center random markers around Washington DC
     // let markers = this.createRandomMarkers({latitude: 38.889931, longitude: -77.009003}, 20, 10000);
@@ -103,7 +110,10 @@ export default class App extends React.Component {
         id: i + 200,
         // coords: [33.946, -91.000],
         coords: [foundLatitude, foundLongitude],
-        icon: emoji[Math.floor(Math.random() * emoji.length)],
+        icon:
+          Math.random() > 0.5
+            ? emoji[Math.floor(Math.random() * emoji.length)]
+            : imageURLs[Math.floor(Math.random() * imageURLs.length)],
         animation: {
           name: animations[Math.floor(Math.random() * animations.length)],
           duration: Math.floor(Math.random() * 3) + 1,
@@ -224,13 +234,13 @@ export default class App extends React.Component {
   onZoomEnd = (event) => {
     // console.log("onZoomEnd received : ", event);
   };
-  onMoveEnd=()=>{
+  onMoveEnd = () => {
     // have to set the bounds at the end of the initial onMove event
-    if(!this.state.initialBoundsSet){
-      this.setBoundsForAllMarkers();
-      this.setState({initialBoundsSet: true})
+    if (!this.state.initialBoundsSet) {
+      // this.setBoundsForAllMarkers();
+      this.setState({ initialBoundsSet: true });
     }
-  }
+  };
 
   onCurrentPositionClicked = () => {
     // console.log("onCurrentPositionClicked received");

@@ -1,5 +1,5 @@
 {
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
   "version": "4.1.22",
@@ -33,7 +33,11 @@
     "react-leaflet": "^2.1.1",
     "@sentry/browser": "^4.0.4",
     "sentry-expo": "^1.9.0",
-    "react-leaflet-markercluster": "^2.0.0-rc3"
+    "react-leaflet-markercluster": "^2.0.0-rc3",
+    "expo": "^31.0.0",
+    "react": "16.5.0",
+    "react-dom": "^16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz"
   },
   "peerDependencies": {
     "react": "16.5.0",

@@ -331,6 +331,7 @@ export default class WebViewLeaflet extends React.Component {
 
   maybeRenderMap = () => {
     return (
+      <View style={{flex: 1, overflow: 'hidden'}}>
       <WebView
         style={{
           ...StyleSheet.absoluteFillObject
@@ -384,6 +385,7 @@ export default class WebViewLeaflet extends React.Component {
         }}
         domStorageEnabled={true}
       />
+      </View>
     );
   };
 
