@@ -5,7 +5,7 @@ import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
 import Button from './Button';
 import mapLayers from './web/mockMapLayers';
-
+import base64Image from './base64Image.js';
 const geolib = require('geolib');
 const emoji = ['🍇', '🍋', '🍐', '🍆', '🍞', '🌮'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
@@ -69,7 +69,7 @@ export default class App extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({});
     // console.log("getCurrentPositionAsync returned: ", { location });
-    let markers = this.createRandomMarkers(location.coords, 5, 50000);
+    let markers = this.createRandomMarkers(location.coords, 1, 50000);
     // add some image markers
 
     // center random markers around Washington DC
@@ -110,10 +110,12 @@ export default class App extends React.Component {
         id: i + 200,
         // coords: [33.946, -91.000],
         coords: [foundLatitude, foundLongitude],
-        icon:
-          Math.random() > 0.5
+        icon:base64Image,
+         /*  Math.random() > 0.2
             ? emoji[Math.floor(Math.random() * emoji.length)]
-            : imageURLs[Math.floor(Math.random() * imageURLs.length)],
+            : Math.random() > 0.2
+            ? base64Image
+            : imageURLs[Math.floor(Math.random() * imageURLs.length)], */
         animation: {
           name: animations[Math.floor(Math.random() * animations.length)],
           duration: Math.floor(Math.random() * 3) + 1,

@@ -14,6 +14,7 @@ import './markers.css';
 import ControlsLayer from './ControlsLayer';
 import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
+import base64Image from '../base64Image.js';
 
 // marker cluster imports
 import MarkerClusterGroup from 'react-leaflet-markercluster';
@@ -247,7 +248,7 @@ class mapComponent extends Component {
       ${icon}
       </div>`;
     } else if (icon.includes('//') || icon.includes('base64')) {
-      return `<img src="${icon}" style="width:${size[0]}px;height:${
+      return `<img src="${base64Image}" style="width:${size[0]}px;height:${
         size[1]
       }px;">`;
     } else {
