@@ -215,6 +215,11 @@ Animations are kept in the file [markers.css](https://github.com/reggie3/react-n
 ```
 ## Changelog
 
+### 4.2.0
+
+* Replace Expo dependency with expo-asset-utils
+* Fixed bug that caused map to not display when no ownPositionMarker was provided
+
 ### 4.1.15
 
 * Keep own position marker from being clustered

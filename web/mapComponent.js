@@ -14,7 +14,7 @@ import './markers.css';
 import ControlsLayer from './ControlsLayer';
 import RasterLayer from './RasterLayer';
 import mapLayers from './mockMapLayers';
-import base64Image from '../base64Image.js';
+import base64Image from './webBase64Image.js';
 
 // marker cluster imports
 import MarkerClusterGroup from 'react-leaflet-markercluster';
@@ -164,7 +164,7 @@ class mapComponent extends Component {
   // update the array of combined locations when we detect either a new
   // ownPositionMarker or list of locations in state
   updateLocations = () => {
-    if (this.state.locations && this.state.ownPositionMarker) {
+    if (this.state.locations && this.state.ownPositionMarker.coords) {
       this.setState({
         combinedLocations: [
           ...this.state.locations,
@@ -175,7 +175,7 @@ class mapComponent extends Component {
       this.setState({
         combinedLocations: this.state.locations
       });
-    } else if (this.state.ownPositionMarker) {
+    } else if (this.state.ownPositionMarker.coords) {
       this.setState({
         combinedLocations: [
           { id: 'ownPositionMarker', ...this.state.ownPositionMarker }

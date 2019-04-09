@@ -5,7 +5,7 @@ import WebViewLeaflet from './WebViewLeaflet';
 import testLocations from './web/testLocations';
 import Button from './Button';
 import mapLayers from './web/mockMapLayers';
-import base64Image from './base64Image.js';
+import base64Image from './web/webBase64Image';
 const geolib = require('geolib');
 const emoji = ['🍇', '🍋', '🍐', '🍆', '🍞', '🌮'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];

@@ -14,13 +14,14 @@ const npmDeps = {
   "is-valid-coordinates": "^1.0.0",
   "leaflet": "^1.3.1",
   "leaflet.markercluster": "^1.4.1",
+  "expo-asset-utils": "^1.0.0",
   "prop-types": "^15.6.0",
   "util": "^0.10.3",
   "lodash.uniqby": "^4.7.0",
   "geolib": "^2.0.24",
   "react-leaflet": "^2.1.1",
-  "@sentry/browser": "^4.0.4",
-  "sentry-expo": "^1.9.0",
+  /* "@sentry/browser": "^4.0.4",
+  "sentry-expo": "^1.9.0", */
   "react-leaflet-markercluster": "^2.0.0-rc3",
 };
 
