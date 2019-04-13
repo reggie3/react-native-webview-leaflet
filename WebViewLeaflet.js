@@ -44,8 +44,7 @@ export default class WebViewLeaflet extends React.Component {
   componentDidMount = async () => {
     if (Platform.OS === "ios") {
       this.indexFileAsset = await AssetUtils.resolveAsync(INDEX_FILE_PATH);
-      console.log(this.indexFileAsset);
-      debugger;
+      // console.log(this.indexFileAsset);
     }
   };
 
