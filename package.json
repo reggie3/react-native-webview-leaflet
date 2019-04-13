@@ -2,7 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "4.2.4",
+  "version": "4.2.8",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -93,7 +93,7 @@
     "style-loader": "^0.23.0",
     "webpack": "^4.6.0",
     "webpack-clear-console": "^1.0.3",
-    "webpack-cli": "^3.1.0",
+    "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.3.0"
   },
   "jest": {
