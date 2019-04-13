@@ -282,7 +282,7 @@ export default class App extends React.Component {
             color: 'black'
           }}
         >
-          react-native-webview-leaflet Demo
+          react-native-webview-leaflet Demo 0.01
         </Text>
         <WebViewLeaflet
           ref={(component) => (this.webViewLeaflet = component)}
