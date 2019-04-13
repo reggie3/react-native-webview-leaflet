@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   StyleSheet,
@@ -6,13 +6,13 @@ import {
   WebView,
   Platform,
   Text
-} from "react-native";
-import PropTypes from "prop-types";
-import Button from "./Button";
-import AssetUtils from "expo-asset-utils";
-const util = require("util");
-const isValidCoordinates = require("is-valid-coordinates");
-const uniqby = require("lodash.uniqby");
+} from 'react-native';
+import PropTypes from 'prop-types';
+import Button from './Button';
+import AssetUtils from 'expo-asset-utils';
+const util = require('util');
+const isValidCoordinates = require('is-valid-coordinates');
+const uniqby = require('lodash.uniqby');
 
 // look up these issues related to including index.html
 // https://github.com/facebook/react-native/issues/8996
@@ -25,7 +25,7 @@ const INDEX_FILE_PATH = require(`./assets/dist/index.html`);
 // const INDEX_FILE_ASSET_URI = AssetUtils.resolveAsync(rINDEX_FILE_PATH).uri;
 
 // const INDEX_FILE = require(INDEX_FILE_PATH);
-const MESSAGE_PREFIX = "react-native-webview-leaflet";
+const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -34,18 +34,16 @@ export default class WebViewLeaflet extends React.Component {
       mapLoaded: false,
       webviewErrorMessages: [],
       hasError: false,
-      hasErrorMessage: "",
-      hasErrorInfo: ""
+      hasErrorMessage: '',
+      hasErrorInfo: ''
     };
 
     this.indexFileAsset = undefined;
   }
 
   componentDidMount = async () => {
-    if (Platform.OS === "ios") {
       this.indexFileAsset = await AssetUtils.resolveAsync(INDEX_FILE_PATH);
       // console.log(this.indexFileAsset);
-    }
   };
 
   componentDidCatch(error, info) {
@@ -80,7 +78,7 @@ export default class WebViewLeaflet extends React.Component {
         this.setState({ centerPosition: this.props.centerPosition });
       } else {
         console.warn(
-          "Invalid coordinates provided to centerPosition: ",
+          'Invalid coordinates provided to centerPosition: ',
           this.props.centerPosition
         );
       }
@@ -100,7 +98,7 @@ export default class WebViewLeaflet extends React.Component {
           this.props.ownPositionMarker.coords[0]
         )
       ) {
-        console.log("****** sending position");
+        // console.log('****** sending position');
         // this.sendMessage({ ownPositionMarker: this.props.ownPositionMarker });
         // store the center position so that we can ensure the map gets it upon
         // its loading since it is possible that the position might
@@ -108,7 +106,7 @@ export default class WebViewLeaflet extends React.Component {
         this.setState({ ownPositionMarker: this.props.ownPositionMarker });
       } else {
         console.warn(
-          "Invalid coordinates provided to ownPositionMarker: ",
+          'Invalid coordinates provided to ownPositionMarker: ',
           this.props.ownPositionMarker.coords
         );
       }
@@ -117,7 +115,7 @@ export default class WebViewLeaflet extends React.Component {
     // handle updates to map markers array
     if (this.props.markers && prevProps.markers !== this.props.markers) {
       // debugger;
-      let validLocations = this.props.markers.filter(marker => {
+      let validLocations = this.props.markers.filter((marker) => {
         if (!marker || !marker.coords || marker.coords.length !== 2)
           return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
@@ -139,7 +137,7 @@ export default class WebViewLeaflet extends React.Component {
     // do the same for using map bounds
 
     if (
-      this.props.hasOwnProperty("bounds") &&
+      this.props.hasOwnProperty('bounds') &&
       this.props.bounds !== prevProps.bounds
     ) {
       this.sendMessage({ bounds: this.props.bounds });
@@ -147,7 +145,7 @@ export default class WebViewLeaflet extends React.Component {
 
     // do the same for using map boundsOptions
     if (
-      this.props.hasOwnProperty("boundsOptions") &&
+      this.props.hasOwnProperty('boundsOptions') &&
       this.props.boundsOptions !== prevProps.boundsOptions
     ) {
       this.sendMessage({ boundsOptions: this.props.boundsOptions });
@@ -201,7 +199,7 @@ export default class WebViewLeaflet extends React.Component {
 
     // do the same for map markers
     if (this.props.markers) {
-      let validLocations = this.props.markers.filter(marker => {
+      let validLocations = this.props.markers.filter((marker) => {
         if (!marker || !marker.coords || marker.coords.length !== 2)
           return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
@@ -250,7 +248,7 @@ export default class WebViewLeaflet extends React.Component {
 
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
-  sendMessage = payload => {
+  sendMessage = (payload) => {
     if (this.state.mapLoaded) {
       // only send message when webview is loaded
 
@@ -266,16 +264,16 @@ export default class WebViewLeaflet extends React.Component {
         this.setState({ centerPosition: payload.centerPosition });
       } */
       // console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
-      this.webview.postMessage(message, "*");
+      this.webview.postMessage(message, '*');
     }
   };
 
   //
-  handleMessage = data => {
+  handleMessage = (data) => {
     let msgData;
     // console.log({ data });
     msgData = JSON.parse(data);
-    if (msgData.hasOwnProperty("prefix") && msgData.prefix === MESSAGE_PREFIX) {
+    if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
       // console.log(`WebViewLeaflet: received message: `, msgData.payload);
 
       // if we receive an event, then pass it to the parent by calling
@@ -303,27 +301,27 @@ export default class WebViewLeaflet extends React.Component {
     }
   };
 
-  validateLocations = locations => {
+  validateLocations = (locations) => {
     // confirm the location coordinates are valid
-    const validCoordLocations = locations.filter(location => {
+    const validCoordLocations = locations.filter((location) => {
       return isValidCoordinates(location.coords[1], location.coords[0]);
     });
     // remove any locations that are already in the component state's "locations"
     // create a new array containing all the locations
     let combinedArray = [...this.state.locations, ...validCoordLocations];
     // remove duplicate locations
-    const deDupedLocations = uniqby(combinedArray, "id");
+    const deDupedLocations = uniqby(combinedArray, 'id');
     this.sendLocations(deDupedLocations);
     this.setState({ locations: deDupedLocations });
   };
 
-  onError = error => {
+  onError = (error) => {
     this.setState({
       webviewErrorMessages: [...this.state.webviewErrorMessages, error]
     });
   };
 
-  renderError = error => {
+  renderError = (error) => {
     this.setState({
       webviewErrorMessages: [...this.state.webviewErrorMessages, error]
     });
@@ -345,25 +343,25 @@ export default class WebViewLeaflet extends React.Component {
   maybeRenderMap = () => {
     try {
       return (
-        <View style={{ flex: 1, overflow: "hidden" }}>
+        <View style={{ flex: 1, overflow: 'hidden' }}>
           <WebView
             style={{
               ...StyleSheet.absoluteFillObject
             }}
-            ref={ref => {
+            ref={(ref) => {
               this.webview = ref;
             }}
             /* source={INDEX_FILE} */
             source={
-              Platform.OS === "ios"
-                ?  {uri: this.indexFileAsset.uri}
+              Platform.OS === 'ios'
+                ? { uri: this.indexFileAsset.uri }
                 : { uri: this.indexFileAsset.uri }
             }
             startInLoadingState={true}
             renderLoading={this.renderLoading}
-            renderError={error => {
+            renderError={(error) => {
               console.log(
-                "RENDER ERROR: ",
+                'RENDER ERROR: ',
                 util.inspect(error, {
                   showHidden: false,
                   depth: null
@@ -371,9 +369,9 @@ export default class WebViewLeaflet extends React.Component {
               );
             }}
             javaScriptEnabled={true}
-            onError={error => {
+            onError={(error) => {
               console.log(
-                "ERROR: ",
+                'ERROR: ',
                 util.inspect(error, {
                   showHidden: false,
                   depth: null
@@ -381,15 +379,15 @@ export default class WebViewLeaflet extends React.Component {
               );
             }}
             scalesPageToFit={false}
-            mixedContentMode={"always"}
-            onMessage={event => {
+            mixedContentMode={'always'}
+            onMessage={(event) => {
               if (event && event.nativeEvent && event.nativeEvent.data) {
                 this.handleMessage(event.nativeEvent.data);
               }
             }}
             onLoadStart={() => {}}
             onLoadEnd={() => {
-              if (this.props.eventReceiver.hasOwnProperty("onLoad")) {
+              if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
                 this.props.eventReceiver.onLoad();
               }
               // Set the component state to showw that the map has been loaded.
@@ -403,7 +401,7 @@ export default class WebViewLeaflet extends React.Component {
       );
     } catch (error) {
       console.log({ error });
-      debugger;
+      
       /* return (
         <View>
           <Text>{JSON.stringify(error)}</Text>
@@ -416,7 +414,7 @@ export default class WebViewLeaflet extends React.Component {
   maybeRenderWebviewError = () => {
     if (this.state.webviewErrorMessages.length > 0) {
       return (
-        <View style={{ zIndex: 2000, backgroundColor: "orange", margin: 4 }}>
+        <View style={{ zIndex: 2000, backgroundColor: 'orange', margin: 4 }}>
           {this.state.webviewErrorMessages.map((errorMessage, index) => {
             return <Text key={index}>{errorMessage}</Text>;
           })}
@@ -429,7 +427,7 @@ export default class WebViewLeaflet extends React.Component {
   maybeRenderErrorBoundaryMessage = () => {
     if (this.state.hasError)
       return (
-        <View style={{ zIndex: 2000, backgroundColor: "red", margin: 5 }}>
+        <View style={{ zIndex: 2000, backgroundColor: 'red', margin: 5 }}>
           {util.inspect(this.state.webviewErrorMessages, {
             showHidden: false,
             depth: null
@@ -452,7 +450,7 @@ export default class WebViewLeaflet extends React.Component {
         return (
           <View
             style={{
-              position: "absolute",
+              position: 'absolute',
               right: 10,
               bottom: 20,
               padding: 10
@@ -464,7 +462,7 @@ export default class WebViewLeaflet extends React.Component {
                   centerPosition: this.props.ownPositionMarker.coords
                 });
               }}
-              text={"🎯"}
+              text={'🎯'}
             />
           </View>
         );
@@ -488,7 +486,7 @@ export default class WebViewLeaflet extends React.Component {
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: "#fff1ad"
+            backgroundColor: '#fff1ad'
           }}
         >
           {this.indexFileAsset ? this.maybeRenderMap() : null}
@@ -528,13 +526,13 @@ WebViewLeaflet.defaultProps = {
   showMapAttribution: false,
   currentPosition: [38.89511, -77.03637],
   currentPositionMarkerStyle: {
-    icon: "❤️",
+    icon: '❤️',
     animation: {
-      name: "beat",
+      name: 'beat',
       duration: 0.25,
       delay: 0,
-      interationCount: "infinite",
-      direction: "alternate"
+      interationCount: 'infinite',
+      direction: 'alternate'
     },
     size: [36, 36]
   },
@@ -544,18 +542,18 @@ WebViewLeaflet.defaultProps = {
 const styles = StyleSheet.create({
   activityOverlayStyle: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, .5)",
-    display: "flex",
-    justifyContent: "center",
-    alignContent: "center",
+    backgroundColor: 'rgba(255, 255, 255, .5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
     borderRadius: 5
   },
   activityIndicatorContainer: {
-    backgroundColor: "lightgray",
+    backgroundColor: 'lightgray',
     padding: 10,
     borderRadius: 50,
-    alignSelf: "center",
-    shadowColor: "#000000",
+    alignSelf: 'center',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
       height: 3
@@ -568,7 +566,7 @@ const styles = StyleSheet.create({
     android: {
       elevation: 4,
       // Material design blue from https://material.google.com/style/color.html#color-color-palette
-      backgroundColor: "#2196F3",
+      backgroundColor: '#2196F3',
       borderRadius: 2
     }
   })
