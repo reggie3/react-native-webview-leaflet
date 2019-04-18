@@ -33,10 +33,10 @@ const npmPeerDeps={
 
 // additional dependencies for expo app
 const expoDeps = {
-  expo: '^31.0.0',
+  expo: '^32.0.0',
   react: '16.5.0',
   'react-dom': '^16.5.0',
-  'react-native': `https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz`
+  'react-native': `https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz`
 };
 
 
