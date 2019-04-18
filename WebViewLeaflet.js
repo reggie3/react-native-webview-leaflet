@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Button from './Button';
-import { Asset } from 'expo';
 import AssetUtils from 'expo-asset-utils'
 
 const util = require('util');
