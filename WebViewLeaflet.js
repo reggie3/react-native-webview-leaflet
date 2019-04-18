@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import Button from './Button';
 import { Asset } from 'expo';
+import AssetUtils from 'expo-asset-utils'
 
 const util = require('util');
 const isValidCoordinates = require('is-valid-coordinates');
@@ -19,11 +20,12 @@ const uniqby = require('lodash.uniqby');
 // https://github.com/facebook/react-native/issues/8996
 // https://github.com/facebook/react-native/issues/16133
 
-const INDEX_FILE_PATH = `./assets/dist/index.html`;
+/* const INDEX_FILE_PATH = `./assets/dist/index.html`;
 const INDEX_FILE_ASSET_URI = Asset.fromModule(require(INDEX_FILE_PATH)).uri;
-
+ */
 // const INDEX_FILE = require(INDEX_FILE_PATH);
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
+const requiredAsset = require('./assets/dist/index.html');
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -33,8 +35,22 @@ export default class WebViewLeaflet extends React.Component {
       webviewErrorMessages: [],
       hasError: false,
       hasErrorMessage: '',
-      hasErrorInfo: ''
+      hasErrorInfo: '',
+      asset: undefined
     };
+
+  }
+
+  componentDidMount = async () => {
+    try {
+      
+      const asset = await AssetUtils.resolveAsync(requiredAsset)
+      console.log({asset})
+      this.setState({ asset })
+    } catch (error) {
+      console.log({ error })
+    }
+
   }
 
   componentDidCatch(error, info) {
@@ -82,7 +98,7 @@ export default class WebViewLeaflet extends React.Component {
       this.props.ownPositionMarker.coords.length === 2 &&
       JSON.stringify(prevProps.ownPositionMarker) !== JSON.stringify(this.props.ownPositionMarker)
     ) {
-      
+
       if (
         isValidCoordinates(
           this.props.ownPositionMarker.coords[1],
@@ -118,13 +134,13 @@ export default class WebViewLeaflet extends React.Component {
       this.setState({ locations: validLocations });
     }
 
-    if ((this.props.useMarkerClustering)&&
-    (this.props.useMarkerClustering!== prevProps.useMarkerClustering)) {
+    if ((this.props.useMarkerClustering) &&
+      (this.props.useMarkerClustering !== prevProps.useMarkerClustering)) {
       this.sendMessage({ useMarkerClustering: this.props.useMarkerClustering });
     }
 
     // do the same for using map bounds
-    
+
     if (
       this.props.hasOwnProperty('bounds') &&
       this.props.bounds !== prevProps.bounds
@@ -132,7 +148,7 @@ export default class WebViewLeaflet extends React.Component {
       this.sendMessage({ bounds: this.props.bounds });
     }
 
-     // do the same for using map boundsOptions
+    // do the same for using map boundsOptions
     if (
       this.props.hasOwnProperty('boundsOptions') &&
       this.props.boundsOptions !== prevProps.boundsOptions
@@ -330,64 +346,69 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   maybeRenderMap = () => {
+    if(this.state.asset){
     return (
-      <View style={{flex: 1, overflow: 'hidden'}}>
-      <WebView
-        style={{
-          ...StyleSheet.absoluteFillObject
-        }}
-        ref={(ref) => {
-          this.webview = ref;
-        }}
-        /* source={INDEX_FILE} */
-        source={
-          Platform.OS === 'ios'
-            ? require(INDEX_FILE_PATH)
-            : { uri: INDEX_FILE_ASSET_URI }
-        }
-        startInLoadingState={true}
-        renderLoading={this.renderLoading}
-        renderError={(error) => {
-          console.log(
-            'RENDER ERROR: ',
-            util.inspect(error, {
-              showHidden: false,
-              depth: null
-            })
-          );
-        }}
-        javaScriptEnabled={true}
-        onError={(error) => {
-          console.log(
-            'ERROR: ',
-            util.inspect(error, {
-              showHidden: false,
-              depth: null
-            })
-          );
-        }}
-        scalesPageToFit={false}
-        mixedContentMode={'always'}
-        onMessage={(event) => {
-          if (event && event.nativeEvent && event.nativeEvent.data) {
-            this.handleMessage(event.nativeEvent.data);
+      <View style={{ flex: 1, overflow: 'hidden' }}>
+        <WebView
+          style={{
+            ...StyleSheet.absoluteFillObject
+          }}
+          ref={(ref) => {
+            this.webview = ref;
+          }}
+          /* source={INDEX_FILE} */
+          source={
+            Platform.OS === 'ios'
+              ? { uri: this.state.asset.uri }
+              : { uri: this.state.asset.uri  }
           }
-        }}
-        onLoadStart={() => {}}
-        onLoadEnd={() => {
-          if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
-            this.props.eventReceiver.onLoad();
-          }
-          // Set the component state to showw that the map has been loaded.
-          // This will let us do things during component update once the map
-          // is loaded.
-          this.setState({ mapLoaded: true });
-        }}
-        domStorageEnabled={true}
-        useWebKit={true}
-      />
+          startInLoadingState={true}
+          renderLoading={this.renderLoading}
+          renderError={(error) => {
+            console.log(
+              'RENDER ERROR: ',
+              util.inspect(error, {
+                showHidden: false,
+                depth: null
+              })
+            );
+          }}
+          javaScriptEnabled={true}
+          onError={(error) => {
+            console.log(
+              'ERROR: ',
+              util.inspect(error, {
+                showHidden: false,
+                depth: null
+              })
+            );
+          }}
+          /* scalesPageToFit={false} */
+          mixedContentMode={'always'}
+          onMessage={(event) => {
+            if (event && event.nativeEvent && event.nativeEvent.data) {
+              this.handleMessage(event.nativeEvent.data);
+            }
+          }}
+          onLoadStart={() => { }}
+          onLoadEnd={() => {
+            if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
+              this.props.eventReceiver.onLoad();
+            }
+            // Set the component state to showw that the map has been loaded.
+            // This will let us do things during component update once the map
+            // is loaded.
+            this.setState({ mapLoaded: true });
+          }}
+          domStorageEnabled={true}
+          useWebKit={true}
+        />
       </View>
     );
+  }
+  return(
+    <ActivityIndicator/>
+  )
   };
 
   maybeRenderWebviewError = () => {
