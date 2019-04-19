@@ -215,6 +215,10 @@ Animations are kept in the file [markers.css](https://github.com/reggie3/react-n
 ```
 ## Changelog
 
+### 4.3.1
+
+* Fixed issue with using expo-asset-utils that prevented this package from working with iOS apps in simulator
+
 ### 4.2.0
 
 * Replace Expo dependency with expo-asset-utils

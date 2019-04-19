@@ -1,8 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "private": false,
   "name": "react-native-webview-leaflet",
-  "version": "4.2.14",
+  "version": "4.3.2",
   "scripts": {
     "prod": "npm run clean && SET NODE_ENV=PROD && webpack",
     "dev": "npm run clean && SET NODE_ENV=DEV && webpack -p",
@@ -32,11 +32,7 @@
     "lodash.uniqby": "^4.7.0",
     "geolib": "^2.0.24",
     "react-leaflet": "^2.1.1",
-    "react-leaflet-markercluster": "^2.0.0-rc3",
-    "expo": "^32.0.0",
-    "react": "16.5.0",
-    "react-dom": "^16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz"
+    "react-leaflet-markercluster": "^2.0.0-rc3"
   },
   "peerDependencies": {
     "react": "16.5.0",
