@@ -215,6 +215,9 @@ Animations are kept in the file [markers.css](https://github.com/reggie3/react-n
 ```
 ## Changelog
 
+### 4.3.0
+* Reverted back to using Expo as a dependency.  See [issue #47](https://github.com/reggie3/react-native-webview-leaflet/issues/47)
+
 ### 4.2.0
 
 * Replace Expo dependency with expo-asset-utils
