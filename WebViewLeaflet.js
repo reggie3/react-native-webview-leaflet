@@ -5,11 +5,12 @@ import {
   ActivityIndicator,
   WebView,
   Platform,
-  Text
+  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Button from './Button';
-import AssetUtils from 'expo-asset-utils'
+// import Button from './Button';
+// import AssetUtils from 'expo-asset-utils'
+const asset = require('./assets/dist/index.html');
 
 const util = require('util');
 const isValidCoordinates = require('is-valid-coordinates');
@@ -24,7 +25,7 @@ const INDEX_FILE_ASSET_URI = Asset.fromModule(require(INDEX_FILE_PATH)).uri;
  */
 // const INDEX_FILE = require(INDEX_FILE_PATH);
 const MESSAGE_PREFIX = 'react-native-webview-leaflet';
-const requiredAsset = require('./assets/dist/index.html');
+// const requiredAsset = require('./assets/dist/index.html');
 
 export default class WebViewLeaflet extends React.Component {
   constructor(props) {
@@ -35,21 +36,8 @@ export default class WebViewLeaflet extends React.Component {
       hasError: false,
       hasErrorMessage: '',
       hasErrorInfo: '',
-      asset: undefined
+      asset,
     };
-
-  }
-
-  componentDidMount = async () => {
-    try {
-      
-      const asset = await AssetUtils.resolveAsync(requiredAsset)
-      console.log({asset})
-      this.setState({ asset })
-    } catch (error) {
-      console.log({ error })
-    }
-
   }
 
   componentDidCatch(error, info) {
@@ -57,7 +45,7 @@ export default class WebViewLeaflet extends React.Component {
     this.setState({
       hasError: true,
       hasErrorMessage: error,
-      hasErrorInfo: info
+      hasErrorInfo: info,
     });
   }
 
@@ -74,7 +62,7 @@ export default class WebViewLeaflet extends React.Component {
       if (
         isValidCoordinates(
           this.props.centerPosition[1],
-          this.props.centerPosition[0]
+          this.props.centerPosition[0],
         )
       ) {
         this.sendMessage({ centerPosition: this.props.centerPosition });
@@ -85,7 +73,7 @@ export default class WebViewLeaflet extends React.Component {
       } else {
         console.warn(
           'Invalid coordinates provided to centerPosition: ',
-          this.props.centerPosition
+          this.props.centerPosition,
         );
       }
     }
@@ -95,13 +83,13 @@ export default class WebViewLeaflet extends React.Component {
       this.props.ownPositionMarker &&
       this.props.ownPositionMarker.coords &&
       this.props.ownPositionMarker.coords.length === 2 &&
-      JSON.stringify(prevProps.ownPositionMarker) !== JSON.stringify(this.props.ownPositionMarker)
+      JSON.stringify(prevProps.ownPositionMarker) !==
+        JSON.stringify(this.props.ownPositionMarker)
     ) {
-
       if (
         isValidCoordinates(
           this.props.ownPositionMarker.coords[1],
-          this.props.ownPositionMarker.coords[0]
+          this.props.ownPositionMarker.coords[0],
         )
       ) {
         console.log('****** sending position');
@@ -113,7 +101,7 @@ export default class WebViewLeaflet extends React.Component {
       } else {
         console.warn(
           'Invalid coordinates provided to ownPositionMarker: ',
-          this.props.ownPositionMarker.coords
+          this.props.ownPositionMarker.coords,
         );
       }
     }
@@ -121,7 +109,7 @@ export default class WebViewLeaflet extends React.Component {
     // handle updates to map markers array
     if (this.props.markers && prevProps.markers !== this.props.markers) {
       // debugger;
-      let validLocations = this.props.markers.filter((marker) => {
+      let validLocations = this.props.markers.filter(marker => {
         if (!marker || !marker.coords || marker.coords.length !== 2)
           return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
@@ -133,8 +121,17 @@ export default class WebViewLeaflet extends React.Component {
       this.setState({ locations: validLocations });
     }
 
-    if ((this.props.useMarkerClustering) &&
-      (this.props.useMarkerClustering !== prevProps.useMarkerClustering)) {
+    if (
+      this.props.geometryLayers &&
+      prevProps.geometryLayers !== this.props.geometryLayers
+    ) {
+      this.setState({ geometryLayers: this.props.geometryLayers });
+    }
+
+    if (
+      this.props.useMarkerClustering &&
+      this.props.useMarkerClustering !== prevProps.useMarkerClustering
+    ) {
       this.sendMessage({ useMarkerClustering: this.props.useMarkerClustering });
     }
 
@@ -166,7 +163,7 @@ export default class WebViewLeaflet extends React.Component {
     // Create an object that will have the update that the map will
     // get once it has loaded
     let onMapLoadedUpdate = {
-      mapLayers: this.props.mapLayers
+      mapLayers: this.props.mapLayers,
     };
     // Check the state for any items that may have been received prior to
     // the map loading, and send them to the map
@@ -176,12 +173,12 @@ export default class WebViewLeaflet extends React.Component {
       this.props.centerPosition.length === 2 &&
       isValidCoordinates(
         this.props.centerPosition[1],
-        this.props.centerPosition[0]
+        this.props.centerPosition[0],
       )
     ) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        centerPosition: this.props.centerPosition
+        centerPosition: this.props.centerPosition,
       };
     }
 
@@ -192,32 +189,40 @@ export default class WebViewLeaflet extends React.Component {
       this.props.ownPositionMarker.coords.length == 2 &&
       isValidCoordinates(
         this.props.ownPositionMarker.coords[1],
-        this.props.ownPositionMarker.coords[0]
+        this.props.ownPositionMarker.coords[0],
       )
     ) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        ownPositionMarker: this.props.ownPositionMarker
+        ownPositionMarker: this.props.ownPositionMarker,
       };
     }
 
     // do the same for map markers
     if (this.props.markers) {
-      let validLocations = this.props.markers.filter((marker) => {
+      let validLocations = this.props.markers.filter(marker => {
         if (!marker || !marker.coords || marker.coords.length !== 2)
           return false;
         return isValidCoordinates(marker.coords[1], marker.coords[0]);
       });
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        locations: validLocations
+        locations: validLocations,
       };
     }
+
+    if (this.props.geometryLayers) {
+      onMapLoadedUpdate = {
+        ...onMapLoadedUpdate,
+        geometryLayers: this.props.geometryLayers,
+      };
+    }
+
     // do the same for zoom
     if (this.props.zoom) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        zoom: this.props.zoom
+        zoom: this.props.zoom,
       };
     }
 
@@ -225,7 +230,7 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.useMarkerClustering) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        useMarkerClustering: this.props.useMarkerClustering
+        useMarkerClustering: this.props.useMarkerClustering,
       };
     }
 
@@ -233,14 +238,14 @@ export default class WebViewLeaflet extends React.Component {
     if (this.props.bounds) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        ...{ bounds: this.props.bounds }
+        ...{ bounds: this.props.bounds },
       };
     }
 
     if (this.props.boundsOptions) {
       onMapLoadedUpdate = {
         ...onMapLoadedUpdate,
-        ...{ boundsOptions: this.props.boundsOptions }
+        ...{ boundsOptions: this.props.boundsOptions },
       };
     }
 
@@ -252,13 +257,12 @@ export default class WebViewLeaflet extends React.Component {
 
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
-  sendMessage = (payload) => {
+  sendMessage = payload => {
     if (this.state.mapLoaded) {
       // only send message when webview is loaded
-
       const message = JSON.stringify({
         prefix: MESSAGE_PREFIX,
-        payload
+        payload,
       });
 
       // If the user has sent a centering messaging, then store the location
@@ -267,16 +271,18 @@ export default class WebViewLeaflet extends React.Component {
       /* if (payload.centerPosition) {
         this.setState({ centerPosition: payload.centerPosition });
       } */
-      // console.log(`WebViewLeaflet: sending message: `, JSON.stringify(message));
+      // console.warn(`WebViewLeaflet: sending message: `, JSON.stringify(message));
+
       this.webview.postMessage(message, '*');
     }
   };
 
   //
-  handleMessage = (data) => {
+  handleMessage = data => {
     let msgData;
     // console.log({ data });
     msgData = JSON.parse(data);
+
     if (msgData.hasOwnProperty('prefix') && msgData.prefix === MESSAGE_PREFIX) {
       // console.log(`WebViewLeaflet: received message: `, msgData.payload);
 
@@ -297,17 +303,17 @@ export default class WebViewLeaflet extends React.Component {
             ...this.props.eventReceiver.state,
             mapState: {
               ...this.props.eventReceiver.mapState,
-              ...msgData.payload
-            }
-          }
+              ...msgData.payload,
+            },
+          },
         });
       }
     }
   };
 
-  validateLocations = (locations) => {
+  validateLocations = locations => {
     // confirm the location coordinates are valid
-    const validCoordLocations = locations.filter((location) => {
+    const validCoordLocations = locations.filter(location => {
       return isValidCoordinates(location.coords[1], location.coords[0]);
     });
     // remove any locations that are already in the component state's "locations"
@@ -319,15 +325,15 @@ export default class WebViewLeaflet extends React.Component {
     this.setState({ locations: deDupedLocations });
   };
 
-  onError = (error) => {
+  onError = error => {
     this.setState({
-      webviewErrorMessages: [...this.state.webviewErrorMessages, error]
+      webviewErrorMessages: [...this.state.webviewErrorMessages, error],
     });
   };
 
-  renderError = (error) => {
+  renderError = error => {
     this.setState({
-      webviewErrorMessages: [...this.state.webviewErrorMessages, error]
+      webviewErrorMessages: [...this.state.webviewErrorMessages, error],
     });
   };
 
@@ -345,69 +351,71 @@ export default class WebViewLeaflet extends React.Component {
   };
 
   maybeRenderMap = () => {
-    if(this.state.asset){
-    return (
-      <View style={{ flex: 1, overflow: 'hidden' }}>
-        <WebView
-          style={{
-            ...StyleSheet.absoluteFillObject
-          }}
-          ref={(ref) => {
-            this.webview = ref;
-          }}
-          /* source={INDEX_FILE} */
-          source={
-            Platform.OS === 'ios'
-              ? { uri: this.state.asset.uri }
-              : { uri: this.state.asset.uri  }
-          }
-          startInLoadingState={true}
-          renderLoading={this.renderLoading}
-          renderError={(error) => {
-            console.log(
-              'RENDER ERROR: ',
-              util.inspect(error, {
-                showHidden: false,
-                depth: null
-              })
-            );
-          }}
-          javaScriptEnabled={true}
-          onError={(error) => {
-            console.log(
-              'ERROR: ',
-              util.inspect(error, {
-                showHidden: false,
-                depth: null
-              })
-            );
-          }}
-          /* scalesPageToFit={false} */
-          mixedContentMode={'always'}
-          onMessage={(event) => {
-            if (event && event.nativeEvent && event.nativeEvent.data) {
-              this.handleMessage(event.nativeEvent.data);
-            }
-          }}
-          onLoadStart={() => { }}
-          onLoadEnd={() => {
-            if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
-              this.props.eventReceiver.onLoad();
-            }
-            // Set the component state to showw that the map has been loaded.
-            // This will let us do things during component update once the map
-            // is loaded.
-            this.setState({ mapLoaded: true });
-          }}
-          domStorageEnabled={true}
-          useWebKit={true}
-        />
-      </View>
-    );
-  }
-  return(
-    <ActivityIndicator/>
-  )
+    if (this.state.asset) {
+      return (
+        <View style={{ flex: 1, overflow: 'hidden' }}>
+          <WebView
+            style={{
+              ...StyleSheet.absoluteFillObject,
+            }}
+            ref={ref => {
+              this.webview = ref;
+            }}
+            /* source={INDEX_FILE} */
+
+            source={this.state.asset}
+            // source={{ uri: 'http://google.com.br' }}
+            // source={
+            //   Platform.OS === 'ios'
+            //     ? { html: this.state.asset }
+            //     : { uri: this.state.asset.uri }
+            // }
+            startInLoadingState={true}
+            renderLoading={this.renderLoading}
+            // renderError={error => {
+            //   console.warn(
+            //     'RENDER ERROR: ',
+            //     util.inspect(error, {
+            //       showHidden: false,
+            //       depth: null,
+            //     }),
+            //   );
+            // }}
+            javaScriptEnabled={true}
+            // onError={error => {
+            //   console.log(
+            //     'ERROR: ',
+            //     util.inspect(error, {
+            //       showHidden: false,
+            //       depth: null,
+            //     }),
+            //   );
+            // }}
+            // /* scalesPageToFit={false} */
+            mixedContentMode={'always'}
+            onMessage={event => {
+              if (event && event.nativeEvent && event.nativeEvent.data) {
+                this.handleMessage(event.nativeEvent.data);
+              }
+            }}
+            // onLoadStart={() => {}}
+            onLoadEnd={() => {
+              if (this.props.eventReceiver.hasOwnProperty('onLoad')) {
+                this.props.eventReceiver.onLoad();
+              }
+              // Set the component state to showw that the map has been loaded.
+              // This will let us do things during component update once the map
+              // is loaded.
+
+              this.setState({ mapLoaded: true });
+            }}
+            domStorageEnabled={true}
+            useWebKit={true}
+          />
+        </View>
+      );
+    }
+    return <ActivityIndicator />;
   };
 
   maybeRenderWebviewError = () => {
@@ -429,7 +437,7 @@ export default class WebViewLeaflet extends React.Component {
         <View style={{ zIndex: 2000, backgroundColor: 'red', margin: 5 }}>
           {util.inspect(this.state.webviewErrorMessages, {
             showHidden: false,
-            depth: null
+            depth: null,
           })}
         </View>
       );
@@ -443,7 +451,7 @@ export default class WebViewLeaflet extends React.Component {
         this.props.ownPositionMarker.coords.length == 2 &&
         isValidCoordinates(
           this.props.ownPositionMarker.coords[1],
-          this.props.ownPositionMarker.coords[0]
+          this.props.ownPositionMarker.coords[0],
         )
       ) {
         return (
@@ -452,24 +460,24 @@ export default class WebViewLeaflet extends React.Component {
               position: 'absolute',
               right: 10,
               bottom: 20,
-              padding: 10
+              padding: 10,
             }}
           >
-            <Button
+            {/* <Button
               onPress={() => {
                 this.sendMessage({
-                  centerPosition: this.props.ownPositionMarker.coords
+                  centerPosition: this.props.ownPositionMarker.coords,
                 });
               }}
               text={'🎯'}
-            />
+            /> */}
           </View>
         );
       }
       return null;
     } else {
-      console.warn(
-        "Prop 'ownPositionMarker' must be passed in order to display the center on own position button."
+      console.log(
+        "Prop 'ownPositionMarker' must be passed in order to display the center on own position button.",
       );
       return null;
     }
@@ -479,13 +487,13 @@ export default class WebViewLeaflet extends React.Component {
     return (
       <View
         style={{
-          flex: 1
+          flex: 1,
         }}
       >
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: '#fff1ad'
+            backgroundColor: '#fff1ad',
           }}
         >
           {this.maybeRenderMap()}
@@ -513,7 +521,7 @@ WebViewLeaflet.propTypes = {
   centerButton: PropTypes.bool,
   showMapAttribution: PropTypes.bool,
   currentPositionMarkerStyle: PropTypes.object,
-  onCurrentPositionClicked: PropTypes.func
+  onCurrentPositionClicked: PropTypes.func,
 };
 
 WebViewLeaflet.defaultProps = {
@@ -531,11 +539,11 @@ WebViewLeaflet.defaultProps = {
       duration: 0.25,
       delay: 0,
       interationCount: 'infinite',
-      direction: 'alternate'
+      direction: 'alternate',
     },
-    size: [36, 36]
+    size: [36, 36],
   },
-  useMarkerClustering: false
+  useMarkerClustering: false,
 };
 
 const styles = StyleSheet.create({
@@ -545,7 +553,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignContent: 'center',
-    borderRadius: 5
+    borderRadius: 5,
   },
   activityIndicatorContainer: {
     backgroundColor: 'lightgray',
@@ -555,18 +563,17 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 3
+      height: 3,
     },
     shadowRadius: 5,
-    shadowOpacity: 1.0
+    shadowOpacity: 1.0,
   },
   button: Platform.select({
     ios: {},
     android: {
       elevation: 4,
-      // Material design blue from https://material.google.com/style/color.html#color-color-palette
       backgroundColor: '#2196F3',
-      borderRadius: 2
-    }
-  })
+      borderRadius: 2,
+    },
+  }),
 });

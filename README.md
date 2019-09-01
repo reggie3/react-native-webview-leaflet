@@ -2,12 +2,6 @@
 
 ## A Leaflet map component with no native code for React Native applications
 
-### ⚠️ This is version 4 of this library. It includes breaking changes from previous versions.
-
-#### Difference Between Versions
-
-Like version 2, version 3 builds on [react-leaflet](https://github.com/PaulLeCam/react-leaflet). The primary new feature is the ability to specify map tiles. See below for more details.
-
 ### Why Use This Library
 
 This component is useful if you want to display HTML elements on an interactive map. Since the elements are just HTML items, you can use SVG's, emojis, text, images, etc., and they can even be animated, updated, and changed as required.
@@ -214,6 +208,10 @@ Animations are kept in the file [markers.css](https://github.com/reggie3/react-n
 
 ```
 ## Changelog
+
+### 4.5.0
+
+* Removed Expo dependencies from the library and added polygons vectors (Thanks @gutoglup - https://github.com/gutoglup)
 
 ### 4.3.1
 

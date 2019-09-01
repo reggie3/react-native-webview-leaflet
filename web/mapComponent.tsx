@@ -1,6 +1,13 @@
 import Leaflet from 'leaflet';
 import React, { Component, createRef } from 'react';
-import { Map, Marker, LayersControl, LayerGroup } from 'react-leaflet';
+import {
+  Map,
+  Marker,
+  LayersControl,
+  LayerGroup,
+  Polygon,
+  Popup,
+} from 'react-leaflet';
 import L from 'leaflet';
 import testLocations from './testLocations';
 import './markerAnimations.css';
@@ -30,12 +37,37 @@ const MESSAGE_PREFIX = 'react-native-webview-leaflet';
 const SHOW_DEBUG_INFORMATION = false;
 const ENABLE_BROWSER_TESTING = false;
 
-class mapComponent extends Component {
-  constructor(props) {
+interface Props{
+
+}
+
+interface State{
+  ownPositionMarker: any,
+  centerPosition: number[],
+  zoom: number,
+  debugMessages:string[],
+  locations: any[],
+  markers: any[],
+  geometryLayers: any[],
+  showAttributionControl: boolean,
+  mapLayers: any[],
+  combinedLocations: any[], // array to contain the locations that will be turned into markers and ownPostionMarker
+  useMarkerClustering: boolean,
+  loaded: boolean,
+}
+
+class mapComponent extends Component<Props,State> {
+  eventListenersAdded: boolean;
+  mapMarkerDictionary: any;
+  mapRef: any;
+
+  constructor(props: Props) {
     super(props);
 
+    this.eventListenersAdded=false;
     this.mapMarkerDictionary = {};
     this.mapRef = createRef();
+
     this.state = {
       ownPositionMarker: {},
       centerPosition: [36.8860065, -76.4096611],
@@ -43,11 +75,12 @@ class mapComponent extends Component {
       debugMessages: [],
       locations: [],
       markers: [],
+      geometryLayers: [],
       showAttributionControl: false,
       mapLayers: [],
       combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
       useMarkerClustering: false,
-      loaded: false
+      loaded: false,
     };
   }
 
@@ -78,20 +111,20 @@ class mapComponent extends Component {
             name: 'pulse',
             duration: '.5',
             delay: 0,
-            interationCount: 'infinite'
-          }
+            interationCount: 'infinite',
+          },
         },
         mapLayers,
-        useMarkerClustering: true
+        useMarkerClustering: true,
       });
 
       setTimeout(() => {
         this.setState({
           bounds: [
             [36.8859965, -76.4096793],
-            [39.07467659353497, -76.91253011988012]
+            [39.07467659353497, -76.91253011988012],
           ],
-          boundsOptions: {padding: [0,0]}
+          boundsOptions: { padding: [0, 0] },
         });
       }, 5000);
     }
@@ -104,7 +137,7 @@ class mapComponent extends Component {
           loaded: true,
           center: this.mapRef.current.leafletElement.getCenter(),
           bounds: this.mapRef.current.leafletElement.getBounds(),
-          zoom: this.mapRef.current.leafletElement.getZoom()
+          zoom: this.mapRef.current.leafletElement.getZoom(),
         });
         this.printElement('sent onload event');
       }, 1000);
@@ -125,17 +158,18 @@ class mapComponent extends Component {
     let that = this;
     if (this.state.centerPosition !== prevState.centerPosition) {
       this.printElement(
-        `updating centerPosition to ${this.state.centerPosition}`
+        `updating centerPosition to ${this.state.centerPosition}`,
       );
     }
 
     if (prevState.combinedLocations !== this.state.combinedLocations) {
-      let markers = this.state.combinedLocations.map((location) => {
+      let markers = this.state.combinedLocations.map(location => {
         if (isValidCoordinates(location.coords[1], location.coords[0])) {
           return {
             id: location.id,
             coords: location.coords,
-            divIcon: that.createDivIcon(location)
+            divIcon: that.createDivIcon(location),
+            title: location.title,
           };
         }
       });
@@ -143,6 +177,10 @@ class mapComponent extends Component {
       this.setState({ markers }, () => {
         console.log(this.state.markers);
       });
+    }
+
+    if (prevState.geometryLayers) {
+      console.warn(this.state.geometryLayers);
     }
 
     // update the combined locations if the ownPositionMarker object has changed
@@ -168,25 +206,25 @@ class mapComponent extends Component {
       this.setState({
         combinedLocations: [
           ...this.state.locations,
-          { id: 'ownPositionMarker', ...this.state.ownPositionMarker }
-        ]
+          { id: 'ownPositionMarker', ...this.state.ownPositionMarker },
+        ],
       });
     } else if (this.state.locations) {
       this.setState({
-        combinedLocations: this.state.locations
+        combinedLocations: this.state.locations,
       });
     } else if (this.state.ownPositionMarker.coords) {
       this.setState({
         combinedLocations: [
-          { id: 'ownPositionMarker', ...this.state.ownPositionMarker }
-        ]
+          { id: 'ownPositionMarker', ...this.state.ownPositionMarker },
+        ],
       });
     }
   };
 
   // print passed information in an html element; useful for debugging
   // since console.log and debug statements won't work in a conventional way
-  printElement = (data) => {
+  printElement = data => {
     if (SHOW_DEBUG_INFORMATION) {
       let message = '';
       if (typeof data === 'object') {
@@ -195,23 +233,23 @@ class mapComponent extends Component {
         message = data;
       }
       this.setState({
-        debugMessages: [...this.state.debugMessages, message]
+        debugMessages: [...this.state.debugMessages, message],
       });
       console.log(message);
     }
   };
 
-  createDivIcon = (location) => {
+  createDivIcon = location => {
     let divIcon = L.divIcon({
       className: 'clearMarkerContainer',
       html: location.animation
         ? this.getAnimatedHTMLString(
             location.icon || '📍',
             location.animation || null,
-            location.size || [24, 24]
+            location.size || [24, 24],
           )
         : this.getUnanimatedHTMLString(location.icon, location.size),
-      iconAnchor: location.iconAnchor || null
+      iconAnchor: location.iconAnchor || null,
     });
     return divIcon;
   };
@@ -259,12 +297,12 @@ class mapComponent extends Component {
   };
   // data to send is an object containing key value pairs that will be
   // spread into the destination's state
-  sendMessage = (payload) => {
+  sendMessage = payload => {
     // this.printElement(`in send message payload = ${JSON.stringify(payload)}`);
 
     const message = JSON.stringify({
       prefix: MESSAGE_PREFIX,
-      payload: payload
+      payload: payload,
     });
 
     this.printElement(`message to send = ${message}`);
@@ -285,12 +323,12 @@ class mapComponent extends Component {
     this.printElement(`sent message: ${message}`);
   };
 
-  handleMessage = (event) => {
+  handleMessage = event => {
     this.printElement(
       `received message ${util.inspect(event.data, {
         showHidden: false,
-        depth: null
-      })}`
+        depth: null,
+      })}`,
     );
 
     let msgData;
@@ -315,7 +353,7 @@ class mapComponent extends Component {
     // build a payload if one is not provided
     const mapCenterPosition = [
       this.mapRef.current.leafletElement.getCenter().lat,
-      this.mapRef.current.leafletElement.getCenter().lng
+      this.mapRef.current.leafletElement.getCenter().lng,
     ];
     const mapBounds = this.mapRef.current.leafletElement.getBounds();
     const mapZoom = this.mapRef.current.leafletElement.getZoom();
@@ -324,16 +362,16 @@ class mapComponent extends Component {
       payload = {
         center: mapCenterPosition,
         bounds: mapBounds,
-        zoom: mapZoom
+        zoom: mapZoom,
       };
     }
     this.printElement(
-      `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
+      `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`,
     );
 
     this.sendMessage({
       event,
-      payload
+      payload,
     });
 
     // update the map's center in state if it has moved
@@ -365,7 +403,7 @@ class mapComponent extends Component {
         return (
           <LayerGroup>
             <MarkerClusterGroup>
-              {this.state.markers.map((marker) => {
+              {this.state.markers.map(marker => {
                 if (marker.id !== 'ownPositionMarker') {
                   return (
                     <Marker
@@ -374,17 +412,19 @@ class mapComponent extends Component {
                       icon={marker.divIcon}
                       onClick={() => {
                         this.onMapEvent('onMapMarkerClicked', {
-                          id: marker.id
+                          id: marker.id,
                         });
                       }}
-                    />
+                    >
+                      {marker.title && <Popup>{marker.title}</Popup>}
+                    </Marker>
                   );
                 } else {
                   return null;
                 }
               })}
             </MarkerClusterGroup>
-            {this.state.markers.map((marker) => {
+            {this.state.markers.map(marker => {
               if (marker.id === 'ownPositionMarker') {
                 return (
                   <Marker
@@ -393,10 +433,12 @@ class mapComponent extends Component {
                     icon={marker.divIcon}
                     onClick={() => {
                       this.onMapEvent('onMapMarkerClicked', {
-                        id: marker.id
+                        id: marker.id,
                       });
                     }}
-                  />
+                  >
+                    {marker.title && <Popup>{marker.title}</Popup>}
+                  </Marker>
                 );
               } else {
                 return null;
@@ -407,7 +449,7 @@ class mapComponent extends Component {
       } else {
         return (
           <LayerGroup>
-            {this.state.markers.map((marker) => {
+            {this.state.markers.map(marker => {
               return (
                 <Marker
                   key={marker.id}
@@ -415,15 +457,37 @@ class mapComponent extends Component {
                   icon={marker.divIcon}
                   onClick={() => {
                     this.onMapEvent('onMapMarkerClicked', {
-                      id: marker.id
+                      id: marker.id,
                     });
                   }}
-                />
+                >
+                  {marker.title && <Popup>{marker.title}</Popup>}
+                </Marker>
               );
             })}
           </LayerGroup>
         );
       }
+    } else {
+      return null;
+    }
+  };
+
+  renderGeometryLayers = () => {
+    if (this.state.loaded) {
+      return (
+        <LayerGroup>
+          {this.state.geometryLayers.map(layer => {
+            return (
+              <Polygon
+                key={layer.id}
+                color={layer.color || 'white'}
+                positions={layer.coords}
+              />
+            );
+          })}
+        </LayerGroup>
+      );
     } else {
       return null;
     }
@@ -439,7 +503,7 @@ class mapComponent extends Component {
             <Map
               style={{
                 width: '100%',
-                backgroundColor: 'lightblue'
+                backgroundColor: 'lightblue',
               }}
               ref={this.mapRef}
               center={this.state.centerPosition}
@@ -454,9 +518,9 @@ class mapComponent extends Component {
                 this.setState({ loaded: true });
                 this.printElement(`******* map loaded *******`);
               }}
-              onClick={(event) => {
+              onClick={event => {
                 this.onMapEvent('onMapClicked', {
-                  coords: [event.latlng.lat, event.latlng.lng]
+                  coords: [event.latlng.lat, event.latlng.lng],
                 });
               }}
               onZoomLevelsChange={() => {
@@ -499,6 +563,7 @@ class mapComponent extends Component {
               )}
               <LayersControl position="topleft">
                 <LayersControl.Overlay name="Markers" checked="true">
+                  {this.renderGeometryLayers()}
                   {this.renderMarkers()}
                 </LayersControl.Overlay>
               </LayersControl>
@@ -515,7 +580,7 @@ class mapComponent extends Component {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                zIndex: 15000
+                zIndex: 15000,
               }}
               id="messages"
             >
