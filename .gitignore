@@ -3,4 +3,4 @@ node_modules/**/*
 npm-debug.*
 secrets*
 publishingDirections.txt
-react-native-webview-leaflet
+demo/node_modules/**/*
