@@ -186,6 +186,19 @@ this.webViewLeaflet.sendMessage({
 }
 ```
 
+### Adding Geometry
+Thanks to @gotoglup for the PR adding geometry layers.  A geometry layer can be added to the may by following the example below:
+
+```javascript
+geometryLayers={[
+  {
+    id: 1,
+    coords: [[51.515, -0.09], [51.52, -0.1], [51.52, -0.12]],
+    color: '#123123',
+    },
+  ]}
+```
+
 ### Available Animations
 
 Animations for "bounce", "fade", "pulse", "jump", "waggle", "spin", and "beat" can be specified in the animation.name property of an individual location.
