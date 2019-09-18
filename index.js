@@ -1,3 +1,2 @@
 import WebViewLeaflet from "./WebViewLeaflet";
-
-module.exports = WebViewLeaflet;
+export default WebViewLeaflet;
