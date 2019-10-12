@@ -1,0 +1,36 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "build": "parcel ./HTML/dev/index.html --out-dir ./HTML/build/",
+    "dist": "parcel build ./HTML/build/index.html --out-dir ./HTML/dist/ --public-url .",
+    "serve": "parcel ./dist/index.html"
+  },
+  "dependencies": {
+    "expo": "^35.0.0",
+    "expo-asset-utils": "^1.2.0",
+    "leaflet": "^1.5.1",
+    "react": "16.8.3",
+    "react-dom": "16.8.3",
+    "react-leaflet": "^2.4.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
+    "react-native-web": "^0.11.7",
+    "react-native-webview": "7.0.5"
+  },
+  "devDependencies": {
+    "@types/expo": "^32.0.13",
+    "@types/jest": "^24.0.18",
+    "@types/leaflet": "^1.5.3",
+    "@types/react": "^16.8.23",
+    "@types/react-native": "^0.57.65",
+    "babel-preset-expo": "^7.0.0",
+    "gulp": "4",
+    "gulp-run": "^1.7.1",
+    "typescript": "^3.6.4"
+  },
+  "private": true
+}

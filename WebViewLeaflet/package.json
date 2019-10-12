@@ -1,0 +1,37 @@
+{
+  "name": "react-native-webview-leaflet",
+  "version": "5.0.0",
+  "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reggie3/react-native-webview-leaflet.git"
+  },
+  "keywords": [
+    "react-native",
+    "leaflet",
+    "expo",
+    "webview"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react-leaflet": "^2.4.0",
+    "leaflet": "^1.5.1",
+    "react": "16.9.0",
+    "react-dom": "^16.10.2",
+    "react-leaflet": "^2.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-react": "^7.6.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-inliner": "^1.0.10",
+    "typescript": "^3.6.4"
+  }
+}

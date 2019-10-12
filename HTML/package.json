@@ -1,0 +1,49 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reggie3/react-native-webview-leaflet.git"
+  },
+  "keywords": [
+    "react-native",
+    "leaflet",
+    "expo",
+    "webview"
+  ],
+  "scripts": {
+    "test": "jest",
+    "build": "parcel ./src/index.html --out-dir ./build/",
+    "dist": "parcel build ./build/index.html --out-dir ./dist/ --public-url .",
+    "serve": "parcel ./dist/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react-leaflet": "^2.4.0",
+    "leaflet": "^1.5.1",
+    "react": "16.9.0",
+    "react-dom": "^16.10.2",
+    "react-leaflet": "^2.4.0",
+    "util": "^0.12.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "@babel/preset-typescript": "^7.6.0",
+    "@testing-library/react": "^9.3.0",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "jest": "^24.9.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-inliner": "^1.0.10",
+    "react-test-renderer": "^16.10.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
+    ]
+  }
+}
