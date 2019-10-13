@@ -1,5 +1,10 @@
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1 maximum-scale=1"
+    />
     <style>
       * {
         margin: 0;
@@ -12,12 +17,20 @@
         bottom: 0;
         right: 0;
         overflow: auto;
-        background: lime;
+        background: orange;
+      }
+      .leaflet-container {
+        height: 100%;
+        width: 100%;
+        margin: 0 auto;
       }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div
+      id="root"
+      style="width: auto; height: 100%; background-color: NavajoWhite ;"
+    ></div>
     <script src="./index.tsx"></script>
   </body>
 </html>

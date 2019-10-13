@@ -19,10 +19,14 @@
   "license": "ISC",
   "dependencies": {
     "@types/react-leaflet": "^2.4.0",
+    "@types/react-leaflet-markercluster": "^2.0.0",
     "leaflet": "^1.5.1",
+    "leaflet.markercluster": "^1.4.1",
+    "prop-types": "^15.7.2",
     "react": "16.9.0",
     "react-dom": "^16.10.2",
     "react-leaflet": "^2.4.0",
+    "react-leaflet-markercluster": "2.0.0-rc3",
     "util": "^0.12.1"
   },
   "devDependencies": {

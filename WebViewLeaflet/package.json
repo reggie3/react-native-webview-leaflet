@@ -12,7 +12,7 @@
     "expo",
     "webview"
   ],
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,6 +30,8 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-react": "^7.6.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "gulp": "4",
+    "gulp-run": "^1.7.1",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-inliner": "^1.0.10",
     "typescript": "^3.6.4"

@@ -9,6 +9,4 @@ import React from '../node_modules/react';
 import ReactDOM from '../node_modules/react-dom';
 import MapComponent from './mapComponent';
 
-console.log('Hello from tsx!');
-
 ReactDOM.render(<MapComponent />, document.getElementById('root'));
