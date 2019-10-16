@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MapLayer, MapLayerTypes } from '../../WebViewLeaflet/models';
+import { MapLayerTypes, MapRasterLayer } from '../../WebViewLeaflet/models';
 import {
   TileLayer,
   WMSTileLayer,
@@ -8,7 +8,7 @@ import {
 } from 'react-leaflet';
 
 interface Props {
-  layer: MapLayer;
+  layer: MapRasterLayer;
 }
 
 const RasterLayer = (props: Props) => {

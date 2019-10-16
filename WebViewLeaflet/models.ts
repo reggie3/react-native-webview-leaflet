@@ -16,7 +16,16 @@ if (window.ReactNativeWebView !== undefined) {
 }
  */
 
-export enum MapEvents {
+export enum MapComponentMessages {
+  MAP_COMPONENT_MOUNTED = 'MAP_COMPONENT_MOUNTED',
+  DOCUMENT_EVENT_LISTENER_ADDED = 'DOCUMENT_EVENT_LISTENER_ADDED',
+  WINDOW_EVENT_LISTENER_ADDED = 'WINDOW_EVENT_LISTENER_ADDED',
+  UNABLE_TO_ADD_EVENT_LISTENER = 'UNABLE_TO_ADD_EVENT_LISTENER',
+  DOCUMENT_EVENT_LISTENER_REMOVED = 'DOCUMENT_EVENT_LISTENER_REMOVED',
+  WINDOW_EVENT_LISTENER_REMOVED = 'WINDOW_EVENT_LISTENER_REMOVED'
+}
+
+export enum MapEvent {
   ON_MOVE_END = 'onMoveEnd',
   ON_MOVE_START = 'onMoveStart',
   ON_MOVE = 'onMove',
@@ -51,33 +60,35 @@ export interface MapMarker {
 }
 
 export interface MapLayer {
-  // attribution string to be shown for this layer
-  attribution?: string; //'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  bounds?: LatLngBoundsExpression;
-  color?: string;
-  coords?: LatLng[];
-  layers?: MapLayer[] | string;
   id?: number | string;
   isBaseLayer?: boolean;
   isChecked?: boolean; // if the layer is selected in the layer selection control
   name?: string; // the name of the layer, this will be seen in the layer selection control
   opacity?: number;
-  play?: boolean;
+
   type: MapLayerTypes; // the type of layer as shown at https://react-leaflet.js.org/docs/en/components.html#raster-layers
-  // url of tiles
-  url?: string; //`https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
+
   zIndex?: number;
 }
 
+export interface MapGeometryLayer extends MapLayer {
+  color?: string;
+  coords?: LatLng[];
+}
 
-export interface MapGeometryLayer extends MapLayer{
-    geometry: // TODO: each geometry layer gets an array of shapes that match the Vector Layers here:   https://leafletjs.com/reference-1.5.0.html#polygon
+export interface MapRasterLayer extends MapLayer {
+  // attribution string to be shown for this layer
+  attribution?: string; //'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+  bounds?: LatLngBoundsExpression;
+  layers?: MapLayer[] | string;
+  play?: boolean;
+  // url of tiles
+  url?: string; //`https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
 }
 
 export interface MapVectorLayer {}
 
 export enum MapLayerTypes {
-  GEOMETRY_LAYER = 'GeometryLayer',
   IMAGE_LAYER = 'ImageOverlay',
   TILE_LAYER = 'TileLayer',
   VECTOR_LAYER = 'VectorLayer',

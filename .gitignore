@@ -9,3 +9,13 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
+HTML/dist/*
+HTML/cache/*
+HTML/build/*
+HTML/.cache/*
+HTML/node_modules
+WebViewLeaflet/dist/*
+WebViewLeaflet/cache/*
+WebViewLeaflet/build/*
+WebViewLeaflet/.cache/*
+WebViewLeaflet/node_modules
