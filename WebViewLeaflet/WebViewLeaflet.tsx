@@ -9,10 +9,12 @@ import {
   MapRasterLayer,
   MapMarker,
   WebviewLeafletMessage,
-  StartupMessage
+  StartupMessage,
+  MapStartupMessage
 } from './models';
 import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
 import { ActivityOverlay } from './ActivityOverlay';
+import { LatLng } from 'leaflet';
 const INDEX_FILE_PATH = require(`./assets/index.html`);
 
 export interface Props {
@@ -26,6 +28,7 @@ export interface Props {
   vectorLayers?: MapVectorLayer[];
   rasterLayers?: MapRasterLayer[];
   mapMarkers?: MapMarker[];
+  mapCenterCoords?: LatLng;
 }
 
 interface State {
@@ -84,7 +87,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
     let message: WebviewLeafletMessage = JSON.parse(data);
     this.updateDebugMessages(`received: ${JSON.stringify(message)}`);
-    if (message.msg === 'READY') {
+    if (message.msg === 'MAP_COMREADY') {
       this.sendStartupMessage();
     }
     onMessageReceived(message);
@@ -110,10 +113,28 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
   // Send a startup message with initalizing values to the map
   private sendStartupMessage = () => {
+    let startupMessage: MapStartupMessage = {};
+    const {
+      rasterLayers,
+      vectorLayers,
+      mapMarkers,
+      mapCenterCoords
+    } = this.props;
+    if (rasterLayers) {
+      startupMessage.rasterLayers = rasterLayers;
+    }
+    if (vectorLayers) {
+      startupMessage.vectorLayers = vectorLayers;
+    }
+    if (mapMarkers) {
+      startupMessage.mapMarkers = mapMarkers;
+    }
+    if (mapCenterCoords) {
+      startupMessage.mapCenterCoords = mapCenterCoords;
+    }
+
     this.setState({ isLoading: false });
     this.updateDebugMessages('sending startup message');
-
-    let startupMessage: StartupMessage = { msg: 'This is the startup message' };
 
     this.webViewRef.current.injectJavaScript(
       `window.postMessage(${JSON.stringify(startupMessage)}, '*');`

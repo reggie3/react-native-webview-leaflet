@@ -1,6 +1,6 @@
 import { View } from 'native-base';
-import { ScrollView, Text } from 'react-native';
 import React from 'react';
+import { ScrollView, Text } from 'react-native';
 
 export interface Props {
   debugMessages: string[];

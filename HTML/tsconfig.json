@@ -1,7 +1,28 @@
 {
   "compilerOptions": {
+    "outDir": "./compiled",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "sourceMap": true,
     "jsx": "react",
-    "noEmit": true,
-    "baseUrl": "." // This must be specified if "paths" is.
-  }
+    "declaration": true,
+    "moduleResolution": "node",
+    "types": ["react", "jest", "node"]
+  },
+  "include": ["./precompile/*"],
+  "exclude": [
+    "typings/main",
+    "typings/main.d.ts",
+    "typings/index.d.ts",
+    "node_modules",
+    "build",
+    "scripts",
+    "__tests__",
+    "preDist",
+    ".expo",
+    "src/setupTests.ts",
+    "gulpfile.ts",
+    "typings"
+  ]
 }

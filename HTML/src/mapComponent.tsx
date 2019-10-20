@@ -16,7 +16,7 @@ import {
   MapVectorLayerPolygon,
   MapVectorLayerRectangle,
   MapRasterLayer
-} from '../../WebViewLeaflet/models';
+} from './models';
 import mockVectorLayers from './mocks/mockVectorLayers';
 import mockMapLayers from './mocks/mockMapLayers';
 import mockMapMarkers from './mocks/mockMapMarkers';
@@ -42,18 +42,18 @@ interface State {
     | MapVectorLayerPolygon
     | MapVectorLayerRectangle)[];
   boundsOptions: any;
-  bounds: LatLngBounds;
+  bounds: LatLngBounds | null;
   panToLocation: any;
   showZoomControl: boolean;
   showAttributionControl: boolean;
-  centerPosition: LatLng;
+  mapCenterCoords: LatLng | null;
   debugMessages: string[];
   isLoaded: boolean;
   lat: number;
   lng: number;
   mapRasterLayers?: MapRasterLayer[];
   mapMarkers?: MapMarker[];
-  ownPositionMarker: MapMarker;
+  ownPositionMarker: MapMarker | null;
   useMarkerClustering: boolean;
   zoom: number;
 }
@@ -70,7 +70,7 @@ class MapComponent extends React.Component<Props, State> {
     this.state = {
       boundsOptions: null,
       bounds: null,
-      centerPosition: null,
+      mapCenterCoords: null,
       debugMessages: ['test'],
       vectorLayers: [],
       isLoaded: false,
@@ -210,21 +210,21 @@ class MapComponent extends React.Component<Props, State> {
         });
 
         // update the map's center in state if it has moved
-        // The map's center in state (centerPosition) is used by react.leaflet
+        // The map's center in state (mapCenterCoords) is used by react.leaflet
         // to center the map.  Centering the map component on the actual
-        // map center will allow us to recenter the map by updating the centerPosition
+        // map center will allow us to recenter the map by updating the mapCenterCoords
         // item in state ourself
         if (event === MapEvent.ON_MOVE_END) {
           this.setState(
             {
-              centerPosition: new LatLng(
+              mapCenterCoords: new LatLng(
                 mapCenterPosition[0],
                 mapCenterPosition[1]
               )
             },
             () => {
               /*  this.printElement(
-          `************** Updated centerPosition = ${this.state.centerPosition}`
+          `************** Updated mapCenterCoords = ${this.state.mapCenterCoords}`
         ); */
             }
           );
@@ -315,7 +315,7 @@ class MapComponent extends React.Component<Props, State> {
         panToLocation={this.state.panToLocation}
         showZoomControl={this.state.showZoomControl}
         showAttributionControl={this.state.showAttributionControl}
-        centerPosition={this.state.centerPosition}
+        mapCenterCoords={this.state.mapCenterCoords}
         debugMessages={this.state.debugMessages}
         isLoaded={this.state.isLoaded}
         lat={this.state.lat}

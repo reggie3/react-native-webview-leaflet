@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { WebViewLeaflet } from './WebViewLeaflet';
-import { WebviewLeafletMessage } from './WebViewLeaflet/models';
+import {
+  WebViewLeaflet,
+  WebviewLeafletMessage
+} from 'react-native-webview-leaflet';
 import { Container, Header, Body, Title, View, Content } from 'native-base';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { SafeAreaView, Platform, StyleSheet } from 'react-native';
+import rasterLayers from './appData/appRasterLayers';
+import vectorLayers from './appData/appVectorLayers';
+import mapMarkers from './appData/appMapMarkers';
 
 const App: React.FunctionComponent = () => {
   const [hasLoadingStarted, setHasLoadingStarted] = useState(false);
@@ -52,6 +57,9 @@ const App: React.FunctionComponent = () => {
             onMessageReceived={onMessageReceived}
             doShowDebugMessages={true}
             backgroundColor={'#f6b36f'}
+              rasterLayers={rasterLayers}
+            /*vectorLayers={vectorLayers}
+            mapMarkers={mapMarkers} */
           />
         </View>
       </Container>

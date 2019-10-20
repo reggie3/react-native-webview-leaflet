@@ -1,9 +1,5 @@
 import { mapboxToken } from '../secrets';
-import {
-  MapLayer,
-  MapLayerTypes,
-  MapRasterLayer
-} from '../WebViewLeaflet/models';
+import { MapLayerTypes, MapRasterLayer } from 'react-native-webview-leaflet';
 
 const mapLayers: MapRasterLayer[] = [
   {

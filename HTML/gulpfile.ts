@@ -3,98 +3,114 @@ const run = require('gulp-run');
 const replace = require('gulp-string-replace');
 const clean = require('gulp-clean');
 const { series, parallel } = require('gulp');
-const rollup = require('rollup');
-const rollupTypescript = require('rollup-plugin-typescript');
-const html = require('rollup-plugin-bundle-html');
 
-// 1. Empty the HTML/dist directory
-const cleanDist = (done) => {
-  return gulp
-    .src('./dist', { read: false, allowEmpty: true })
-    .pipe(clean());
-};
+// Empty the HTML/dist directory
+gulp.task('cleanCache', function(done) {
+  return gulp.src('./.cache', { read: false, allowEmpty: true }).pipe(clean());
+});
 
-gulp.task('cleanPreDist', function(done) {
+gulp.task('cleanDist', function(done) {
+  return gulp.src('./dist', { read: false, allowEmpty: true }).pipe(clean());
+});
+
+// Empty the distribution directory
+gulp.task('cleanCompiled', function(done) {
   return gulp
-    .src('./preDist', { read: false, allowEmpty: true })
+    .src('./compiled', { read: false, allowEmpty: true })
     .pipe(clean());
 });
 
-// 1. copy all the files from HTML/src to HTML/dist
+// Empty the preCompile directory
+gulp.task('cleanPrecompile', function(done) {
+  return gulp
+    .src('./precompile', { read: false, allowEmpty: true })
+    .pipe(clean());
+});
+
+// copy all the files from HTML/src to HTML/dist
 gulp.task('copySource', function(done) {
-  return gulp.src('./src/**/*').pipe(gulp.dest('./preDist'));
+  return gulp.src('./src/**/*').pipe(gulp.dest('./precompile'));
 });
 
-gulp.task('deletePreDistMapComponent', function() {
-  return gulp
-    .src('./preDist/MapComponent.tsx', { read: false, allowEmpty: true })
-    .pipe(clean());
-});
-
-// copy the types file
-/* gulp.task('copyTypes', function() {
-  return gulp
-    .src('./WebViewLeaflet/types.d.ts')
-    .pipe(gulp.dest('./preDist'));
-}); */
-
-// 2. remove debugging flags from MapComponent.tsx file and copy that to the dist folder
+// remove debugging flags from MapComponent.tsx file and copy that to the dist folder
 gulp.task('replaceStrings', function() {
   return gulp
     .src(['./src/MapComponent.tsx']) // Any file globs are supported
     .pipe(
-      replace('SHOW_DEBUG_INFORMATION = true', 'SHOW_DEBUG_INFORMATION = false')
+      replace('SHOW_DEBUG_INFORMATION = true', 'SHOW_DEBUG_INFORMATION = true')
     )
     .pipe(
       replace('ENABLE_BROWSER_TESTING = true', 'ENABLE_BROWSER_TESTING = false')
     )
-    .pipe(gulp.dest('./preDist'));
+    .pipe(gulp.dest('./precompile'));
 });
 
-gulp.task('inlineAssets', () => {
-  return rollup.rollup({});
-});
-// use parcel to build, package, and copy to assets directory
-gulp.task('buildForDist', async (done) => {
-  /* return run(
-    'parcel build ./preDist/index.html --out-dir ./dist --public-url .'
-  ).exec(); */
-
-  return rollup.rollup({
-    input: './preDist/index.html',
-    plugins: [
-      html({
-        template: './preDist/index.html',
-        filename: 'index.html'
-      })
-    ]
-  });
-  /* .then((bundle) => {
-      return bundle.write({
-        file: './dist/index.html',
-        format: 'umd',
-        name: 'library',
-        sourcemap: true
-      });
-    }); */
+// compile files to Typescript
+gulp.task('compileTSC', (done) => {
+  return run('yarn tsc').exec();
 });
 
-// copy to webviewLeaflet's assets directory
+// replace the import for index.tsx with index.js
+gulp.task('replaceHtmlTsxImport', function() {
+  return gulp
+    .src(['./src/index.html']) // Any file globs are supported
+    .pipe(replace('index.tsx', 'index.js'))
+    .pipe(gulp.dest('./compiled'));
+});
 
-gulp.task('copyToWebViewLeaflet', async (done) => {
+// copy the css and other asset files to the compile directory
+gulp.task('copyNonTSFilesToCompile', (done) => {
+  return gulp.src(['./src/**/*.css']).pipe(gulp.dest('./compiled'));
+});
+
+// build the bundle and copy it to webviewLeaflet's assets directory
+gulp.task('buildToWebViewLeaflet', async (done) => {
   return run(
-    'parcel build ./preist/index.html --out-dir ./WebViewLeaflet/assets --public-url .'
+    'parcel build ./compiled/index.html --out-dir ../WebViewLeaflet/assets --public-url .'
   ).exec();
+});
+
+gulp.task('buildForLocal', async (done) => {
+  return run(
+    'parcel build ./compiled/index.html --out-dir ./dist --public-url .'
+  ).exec();
+});
+
+// create a build directly from the source for use in the browser
+gulp.task('sourceBuild', async (done) => {
+  return run(
+    'parcel build ./src/index.html --out-dir ./dist --public-url .'
+  ).exec();
+});
+
+gulp.task('clean', (done) => {
+  const tasks = gulp.parallel(['cleanCache', 'cleanCompiled', 'cleanDist']);
+  tasks();
+  done();
 });
 
 gulp.task('dist', (done) => {
   const tasks = gulp.series([
-    cleanDist,
-    'cleanPreDist',
+    'clean',
     'copySource',
-    'deletePreDistMapComponent',
     'replaceStrings',
-    'buildForDist'
+    'compileTSC',
+    'replaceHtmlTsxImport',
+    'copyNonTSFilesToCompile',
+    'buildToWebViewLeaflet'
+  ]);
+  tasks();
+  done();
+});
+
+gulp.task('browserDist', (done) => {
+  const tasks = gulp.series([
+    'clean',
+    'copySource',
+    'compileTSC',
+    'replaceHtmlTsxImport',
+    'copyNonTSFilesToCompile',
+    'buildForLocal'
   ]);
   tasks();
   done();

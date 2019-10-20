@@ -5,8 +5,9 @@ const delay = Math.floor(Math.random()) * 0.5;
 const interationCount = 'infinite';
 import * as svgIcons from './svgIcons';
 import { LatLng } from 'leaflet';
+import { MapMarker } from 'react-native-webview-leaflet';
 
-const locations = [
+const mapMarkers: MapMarker[] = [
   {
     id: 2,
     coords: new LatLng(37.06452161, -75.67364786),
@@ -37,7 +38,7 @@ const locations = [
   },
   {
     id: 100,
-    coords:  new LatLng(37.23310632, -76.23518332),
+    coords: new LatLng(37.23310632, -76.23518332),
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
@@ -60,7 +61,7 @@ const locations = [
   },*/
   {
     id: 1000,
-    coords:  new LatLng(36.60061515, -76.48888338),
+    coords: new LatLng(36.60061515, -76.48888338),
     icon: svgIcons.greenCircle,
     animation: {
       name: animations[Math.floor(Math.random() * animations.length)],
@@ -260,4 +261,4 @@ const locations = [
 		}
 	} */
 ];
-export default locations;
+export default mapMarkers;

@@ -6,7 +6,7 @@ import {
   MapVectorLayerPolygon,
   MapVectorLayerPolyline,
   MapVectorLayerRectangle
-} from '../WebViewLeaflet/types';
+} from 'react-native-webview-leaflet';
 
 const CENTER_LAT: number = 51.505;
 const CENTER_LNG: number = -0.09;

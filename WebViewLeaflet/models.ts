@@ -33,7 +33,7 @@ export interface MapMarkerAnimation {
 }
 
 export interface MapMarker {
-  animation: MapMarkerAnimation;
+  animation?: MapMarkerAnimation;
   coords: LatLng;
   divIcon?: L.DivIcon;
   icon: any;
@@ -104,7 +104,12 @@ export enum MapLayerTypes {
   WMS_TILE_LAYER = 'WMSTileLayer'
 }
 
-export interface StartupMessage {}
+export interface MapStartupMessage {
+  rasterLayers?: MapRasterLayer[];
+  vectorLayers?: MapVectorLayer[];
+  mapMarkers?: MapMarker[];
+  mapCenterCoords?: LatLng;
+}
 
 export interface WebviewLeafletMessage {
   event?: any;
