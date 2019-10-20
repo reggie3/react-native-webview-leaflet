@@ -1,27 +1,31 @@
-import React, {
-  useEffect,
-  useState,
-  Dispatch,
-  ReactElement,
-  useRef
-} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-  ScrollView
-} from 'react-native';
+import * as React from 'react';
+import { NativeSyntheticEvent } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AssetUtils from 'expo-asset-utils';
 import { Asset } from 'expo-asset';
-import { WebviewLeafletMessage, StartupMessage } from './models';
+import WebViewLeafletView from './WebViewLeaflet.view';
+import {
+  MapVectorLayer,
+  MapRasterLayer,
+  MapMarker,
+  WebviewLeafletMessage,
+  StartupMessage
+} from './models';
+import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
+import { ActivityOverlay } from './ActivityOverlay';
 const INDEX_FILE_PATH = require(`./assets/index.html`);
-const SHOW_RED_DEBUG = true;
 
 export interface Props {
-  loadingIndicator?: () => ReactElement;
+  backgroundColor?: string;
+  doShowDebugMessages?: boolean;
+  loadingIndicator?: () => React.ReactElement;
+  onError?: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => void;
+  onLoadEnd?: () => void;
+  onLoadStart?: () => void;
   onMessageReceived: (message: WebviewLeafletMessage) => void;
+  vectorLayers?: MapVectorLayer[];
+  rasterLayers?: MapRasterLayer[];
+  mapMarkers?: MapMarker[];
 }
 
 interface State {
@@ -30,34 +34,21 @@ interface State {
   isLoading: boolean;
 }
 
-const renderDebugWindow = (debugMessages: string[]): ReactElement => {
-  if (SHOW_RED_DEBUG) {
-    return (
-      <View style={{ height: 100, backgroundColor: 'aliceblue', margin: 5 }}>
-        <ScrollView>
-          {debugMessages.map((msg, idx) => {
-            if (typeof msg === 'object') {
-              return (
-                <Text style={{ fontSize: 10 }} key={idx}>{`- ${JSON.stringify(
-                  msg
-                )}`}</Text>
-              );
-            }
-            return <Text style={{ fontSize: 10 }} key={idx}>{`- ${msg}`}</Text>;
-          })}
-        </ScrollView>
-      </View>
-    );
-  }
-  return null;
-};
-
 class WebViewLeaflet extends React.Component<Props, State> {
   private webViewRef: any;
+  static defaultProps = {
+    backgroundColor: '#FAEBD7',
+    doShowDebugMessages: false,
+    loadingIndicator: <ActivityOverlay />,
+    onError: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => {},
+    onLoadEnd: () => {},
+    onLoadStart: () => {}
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      debugMessages: ['test'],
+      debugMessages: [],
       indexFile: null,
       isLoading: null
     };
@@ -87,8 +78,6 @@ class WebViewLeaflet extends React.Component<Props, State> {
     }
   };
 
-  // useEffect(() => {}, [isLoading]);
-
   // Handle messages received from webview contents
   private handleMessage = (data: string) => {
     const { onMessageReceived } = this.props;
@@ -99,21 +88,6 @@ class WebViewLeaflet extends React.Component<Props, State> {
       this.sendStartupMessage();
     }
     onMessageReceived(message);
-  };
-
-  // Render the loading indicator that the user passed, or use the default
-  private renderLoadingIndicator = () => {
-    const { loadingIndicator } = this.props;
-
-    return loadingIndicator ? (
-      loadingIndicator()
-    ) : (
-      <View style={styles.activityOverlayStyle}>
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator size="large" animating={this.state.isLoading} />
-        </View>
-      </View>
-    );
   };
 
   // Send message to webvie
@@ -153,77 +127,44 @@ class WebViewLeaflet extends React.Component<Props, State> {
     });
   };
 
+  private onError = (syntheticEvent: NativeSyntheticEvent<WebViewError>) => {
+    this.props.onError(syntheticEvent);
+  };
+  private onLoadEnd = () => {
+    this.setState({ isLoading: false });
+    this.props.onLoadEnd();
+  };
+  private onLoadStart = () => {
+    this.setState({ isLoading: true });
+    this.props.onLoadStart();
+  };
+
   // Output rendered item to screen
   render() {
     const { debugMessages, indexFile } = this.state;
+    const {
+      backgroundColor,
+      doShowDebugMessages,
+      loadingIndicator
+    } = this.props;
 
-    if (indexFile && indexFile.uri) {
-      return (
-        <View
-          style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'cyan' }}
-        >
-          <Text>Webview</Text>
-          <WebView
-            ref={(component) => {
-              this.webViewRef = component;
-            }}
-            javaScriptEnabled={true}
-            onLoadEnd={() => {
-              this.setState({ isLoading: false });
-            }}
-            onLoadStart={() => {
-              this.setState({ isLoading: true });
-            }}
-            onMessage={(event) => {
-              if (event && event.nativeEvent && event.nativeEvent.data) {
-                this.handleMessage(event.nativeEvent.data);
-              }
-            }}
-            originWhitelist={['*']}
-            renderLoading={this.renderLoadingIndicator}
-            source={{ uri: indexFile.uri }}
-          />
-          {renderDebugWindow(debugMessages)}
-        </View>
-      );
-    } else {
-      return (
-        <>
-          <View
-            style={{
-              ...StyleSheet.absoluteFillObject,
-              backgroundColor: 'pink'
-            }}
-          />
-          {renderDebugWindow(debugMessages)}
-        </>
-      );
-    }
+    return (
+      <WebViewLeafletView
+        backgroundColor={backgroundColor}
+        debugMessages={debugMessages}
+        doShowDebugMessages={doShowDebugMessages}
+        handleMessage={this.handleMessage}
+        indexFile={indexFile}
+        loadingIndicator={loadingIndicator}
+        onError={this.onError}
+        onLoadEnd={this.onLoadEnd}
+        onLoadStart={this.onLoadStart}
+        setWebViewRef={(ref: WebView) => {
+          this.webViewRef = ref;
+        }}
+      />
+    );
   }
 }
 
 export default WebViewLeaflet;
-
-const styles = StyleSheet.create({
-  activityOverlayStyle: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, .5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
-    borderRadius: 5
-  },
-  activityIndicatorContainer: {
-    backgroundColor: 'lightgray',
-    padding: 10,
-    borderRadius: 50,
-    alignSelf: 'center',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowRadius: 5,
-    shadowOpacity: 1.0
-  }
-});

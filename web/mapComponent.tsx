@@ -48,7 +48,7 @@ interface State{
   debugMessages:string[],
   locations: any[],
   markers: any[],
-  geometryLayers: any[],
+  vectorLayers: any[],
   showAttributionControl: boolean,
   mapLayers: any[],
   combinedLocations: any[], // array to contain the locations that will be turned into markers and ownPostionMarker
@@ -75,7 +75,7 @@ class mapComponent extends Component<Props,State> {
       debugMessages: [],
       locations: [],
       markers: [],
-      geometryLayers: [],
+      vectorLayers: [],
       showAttributionControl: false,
       mapLayers: [],
       combinedLocations: [], // array to contain the locations that will be turned into markers and ownPostionMarker
@@ -179,8 +179,8 @@ class mapComponent extends Component<Props,State> {
       });
     }
 
-    if (prevState.geometryLayers) {
-      console.warn(this.state.geometryLayers);
+    if (prevState.vectorLayers) {
+      console.warn(this.state.vectorLayers);
     }
 
     // update the combined locations if the ownPositionMarker object has changed
@@ -473,11 +473,11 @@ class mapComponent extends Component<Props,State> {
     }
   };
 
-  renderGeometryLayers = () => {
+  renderVectorLayers = () => {
     if (this.state.loaded) {
       return (
         <LayerGroup>
-          {this.state.geometryLayers.map(layer => {
+          {this.state.vectorLayers.map(layer => {
             return (
               <Polygon
                 key={layer.id}
@@ -563,7 +563,7 @@ class mapComponent extends Component<Props,State> {
               )}
               <LayersControl position="topleft">
                 <LayersControl.Overlay name="Markers" checked="true">
-                  {this.renderGeometryLayers()}
+                  {this.renderVectorLayers()}
                   {this.renderMarkers()}
                 </LayersControl.Overlay>
               </LayersControl>

@@ -1,20 +1,4 @@
-import {
-  LatLngExpression,
-  Bounds,
-  LatLngBoundsExpression,
-  PointExpression,
-  LatLng
-} from 'leaflet';
-/* export interface Window {
-  ReactNativeWebView?: any;
-}
-
-export let window: Window;
-
-if (window.ReactNativeWebView !== undefined) {
-  console.log(window.ReactNativeWebView);
-}
- */
+import { LatLng, LatLngBounds } from 'leaflet';
 
 export enum MapComponentMessages {
   MAP_COMPONENT_MOUNTED = 'MAP_COMPONENT_MOUNTED',
@@ -50,7 +34,7 @@ export interface MapMarkerAnimation {
 
 export interface MapMarker {
   animation: MapMarkerAnimation;
-  coords: LatLngExpression;
+  coords: LatLng;
   divIcon?: L.DivIcon;
   icon: any;
   iconAnchor?: L.PointExpression;
@@ -65,21 +49,45 @@ export interface MapLayer {
   isChecked?: boolean; // if the layer is selected in the layer selection control
   name?: string; // the name of the layer, this will be seen in the layer selection control
   opacity?: number;
-
-  type: MapLayerTypes; // the type of layer as shown at https://react-leaflet.js.org/docs/en/components.html#raster-layers
-
+  type?: MapLayerTypes | MapVectorLayerType; // the type of layer as shown at https://react-leaflet.js.org/docs/en/components.html#raster-layers
   zIndex?: number;
 }
 
-export interface MapGeometryLayer extends MapLayer {
+export interface MapVectorLayer extends MapLayer {
+  attribution?: string;
   color?: string;
-  coords?: LatLng[];
+}
+
+export interface MapVectorLayerCircle extends MapVectorLayer {
+  center: LatLng;
+  radius: number;
+}
+export interface MapVectorLayerCircleMarker extends MapVectorLayer {
+  center: LatLng;
+  radius: number;
+}
+export interface MapVectorLayerPolyline extends MapVectorLayer {
+  positions: LatLng[] | LatLng[][];
+}
+export interface MapVectorLayerPolygon extends MapVectorLayer {
+  positions: LatLng[] | LatLng[][];
+}
+export interface MapVectorLayerRectangle extends MapVectorLayer {
+  bounds: LatLngBounds;
+}
+
+export enum MapVectorLayerType {
+  CIRCLE = 'Circle',
+  CIRCLE_MARKER = 'CircleMarker',
+  POLYLINE = 'Polyline',
+  POLYGON = 'Polygon',
+  RECTANGLE = 'Rectangle'
 }
 
 export interface MapRasterLayer extends MapLayer {
   // attribution string to be shown for this layer
   attribution?: string; //'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  bounds?: LatLngBoundsExpression;
+  bounds?: LatLngBounds;
   layers?: MapLayer[] | string;
   play?: boolean;
   // url of tiles

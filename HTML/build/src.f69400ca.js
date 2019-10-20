@@ -49368,17 +49368,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/* export interface Window {
-  ReactNativeWebView?: any;
-}
-
-export let window: Window;
-
-if (window.ReactNativeWebView !== undefined) {
-  console.log(window.ReactNativeWebView);
-}
- */
-
 var MapComponentMessages;
 
 (function (MapComponentMessages) {
@@ -49407,6 +49396,16 @@ var MapEvent;
   MapEvent["ON_MAP_MARKER_CLICKED"] = "onMapMarkerClicked";
 })(MapEvent = exports.MapEvent || (exports.MapEvent = {}));
 
+var MapGeometryLayerType;
+
+(function (MapGeometryLayerType) {
+  MapGeometryLayerType["CIRCLE"] = "Circle";
+  MapGeometryLayerType["CIRCLE_MARKER"] = "CircleMarker";
+  MapGeometryLayerType["POLYLINE"] = "Polyline";
+  MapGeometryLayerType["POLYGON"] = "Polygon";
+  MapGeometryLayerType["RECTANGLE"] = "Rectangle";
+})(MapGeometryLayerType = exports.MapGeometryLayerType || (exports.MapGeometryLayerType = {}));
+
 var MapLayerTypes;
 
 (function (MapLayerTypes) {
@@ -49416,7 +49415,417 @@ var MapLayerTypes;
   MapLayerTypes["VIDEO_LAYER"] = "VideoOverlay";
   MapLayerTypes["WMS_TILE_LAYER"] = "WMSTileLayer";
 })(MapLayerTypes = exports.MapLayerTypes || (exports.MapLayerTypes = {}));
-},{}],"RasterLayer.tsx":[function(require,module,exports) {
+},{}],"mocks/mockGeometryLayers.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var models_1 = require("../../../WebViewLeaflet/models");
+
+var leaflet_1 = require("leaflet");
+
+var CENTER_LAT = 51.505;
+var CENTER_LNG = -0.09;
+var circle = {
+  type: models_1.MapGeometryLayerType.CIRCLE,
+  color: '#123123',
+  id: 1,
+  center: new leaflet_1.LatLng(34.225727, -77.94471),
+  radius: 2000
+};
+var circleMarker = {
+  type: models_1.MapGeometryLayerType.CIRCLE_MARKER,
+  color: 'red',
+  id: 2,
+  center: new leaflet_1.LatLng(38.437424, -78.867912),
+  radius: 15
+};
+var polygon = {
+  type: models_1.MapGeometryLayerType.POLYGON,
+  color: 'blue',
+  id: 3,
+  positions: [new leaflet_1.LatLng(38.80118939192329, -74.69604492187501), new leaflet_1.LatLng(38.19502155795575, -74.65209960937501), new leaflet_1.LatLng(39.07890809706475, -71.46606445312501)]
+};
+var multiPolygon = {
+  type: models_1.MapGeometryLayerType.POLYGON,
+  color: 'violet',
+  id: 4,
+  positions: [[new leaflet_1.LatLng(37.13842453422676, -74.28955078125001), new leaflet_1.LatLng(36.4433803110554, -74.26208496093751), new leaflet_1.LatLng(36.43896124085948, -73.00964355468751), new leaflet_1.LatLng(36.43896124085948, -73.00964355468751)], [new leaflet_1.LatLng(37.505368263398104, -72.38891601562501), new leaflet_1.LatLng(37.309014074275915, -71.96594238281251), new leaflet_1.LatLng(36.69044623523481, -71.87805175781251), new leaflet_1.LatLng(36.58024660149866, -72.75146484375001), new leaflet_1.LatLng(37.36579146999664, -72.88330078125001)]]
+};
+var polyline = {
+  type: models_1.MapGeometryLayerType.POLYLINE,
+  color: 'orange',
+  id: 5,
+  positions: [new leaflet_1.LatLng(35.411438052435486, -78.67858886718751), new leaflet_1.LatLng(35.9602229692967, -79.18945312500001), new leaflet_1.LatLng(35.97356075349624, -78.30505371093751)]
+};
+var multiPolyline = {
+  type: models_1.MapGeometryLayerType.POLYLINE,
+  color: 'purple',
+  id: '5a',
+  positions: [[new leaflet_1.LatLng(36.36822190085111, -79.26086425781251), new leaflet_1.LatLng(36.659606226479696, -79.28833007812501), new leaflet_1.LatLng(36.721273880045004, -79.81018066406251)], [new leaflet_1.LatLng(35.43381992014202, -79.79370117187501), new leaflet_1.LatLng(35.44277092585766, -81.23840332031251), new leaflet_1.LatLng(35.007502842952896, -80.837402343750017)]]
+};
+var rectangle = {
+  type: models_1.MapGeometryLayerType.RECTANGLE,
+  color: 'yellow',
+  id: 6,
+  bounds: new leaflet_1.LatLngBounds(new leaflet_1.LatLng(51.49, -0.08), new leaflet_1.LatLng(51.5, -0.06))
+};
+var mapGeometryLayers = [circle, circleMarker, polygon, multiPolygon, polyline, multiPolyline, rectangle];
+exports.default = mapGeometryLayers;
+},{"../../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts","leaflet":"../node_modules/leaflet/dist/leaflet-src.js"}],"../../secrets.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.mapboxToken = 'pk.eyJ1Ijoid2hlcmVzbXl3YXZlcyIsImEiOiJjanJ6cGZtd24xYmU0M3lxcmVhMDR2dWlqIn0.QQSWbd-riqn1U5ppmyQjRw';
+},{}],"mocks/mockMapLayers.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var secrets_1 = require("../../../secrets");
+
+var models_1 = require("../../../WebViewLeaflet/models");
+
+var mapLayers = [{
+  name: 'OpenStreetMap',
+  isChecked: true,
+  type: models_1.MapLayerTypes.TILE_LAYER,
+  isBaseLayer: true,
+  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'streets',
+  type: models_1.MapLayerTypes.TILE_LAYER,
+  isBaseLayer: true,
+  //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  url: "https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=" + secrets_1.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'light',
+  type: models_1.MapLayerTypes.TILE_LAYER,
+  isBaseLayer: true,
+  //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  url: "https://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=" + secrets_1.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+}, {
+  name: 'dark',
+  type: models_1.MapLayerTypes.TILE_LAYER,
+  isBaseLayer: true,
+  url: "https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=" + secrets_1.mapboxToken,
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
+},
+/* {
+   name: 'image',
+   type: 'ImageOverlay',
+   isBaseLayer: true,
+   url: 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
+   bounds: [[40.712216, -74.22655], [40.773941, -74.12544]]
+ }, */
+{
+  name: 'WMS Tile Layer',
+  type: models_1.MapLayerTypes.TILE_LAYER,
+  url: 'https://demo.boundlessgeo.com/geoserver/ows',
+  layers: 'nasa:bluemarble'
+}
+/* {
+  type: 'VideoOverlay',
+  name: 'video',
+  isBaseLayer: true,
+  url: 'https://www.mapbox.com/bites/00188/patricia_nasa.webm',
+  bounds: [[32, -130], [13, -100]]
+} */
+];
+exports.default = mapLayers;
+},{"../../../secrets":"../../secrets.ts","../../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts"}],"svgIcons.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.greenCircle = "<svg xmlns=\"http://www.w3.org/2000/svg\">\n    <circle id=\"greencircle\" cx=\"30\" cy=\"30\" r=\"30\" fill=\"green\" />\n</svg>";
+},{}],"mocks/mockMapMarkers.tsx":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  }
+  result["default"] = mod;
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
+var animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
+var duration = Math.floor(Math.random() * 3) + 1;
+var delay = Math.floor(Math.random()) * 0.5;
+var interationCount = 'infinite';
+
+var svgIcons = __importStar(require("../svgIcons"));
+
+var leaflet_1 = require("leaflet");
+
+var locations = [{
+  id: 2,
+  coords: new leaflet_1.LatLng(37.06452161, -75.67364786),
+  icon: '😴',
+  size: [64, 64]
+  /* ,
+  animation: {
+  name: animations[Math.floor(Math.random() * animations.length)],
+  duration,
+  delay,
+  interationCount
+  } */
+
+}, {
+  id: 1,
+  coords: new leaflet_1.LatLng(36.46410354, -75.6432701),
+  icon: 'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
+  size: [32, 32],
+  animation: {
+    name: 'bounce',
+    duration: duration,
+    delay: delay,
+    interationCount: interationCount
+  }
+}, {
+  id: 100,
+  coords: new leaflet_1.LatLng(37.23310632, -76.23518332),
+  icon: emoji[Math.floor(Math.random() * emoji.length)],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration: duration,
+    delay: delay,
+    interationCount: interationCount
+  }
+},
+/* {
+  id: 1,
+  coords: [36.46410354, -75.6432701],
+  icon: '😴',
+  size: [32, 32],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration,
+    delay,
+    interationCount
+  }
+},*/
+{
+  id: 1000,
+  coords: new leaflet_1.LatLng(36.60061515, -76.48888338),
+  icon: svgIcons.greenCircle,
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration: duration,
+    delay: delay,
+    interationCount: interationCount
+  }
+}
+/* {
+  id: Math.floor(Math.random() * 1000),
+  coords: [37.0580835, -75.82318747],
+  icon: 'Fish',
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration,
+    delay,
+    interationCount
+  }
+},
+{
+  id: Math.floor(Math.random() * 1000),
+  coords: [37.23310632, -76.23518332],
+  icon: emoji[Math.floor(Math.random() * emoji.length)],
+  size: [4, 4],
+  animation: {
+    name: animations[Math.floor(Math.random() * animations.length)],
+    duration,
+    delay,
+    interationCount
+  }
+} */
+
+/*
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.94994253, -76.64318409],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.19810239, -76.28058546],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.02416165, -76.56052521],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.91541467, -75.49279245],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.70503123, -76.32755185],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.31605891, -76.45141618],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.59436803, -76.89486842],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.35740877, -75.77910112],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.31509182, -76.76693784],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.91815909, -76.06707072],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.611917, -75.76758822],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.79520769, -76.3959497],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.42854666, -75.95883052],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [36.78673099, -76.90459724],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  },
+  {
+      id: Math.floor(Math.random() * 1000),
+      coords: [37.20966767, -75.58799685],
+      icon: emoji[Math.floor(Math.random() * emoji.length)],
+      animation: {
+          name: animations[Math.floor(Math.random() * animations.length)],
+          duration: Math.floor(Math.random() * 3) + 1,
+          delay: Math.floor(Math.random()) * 0.5,
+          interationCount
+      }
+  } */
+];
+exports.default = locations;
+},{"../svgIcons":"svgIcons.ts","leaflet":"../node_modules/leaflet/dist/leaflet-src.js"}],"RasterLayer.tsx":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -49536,11 +49945,7 @@ var react_leaflet_1 = require("react-leaflet");
 var RasterLayer_1 = __importDefault(require("./RasterLayer"));
 
 var ControlsLayer = function ControlsLayer(props) {
-  return props.mapLayers.map(function (layer, index) {
-    console.log({
-      layer: layer
-    });
-
+  return React.createElement(React.Fragment, null, props.mapLayers.map(function (layer, index) {
     if (layer.isBaseLayer) {
       return React.createElement(react_leaflet_1.LayersControl.BaseLayer, __assign({
         name: layer.name,
@@ -49558,7 +49963,7 @@ var ControlsLayer = function ControlsLayer(props) {
         layer: layer
       }, props)));
     }
-  });
+  }));
 };
 
 exports.default = ControlsLayer;
@@ -49644,7 +50049,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"GeometryLayer.tsx":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"GeometryLayers.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -49657,8 +50062,6 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
-var _this = this;
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -49667,24 +50070,77 @@ var React = __importStar(require("react"));
 
 var react_leaflet_1 = require("react-leaflet");
 
+var models_1 = require("../../WebViewLeaflet/models");
+
 var GeometryLayers = function GeometryLayers(_a) {
   var geometryLayers = _a.geometryLayers;
+  return React.createElement(react_leaflet_1.LayerGroup, null, geometryLayers.map(function (mapGeometryLayer) {
+    switch (mapGeometryLayer.type) {
+      case models_1.MapGeometryLayerType.CIRCLE:
+        {
+          var layer = mapGeometryLayer;
+          return React.createElement(react_leaflet_1.Circle, {
+            key: layer.id,
+            color: layer.color || 'white',
+            center: layer.center,
+            radius: layer.radius,
+            attribution: layer.attribution || null
+          });
+        }
 
-  if (_this.state.loaded) {
-    return React.createElement(react_leaflet_1.LayerGroup, null, _this.state.geometryLayers.map(function (layer) {
-      return React.createElement(react_leaflet_1.Polygon, {
-        key: layer.id,
-        color: layer.color || 'white',
-        positions: layer.coords
-      });
-    }));
-  } else {
-    return null;
-  }
+      case models_1.MapGeometryLayerType.CIRCLE_MARKER:
+        {
+          var layer = mapGeometryLayer;
+          return React.createElement(react_leaflet_1.CircleMarker, {
+            key: layer.id,
+            color: layer.color || 'white',
+            center: layer.center,
+            radius: layer.radius,
+            attribution: layer.attribution || null
+          });
+        }
+
+      case models_1.MapGeometryLayerType.POLYGON:
+        {
+          var layer = mapGeometryLayer;
+          return React.createElement(react_leaflet_1.Polygon, {
+            key: layer.id,
+            color: layer.color || 'white',
+            positions: layer.positions,
+            attribution: layer.attribution || null
+          });
+        }
+
+      case models_1.MapGeometryLayerType.POLYLINE:
+        {
+          var layer = mapGeometryLayer;
+          return React.createElement(react_leaflet_1.Polyline, {
+            key: layer.id,
+            color: layer.color || 'white',
+            positions: layer.positions,
+            attribution: layer.attribution || null
+          });
+        }
+
+      case models_1.MapGeometryLayerType.RECTANGLE:
+        {
+          var layer = mapGeometryLayer;
+          return React.createElement(react_leaflet_1.Rectangle, {
+            key: layer.id,
+            color: layer.color || 'white',
+            bounds: layer.bounds,
+            attribution: layer.attribution || null
+          });
+        }
+
+      default:
+        console.warn('Unknown geometry layer type', mapGeometryLayer.type);
+    }
+  }));
 };
 
 exports.default = GeometryLayers;
-},{"react":"../node_modules/react/index.js","react-leaflet":"../node_modules/react-leaflet/es/index.js"}],"../node_modules/process/browser.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-leaflet":"../node_modules/react-leaflet/es/index.js","../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts"}],"../node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -52747,7 +53203,167 @@ exports.default = MapMarkers;
         module.hot.dispose(reloadCSS);
         module.hot.accept(reloadCSS);
       
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"MapComponent.view.tsx":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  }
+  result["default"] = mod;
+  return result;
+};
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var React = __importStar(require("react"));
+
+var react_leaflet_1 = require("react-leaflet");
+
+var models_1 = require("../../WebViewLeaflet/models");
+
+var ControlsLayer_1 = __importDefault(require("./ControlsLayer"));
+
+var RasterLayer_1 = __importDefault(require("./RasterLayer"));
+
+require("leaflet/dist/leaflet.css");
+
+require("leaflet/dist/images/marker-icon-2x.png");
+
+require("leaflet/dist/images/marker-shadow.png");
+
+require("./markers.css");
+
+var GeometryLayers_1 = __importDefault(require("./GeometryLayers"));
+
+var Markers_1 = __importDefault(require("./Markers"));
+
+require('react-leaflet-markercluster/dist/styles.min.css');
+
+var SHOW_DEBUG_INFORMATION = true;
+var ENABLE_BROWSER_TESTING = true;
+
+var MapComponentView = function MapComponentView(_a) {
+  var geometryLayers = _a.geometryLayers,
+      boundsOptions = _a.boundsOptions,
+      bounds = _a.bounds,
+      panToLocation = _a.panToLocation,
+      showZoomControl = _a.showZoomControl,
+      showAttributionControl = _a.showAttributionControl,
+      centerPosition = _a.centerPosition,
+      debugMessages = _a.debugMessages,
+      isLoaded = _a.isLoaded,
+      lat = _a.lat,
+      lng = _a.lng,
+      mapLayers = _a.mapLayers,
+      mapMarkers = _a.mapMarkers,
+      onClick = _a.onClick,
+      onWhenReady = _a.onWhenReady,
+      onMapEvent = _a.onMapEvent,
+      onMapRef = _a.onMapRef,
+      ownPositionMarker = _a.ownPositionMarker,
+      useMarkerClustering = _a.useMarkerClustering,
+      zoom = _a.zoom;
+  return React.createElement(React.Fragment, null, mapLayers.length < 1 ? React.createElement("div", null, "waiting on map layers") : React.createElement(react_leaflet_1.Map, {
+    style: {
+      width: '100%',
+      backgroundColor: 'lightblue'
+    },
+    ref: function ref(component) {
+      onMapRef(component);
+    },
+    center: centerPosition,
+    attributionControl: showAttributionControl,
+    zoomControl: showZoomControl,
+    panToLocation: panToLocation,
+    maxZoom: 18,
+    zoom: zoom,
+    bounds: bounds,
+    boundsOptions: boundsOptions,
+    whenReady: onWhenReady,
+    onClick: onClick,
+    onZoomLevelsChange: function onZoomLevelsChange() {
+      onMapEvent(models_1.MapEvent.ON_ZOOM_LEVELS_CHANGE);
+    },
+    onResize: function onResize() {
+      onMapEvent(models_1.MapEvent.ON_RESIZE);
+    },
+    onZoomStart: function onZoomStart() {
+      onMapEvent(models_1.MapEvent.ON_ZOOM_START);
+    },
+    onMoveStart: function onMoveStart() {
+      onMapEvent(models_1.MapEvent.ON_MOVE_START);
+    },
+    onZoom: function onZoom() {
+      onMapEvent(models_1.MapEvent.ON_ZOOM);
+    },
+    onMove: function onMove() {
+      onMapEvent(models_1.MapEvent.ON_MOVE);
+    },
+    onZoomEnd: function onZoomEnd() {
+      onMapEvent(models_1.MapEvent.ON_ZOOM_END);
+    },
+    onMoveEnd: function onMoveEnd() {
+      onMapEvent(models_1.MapEvent.ON_MOVE);
+    },
+    onUnload: function onUnload() {
+      onMapEvent(models_1.MapEvent.ON_UNLOAD);
+    },
+    onViewReset: function onViewReset() {
+      onMapEvent(models_1.MapEvent.ON_VIEW_RESET);
+    }
+  }, React.createElement(react_leaflet_1.Polyline, {
+    color: "red",
+    positions: [[51.5, -0.05], [51.5, -0.06], [51.52, -0.06]]
+  }), mapLayers.length === 1 ? React.createElement(RasterLayer_1.default, {
+    layer: mapLayers[0]
+  }) : React.createElement(react_leaflet_1.LayersControl, {
+    position: "topright"
+  }, React.createElement(ControlsLayer_1.default, {
+    mapLayers: mapLayers
+  })), "\\", isLoaded && React.createElement(react_leaflet_1.LayersControl, {
+    position: "topleft"
+  }, React.createElement(react_leaflet_1.LayersControl.Overlay, {
+    name: "Markers",
+    checked: true
+  }, isLoaded && React.createElement(GeometryLayers_1.default, {
+    geometryLayers: geometryLayers
+  }), isLoaded && React.createElement(Markers_1.default, {
+    mapMarkers: mapMarkers,
+    onMapEvent: onMapEvent,
+    useMarkerClustering: true
+  })))), SHOW_DEBUG_INFORMATION ? React.createElement("div", {
+    style: {
+      backgroundColor: 'orange',
+      maxHeight: '200px',
+      overflow: 'auto',
+      padding: 5,
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 15000
+    },
+    id: "messages"
+  }, React.createElement("ul", null, debugMessages.map(function (message, index) {
+    return React.createElement("li", {
+      key: index
+    }, message);
+  }))) : null);
+};
+
+exports.default = MapComponentView;
+},{"react":"../node_modules/react/index.js","react-leaflet":"../node_modules/react-leaflet/es/index.js","../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts","./ControlsLayer":"ControlsLayer.tsx","./RasterLayer":"RasterLayer.tsx","leaflet/dist/leaflet.css":"../node_modules/leaflet/dist/leaflet.css","leaflet/dist/images/marker-icon-2x.png":"../node_modules/leaflet/dist/images/marker-icon-2x.png","leaflet/dist/images/marker-shadow.png":"../node_modules/leaflet/dist/images/marker-shadow.png","./markers.css":"markers.css","./GeometryLayers":"GeometryLayers.tsx","./Markers":"Markers.tsx","react-leaflet-markercluster/dist/styles.min.css":"../node_modules/react-leaflet-markercluster/dist/styles.min.css"}],"../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
@@ -53500,8 +54116,66 @@ function callbackify(original) {
 }
 
 exports.callbackify = callbackify;
-},{"./support/isBuffer":"../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js","inherits":"../node_modules/node-libs-browser/node_modules/inherits/inherits_browser.js","process":"../node_modules/process/browser.js"}],"mapComponent.view.tsx":[function(require,module,exports) {
+},{"./support/isBuffer":"../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js","inherits":"../node_modules/node-libs-browser/node_modules/inherits/inherits_browser.js","process":"../node_modules/process/browser.js"}],"MapComponent.tsx":[function(require,module,exports) {
 "use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+var __spreadArrays = this && this.__spreadArrays || function () {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+};
 
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
@@ -53527,139 +54201,330 @@ var React = __importStar(require("react"));
 
 var react_leaflet_1 = require("react-leaflet");
 
+var leaflet_1 = require("leaflet");
+
 var models_1 = require("../../WebViewLeaflet/models");
 
-var ControlsLayer_1 = __importDefault(require("./ControlsLayer"));
+var mockGeometryLayers_1 = __importDefault(require("./mocks/mockGeometryLayers"));
 
-var RasterLayer_1 = __importDefault(require("./RasterLayer"));
+var mockMapLayers_1 = __importDefault(require("./mocks/mockMapLayers"));
 
-require("leaflet/dist/leaflet.css");
+var mockMapMarkers_1 = __importDefault(require("./mocks/mockMapMarkers"));
 
-require("leaflet/dist/images/marker-icon-2x.png");
-
-require("leaflet/dist/images/marker-shadow.png");
-
-require("./markers.css");
-
-var GeometryLayer_1 = __importDefault(require("./GeometryLayer"));
-
-var Markers_1 = __importDefault(require("./Markers"));
+var MapComponent_view_1 = __importDefault(require("./MapComponent.view"));
 
 require('react-leaflet-markercluster/dist/styles.min.css');
 
 var util = require('util');
 
+var MapComponentMessages;
+
+(function (MapComponentMessages) {
+  MapComponentMessages["MAP_COMPONENT_MOUNTED"] = "MAP_COMPONENT_MOUNTED";
+  MapComponentMessages["DOCUMENT_EVENT_LISTENER_ADDED"] = "DOCUMENT_EVENT_LISTENER_ADDED";
+  MapComponentMessages["WINDOW_EVENT_LISTENER_ADDED"] = "WINDOW_EVENT_LISTENER_ADDED";
+  MapComponentMessages["UNABLE_TO_ADD_EVENT_LISTENER"] = "UNABLE_TO_ADD_EVENT_LISTENER";
+  MapComponentMessages["DOCUMENT_EVENT_LISTENER_REMOVED"] = "DOCUMENT_EVENT_LISTENER_REMOVED";
+  MapComponentMessages["WINDOW_EVENT_LISTENER_REMOVED"] = "WINDOW_EVENT_LISTENER_REMOVED";
+})(MapComponentMessages = exports.MapComponentMessages || (exports.MapComponentMessages = {}));
+
 var SHOW_DEBUG_INFORMATION = true;
 var ENABLE_BROWSER_TESTING = true;
 
-var MapComponentView = function MapComponentView(_a) {
-  var geometryLayers = _a.geometryLayers,
-      boundsOptions = _a.boundsOptions,
-      bounds = _a.bounds,
-      panToLocation = _a.panToLocation,
-      showZoomControl = _a.showZoomControl,
-      showAttributionControl = _a.showAttributionControl,
-      centerPosition = _a.centerPosition,
-      debugMessages = _a.debugMessages,
-      isLoaded = _a.isLoaded,
-      lat = _a.lat,
-      lng = _a.lng,
-      mapLayers = _a.mapLayers,
-      mapMarkers = _a.mapMarkers,
-      onClick = _a.onClick,
-      onWhenReady = _a.onWhenReady,
-      onMapEvent = _a.onMapEvent,
-      onMapRef = _a.onMapRef,
-      ownPositionMarker = _a.ownPositionMarker,
-      useMarkerClustering = _a.useMarkerClustering,
-      zoom = _a.zoom;
-  return React.createElement(React.Fragment, null, mapLayers.length < 1 ? React.createElement("div", null, "waiting on map layers") : React.createElement(react_leaflet_1.Map, {
-    style: {
-      width: '100%',
-      backgroundColor: 'lightblue'
-    },
-    ref: function ref(component) {
-      onMapRef(component);
-    },
-    center: centerPosition,
-    attributionControl: showAttributionControl,
-    zoomControl: showZoomControl,
-    panToLocation: panToLocation,
-    maxZoom: 18,
-    zoom: zoom,
-    bounds: bounds,
-    boundsOptions: boundsOptions,
-    whenReady: onWhenReady,
-    onClick: onClick,
-    onZoomLevelsChange: function onZoomLevelsChange() {
-      onMapEvent(models_1.MapEvent.ON_ZOOM_LEVELS_CHANGE);
-    },
-    onResize: function onResize() {
-      onMapEvent(models_1.MapEvent.ON_RESIZE);
-    },
-    onZoomStart: function onZoomStart() {
-      onMapEvent(models_1.MapEvent.ON_ZOOM_START);
-    },
-    onMoveStart: function onMoveStart() {
-      onMapEvent(models_1.MapEvent.ON_MOVE_START);
-    },
-    onZoom: function onZoom() {
-      onMapEvent(models_1.MapEvent.ON_ZOOM);
-    },
-    onMove: function onMove() {
-      onMapEvent(models_1.MapEvent.ON_MOVE);
-    },
-    onZoomEnd: function onZoomEnd() {
-      onMapEvent(models_1.MapEvent.ON_ZOOM_END);
-    },
-    onMoveEnd: function onMoveEnd() {
-      onMapEvent(models_1.MapEvent.ON_MOVE);
-    },
-    onUnload: function onUnload() {
-      onMapEvent(models_1.MapEvent.ON_UNLOAD);
-    },
-    onViewReset: function onViewReset() {
-      onMapEvent(models_1.MapEvent.ON_VIEW_RESET);
-    }
-  }, mapLayers.length === 1 ? React.createElement(RasterLayer_1.default, {
-    layer: mapLayers[0]
-  }) : React.createElement(react_leaflet_1.LayersControl, {
-    position: "topright"
-  }, React.createElement(ControlsLayer_1.default, {
-    mapLayers: mapLayers
-  })), isLoaded && React.createElement(react_leaflet_1.LayersControl, {
-    position: "topleft"
-  }, React.createElement(react_leaflet_1.LayersControl.Overlay, {
-    name: "Markers",
-    checked: true
-  }, isLoaded && React.createElement(GeometryLayer_1.default, {
-    geometryLayers: geometryLayers
-  }), isLoaded && React.createElement(Markers_1.default, {
-    mapMarkers: mapMarkers,
-    onMapEvent: onMapEvent,
-    useMarkerClustering: true
-  })))), SHOW_DEBUG_INFORMATION ? React.createElement("div", {
-    style: {
-      backgroundColor: 'orange',
-      maxHeight: '200px',
-      overflow: 'auto',
-      padding: 5,
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 15000
-    },
-    id: "messages"
-  }, React.createElement("ul", null, debugMessages.map(function (message, index) {
-    return React.createElement("li", {
-      key: index
-    }, message);
-  }))) : null);
-};
+var MapComponent =
+/** @class */
+function (_super) {
+  __extends(MapComponent, _super);
 
-exports.default = MapComponentView;
-},{"react":"../node_modules/react/index.js","react-leaflet":"../node_modules/react-leaflet/es/index.js","../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts","./ControlsLayer":"ControlsLayer.tsx","./RasterLayer":"RasterLayer.tsx","leaflet/dist/leaflet.css":"../node_modules/leaflet/dist/leaflet.css","leaflet/dist/images/marker-icon-2x.png":"../node_modules/leaflet/dist/images/marker-icon-2x.png","leaflet/dist/images/marker-shadow.png":"../node_modules/leaflet/dist/images/marker-shadow.png","./markers.css":"markers.css","./GeometryLayer":"GeometryLayer.tsx","./Markers":"Markers.tsx","react-leaflet-markercluster/dist/styles.min.css":"../node_modules/react-leaflet-markercluster/dist/styles.min.css","util":"../node_modules/node-libs-browser/node_modules/util/util.js"}],"index.tsx":[function(require,module,exports) {
+  function MapComponent(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.mapRef = null;
+
+    _this.componentDidMount = function () {
+      console.log('componentDidMount');
+
+      _this.setState({
+        debugMessages: __spreadArrays(_this.state.debugMessages, ['componentDidMount'])
+      }, function () {
+        try {
+          _this.sendMessage({
+            msg: 'MAP_COMREADY'
+          });
+        } catch (error) {
+          _this.addDebugMessage(error);
+        }
+
+        if (document) {
+          document.addEventListener('message', _this.handleMessage), false;
+
+          _this.addDebugMessage('set document listeners');
+
+          _this.sendMessage({
+            msg: 'DOCUMENT_EVENT_LISTENER_ADDED'
+          });
+        }
+
+        if (window) {
+          window.addEventListener('message', _this.handleMessage);
+
+          _this.addDebugMessage('setting Window');
+
+          _this.sendMessage({
+            msg: 'WINDOW_EVENT_LISTENER_ADDED'
+          });
+        }
+
+        if (!document && !window) {
+          _this.sendMessage({
+            error: 'UNABLE_TO_ADD_EVENT_LISTENER'
+          });
+
+          return;
+        }
+      });
+
+      if (ENABLE_BROWSER_TESTING) {
+        _this.setupBrowserTesting();
+      }
+    };
+
+    _this.componentDidUpdate = function (prevProps, prevState) {
+      var debugMessages = _this.state.debugMessages;
+
+      if (debugMessages !== prevState.debugMessages) {
+        console.log(debugMessages);
+      }
+    };
+
+    _this.componentWillUnmount = function () {
+      if (document) {
+        document.removeEventListener('message', _this.handleMessage);
+
+        _this.sendMessage({
+          msg: 'DOCUMENT_EVENT_LISTENER_REMOVED'
+        });
+      } else if (window) {
+        window.removeEventListener('message', _this.handleMessage);
+
+        _this.sendMessage({
+          msg: 'WINDOW_EVENT_LISTENER_REMOVED'
+        });
+      }
+    };
+
+    _this.addDebugMessage = function (msg) {
+      if (_typeof(msg) === 'object') {
+        _this.addDebugMessage('STRINGIFIED');
+
+        _this.setState({
+          debugMessages: __spreadArrays(_this.state.debugMessages, [JSON.stringify(msg, null, 4)])
+        });
+      } else {
+        _this.setState({
+          debugMessages: __spreadArrays(_this.state.debugMessages, [msg])
+        });
+      }
+    };
+
+    _this.handleMessage = function (event) {
+      try {
+        _this.setState(__assign(__assign({}, _this.state), event.data));
+      } catch (error) {
+        _this.addDebugMessage({
+          error: JSON.stringify(error)
+        });
+      }
+    };
+
+    _this.sendMessage = function (message) {
+      // @ts-ignore
+      if (window.ReactNativeWebView) {
+        // @ts-ignore
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        console.log('sendMessage  ', JSON.stringify(message));
+      }
+    };
+
+    _this.onMapEvent = function (event, payload) {
+      // build a payload if one is not provided
+      if (_this.mapRef && _this.state.isLoaded) {
+        try {
+          var mapCenterPosition = [_this.mapRef.leafletElement.getCenter().lat, _this.mapRef.leafletElement.getCenter().lng];
+
+          var mapBounds = _this.mapRef.leafletElement.getBounds();
+
+          var mapZoom = _this.mapRef.leafletElement.getZoom();
+
+          if (!payload) {
+            payload = {
+              center: mapCenterPosition,
+              bounds: mapBounds,
+              zoom: mapZoom
+            };
+          }
+
+          _this.printElement("onMapEvent: event = " + event + ", payload = " + JSON.stringify(payload));
+
+          _this.sendMessage({
+            event: event,
+            payload: payload
+          }); // update the map's center in state if it has moved
+          // The map's center in state (centerPosition) is used by react.leaflet
+          // to center the map.  Centering the map component on the actual
+          // map center will allow us to recenter the map by updating the centerPosition
+          // item in state ourself
+
+
+          if (event === models_1.MapEvent.ON_MOVE_END) {
+            _this.setState({
+              centerPosition: new leaflet_1.LatLng(mapCenterPosition[0], mapCenterPosition[1])
+            }, function () {
+              /*  this.printElement(
+              `************** Updated centerPosition = ${this.state.centerPosition}`
+              ); */
+            });
+          }
+
+          if (event === models_1.MapEvent.ON_ZOOM_END) {
+            _this.setState({
+              zoom: mapZoom
+            }, function () {
+              /*  this.printElement(
+              `************** Updated mapZoom = ${this.state.zoom}`
+              ); */
+            });
+          }
+        } catch (error) {
+          console.warn('ERROR onMapEvent', error);
+        }
+      }
+    }; // print passed information in an html element; useful for debugging
+    // since console.log and debug statements won't work in a conventional way
+
+
+    _this.printElement = function (data) {
+      if (SHOW_DEBUG_INFORMATION) {
+        var message = '';
+
+        if (_typeof(data) === 'object') {
+          message = util.inspect(data, {
+            showHidden: false,
+            depth: null
+          });
+        } else if (typeof data === 'string') {
+          message = data;
+        }
+
+        _this.setState({
+          debugMessages: __spreadArrays(_this.state.debugMessages, [message])
+        });
+
+        console.log(message);
+      }
+    };
+
+    _this.setupBrowserTesting = function () {
+      _this.setState({
+        mapMarkers: mockMapMarkers_1.default,
+        ownPositionMarker: {
+          coords: new leaflet_1.LatLng(36.56, -76.17),
+          icon: '🎃',
+          size: [24, 24],
+          animation: {
+            name: 'pulse',
+            duration: '.5',
+            delay: 0,
+            iterationCount: 'infinite'
+          }
+        },
+        geometryLayers: mockGeometryLayers_1.default,
+        mapLayers: mockMapLayers_1.default,
+        useMarkerClustering: true
+      });
+
+      setTimeout(function () {
+        _this.setState({
+          bounds: new leaflet_1.LatLngBounds([36.8859965, -76.4096793], [39.07467659353497, -76.91253011988012]),
+          boundsOptions: {
+            padding: [0, 0]
+          }
+        });
+      }, 5000);
+    };
+
+    _this.onClick = function (event) {
+      _this.onMapEvent(models_1.MapEvent.ON_MAP_CLICKED, {
+        coords: [event.latlng.lat, event.latlng.lng]
+      });
+    };
+
+    _this.onWhenReady = function () {
+      _this.setState({
+        isLoaded: true
+      });
+
+      _this.printElement("******* map loaded *******");
+    };
+
+    _this.onMapRef = function (ref) {
+      if (_this.mapRef === null) {
+        _this.mapRef = ref;
+      }
+    };
+
+    _this.state = {
+      boundsOptions: null,
+      bounds: null,
+      centerPosition: null,
+      debugMessages: ['test'],
+      geometryLayers: [],
+      isLoaded: false,
+      lat: 51.505,
+      lng: -0.09,
+      mapLayers: [],
+      mapMarkers: [],
+      ownPositionMarker: null,
+      panToLocation: null,
+      showZoomControl: false,
+      showAttributionControl: false,
+      useMarkerClustering: true,
+      zoom: 13
+    };
+    console.log('Here');
+    return _this;
+  }
+
+  MapComponent.prototype.render = function () {
+    return React.createElement(MapComponent_view_1.default, {
+      geometryLayers: this.state.geometryLayers,
+      boundsOptions: this.state.boundsOptions,
+      bounds: this.state.bounds,
+      panToLocation: this.state.panToLocation,
+      showZoomControl: this.state.showZoomControl,
+      showAttributionControl: this.state.showAttributionControl,
+      centerPosition: this.state.centerPosition,
+      debugMessages: this.state.debugMessages,
+      isLoaded: this.state.isLoaded,
+      lat: this.state.lat,
+      lng: this.state.lng,
+      mapLayers: this.state.mapLayers,
+      mapMarkers: this.state.mapMarkers,
+      onClick: this.onClick,
+      onWhenReady: this.onWhenReady,
+      onMapEvent: this.onMapEvent,
+      onMapRef: this.onMapRef,
+      ownPositionMarker: this.state.ownPositionMarker,
+      useMarkerClustering: this.state.useMarkerClustering,
+      zoom: this.state.zoom
+    });
+  };
+
+  return MapComponent;
+}(React.Component);
+
+exports.default = react_leaflet_1.withLeaflet(MapComponent);
+},{"react":"../node_modules/react/index.js","react-leaflet":"../node_modules/react-leaflet/es/index.js","leaflet":"../node_modules/leaflet/dist/leaflet-src.js","../../WebViewLeaflet/models":"../../WebViewLeaflet/models.ts","./mocks/mockGeometryLayers":"mocks/mockGeometryLayers.ts","./mocks/mockMapLayers":"mocks/mockMapLayers.ts","./mocks/mockMapMarkers":"mocks/mockMapMarkers.tsx","./MapComponent.view":"MapComponent.view.tsx","react-leaflet-markercluster/dist/styles.min.css":"../node_modules/react-leaflet-markercluster/dist/styles.min.css","util":"../node_modules/node-libs-browser/node_modules/util/util.js"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 /* import * as React from 'react';
 import ReactDOM from 'react-dom';
@@ -53682,10 +54547,10 @@ var react_1 = __importDefault(require("../node_modules/react"));
 
 var react_dom_1 = __importDefault(require("../node_modules/react-dom"));
 
-var mapComponent_view_1 = __importDefault(require("./mapComponent.view"));
+var MapComponent_1 = __importDefault(require("./MapComponent"));
 
-react_dom_1.default.render(react_1.default.createElement(mapComponent_view_1.default, null), document.getElementById('root'));
-},{"../node_modules/react":"../node_modules/react/index.js","../node_modules/react-dom":"../node_modules/react-dom/index.js","./mapComponent.view":"mapComponent.view.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+react_dom_1.default.render(react_1.default.createElement(MapComponent_1.default, null), document.getElementById('root'));
+},{"../node_modules/react":"../node_modules/react/index.js","../node_modules/react-dom":"../node_modules/react-dom/index.js","./MapComponent":"MapComponent.tsx"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -53713,7 +54578,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56336" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63487" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

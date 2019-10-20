@@ -19,3 +19,5 @@ WebViewLeaflet/cache/*
 WebViewLeaflet/build/*
 WebViewLeaflet/.cache/*
 WebViewLeaflet/node_modules
+secrets.js
+secrets.ts

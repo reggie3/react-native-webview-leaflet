@@ -4,5 +4,9 @@
     "@babel/preset-env",
     "@babel/preset-typescript"
   ],
-  "plugins": [["transform-class-properties"]]
+  "plugins": [
+    "transform-class-properties",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-syntax-export-default-from"
+  ]
 }

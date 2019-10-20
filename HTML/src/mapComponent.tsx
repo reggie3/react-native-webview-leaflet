@@ -1,37 +1,26 @@
 import * as React from 'react';
+import { withLeaflet } from 'react-leaflet';
 import {
-  Map,
-  TileLayer,
-  Marker,
-  Popup,
-  LayersControl,
-  LayerGroup,
-  Polygon,
-  withLeaflet
-} from 'react-leaflet';
-import { DivIcon, LatLngExpression, LeafletMouseEvent } from 'leaflet';
+  LatLngExpression,
+  LeafletMouseEvent,
+  LatLng,
+  LatLngBounds
+} from 'leaflet';
 import {
   WebviewLeafletMessage,
   MapMarker,
-  MapMarkerAnimation,
   MapEvent,
-  MapLayerTypes
+  MapVectorLayerCircle,
+  MapVectorLayerCircleMarker,
+  MapVectorLayerPolyline,
+  MapVectorLayerPolygon,
+  MapVectorLayerRectangle,
+  MapRasterLayer
 } from '../../WebViewLeaflet/models';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
-import ControlsLayer from './ControlsLayer';
-import RasterLayer from './RasterLayer';
-import L = require('leaflet');
-import base64Image from './webBase64Image';
-import mockMapLayers from './mockMapLayers';
-import mockMapMarkers from './mockMapMarkers';
-import { MapLayer, MapGeometryLayer } from '../../WebViewLeaflet/models';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/images/marker-icon-2x.png';
-import 'leaflet/dist/images/marker-shadow.png';
-import './markers.css';
-import GeometryLayers from './GeometryLayer';
-import MapMarkers from './Markers';
-import MapComponentView from './mapComponent.view';
+import mockVectorLayers from './mocks/mockVectorLayers';
+import mockMapLayers from './mocks/mockMapLayers';
+import mockMapMarkers from './mocks/mockMapMarkers';
+import MapComponentView from './MapComponent.view';
 
 require('react-leaflet-markercluster/dist/styles.min.css');
 const util = require('util');
@@ -46,18 +35,23 @@ export enum MapComponentMessages {
 }
 
 interface State {
-  geometryLayers: MapGeometryLayer[];
+  vectorLayers: (
+    | MapVectorLayerCircle
+    | MapVectorLayerCircleMarker
+    | MapVectorLayerPolyline
+    | MapVectorLayerPolygon
+    | MapVectorLayerRectangle)[];
   boundsOptions: any;
-  bounds: any;
+  bounds: LatLngBounds;
   panToLocation: any;
   showZoomControl: boolean;
   showAttributionControl: boolean;
-  centerPosition: LatLngExpression;
+  centerPosition: LatLng;
   debugMessages: string[];
   isLoaded: boolean;
   lat: number;
   lng: number;
-  mapLayers?: MapLayer[];
+  mapRasterLayers?: MapRasterLayer[];
   mapMarkers?: MapMarker[];
   ownPositionMarker: MapMarker;
   useMarkerClustering: boolean;
@@ -70,7 +64,7 @@ const ENABLE_BROWSER_TESTING = true;
 
 class MapComponent extends React.Component<Props, State> {
   state: State;
-  private mapRef: any = React.createRef<Map>();
+  private mapRef: any = null;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -78,11 +72,11 @@ class MapComponent extends React.Component<Props, State> {
       bounds: null,
       centerPosition: null,
       debugMessages: ['test'],
-      geometryLayers: [],
+      vectorLayers: [],
       isLoaded: false,
       lat: 51.505,
       lng: -0.09,
-      mapLayers: [],
+      mapRasterLayers: [],
       mapMarkers: [],
       ownPositionMarker: null,
       panToLocation: null,
@@ -189,53 +183,62 @@ class MapComponent extends React.Component<Props, State> {
 
   private onMapEvent = (event: MapEvent, payload?: any) => {
     // build a payload if one is not provided
-    try {
-      const mapProps = this.mapRef.current.props;
-      const mapCenterPosition: LatLngExpression = [
-        this.mapRef.current.leafletElement.getCenter().lat,
-        this.mapRef.current.leafletElement.getCenter().lng
-      ];
+    if (this.mapRef && this.state.isLoaded) {
+      try {
+        const mapCenterPosition: LatLngExpression = [
+          this.mapRef.leafletElement.getCenter().lat,
+          this.mapRef.leafletElement.getCenter().lng
+        ];
 
-      const mapBounds = mapProps.bounds;
-      const mapZoom = this.mapRef.current.leafletElement.getZoom();
+        const mapBounds = this.mapRef.leafletElement.getBounds();
+        const mapZoom = this.mapRef.leafletElement.getZoom();
 
-      if (!payload) {
-        payload = {
-          center: mapCenterPosition,
-          bounds: mapBounds,
-          zoom: mapZoom
-        };
-      }
-      this.printElement(
-        `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
-      );
+        if (!payload) {
+          payload = {
+            center: mapCenterPosition,
+            bounds: mapBounds,
+            zoom: mapZoom
+          };
+        }
+        this.printElement(
+          `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
+        );
 
-      this.sendMessage({
-        event,
-        payload
-      });
+        this.sendMessage({
+          event,
+          payload
+        });
 
-      // update the map's center in state if it has moved
-      // The map's center in state (centerPosition) is used by react.leaflet
-      // to center the map.  Centering the map component on the actual
-      // map center will allow us to recenter the map by updating the centerPosition
-      // item in state ourself
-      if (event === MapEvent.ON_MOVE_END) {
-        this.setState({ centerPosition: mapCenterPosition }, () => {
-          /*  this.printElement(
+        // update the map's center in state if it has moved
+        // The map's center in state (centerPosition) is used by react.leaflet
+        // to center the map.  Centering the map component on the actual
+        // map center will allow us to recenter the map by updating the centerPosition
+        // item in state ourself
+        if (event === MapEvent.ON_MOVE_END) {
+          this.setState(
+            {
+              centerPosition: new LatLng(
+                mapCenterPosition[0],
+                mapCenterPosition[1]
+              )
+            },
+            () => {
+              /*  this.printElement(
           `************** Updated centerPosition = ${this.state.centerPosition}`
         ); */
-        });
-      }
-      if (event === MapEvent.ON_ZOOM_END) {
-        this.setState({ zoom: mapZoom }, () => {
-          /*  this.printElement(
+            }
+          );
+        }
+        if (event === MapEvent.ON_ZOOM_END) {
+          this.setState({ zoom: mapZoom }, () => {
+            /*  this.printElement(
           `************** Updated mapZoom = ${this.state.zoom}`
         ); */
-        });
+          });
+        }
+      } catch (error) {
+        console.warn('ERROR onMapEvent', error);
       }
-    } catch (error) {
-      console.warn('ERROR onMapEvent', error);
     }
   };
 
@@ -260,7 +263,7 @@ class MapComponent extends React.Component<Props, State> {
     this.setState({
       mapMarkers: mockMapMarkers as MapMarker[],
       ownPositionMarker: {
-        coords: this.state.centerPosition,
+        coords: new LatLng(36.56, -76.17),
         icon: '🎃',
         size: [24, 24],
         animation: {
@@ -270,16 +273,17 @@ class MapComponent extends React.Component<Props, State> {
           iterationCount: 'infinite'
         }
       },
-      mapLayers: mockMapLayers,
+      vectorLayers: mockVectorLayers,
+      mapRasterLayers: mockMapLayers,
       useMarkerClustering: true
     });
 
     setTimeout(() => {
       this.setState({
-        bounds: [
+        bounds: new LatLngBounds(
           [36.8859965, -76.4096793],
           [39.07467659353497, -76.91253011988012]
-        ],
+        ),
         boundsOptions: { padding: [0, 0] }
       });
     }, 5000);
@@ -297,13 +301,15 @@ class MapComponent extends React.Component<Props, State> {
   };
 
   onMapRef = (ref: any) => {
-    this.mapRef = ref;
+    if (this.mapRef === null) {
+      this.mapRef = ref;
+    }
   };
 
   render() {
     return (
       <MapComponentView
-        geometryLayers={this.state.geometryLayers}
+        vectorLayers={this.state.vectorLayers}
         boundsOptions={this.state.boundsOptions}
         bounds={this.state.bounds}
         panToLocation={this.state.panToLocation}
@@ -314,7 +320,7 @@ class MapComponent extends React.Component<Props, State> {
         isLoaded={this.state.isLoaded}
         lat={this.state.lat}
         lng={this.state.lng}
-        mapLayers={this.state.mapLayers}
+        mapRasterLayers={this.state.mapRasterLayers}
         mapMarkers={this.state.mapMarkers}
         onClick={this.onClick}
         onWhenReady={this.onWhenReady}
