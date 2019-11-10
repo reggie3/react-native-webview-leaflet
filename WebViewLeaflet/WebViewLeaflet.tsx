@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { NativeSyntheticEvent } from 'react-native';
+import { NativeSyntheticEvent, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AssetUtils from 'expo-asset-utils';
 import { Asset } from 'expo-asset';
@@ -9,13 +9,13 @@ import {
   MapRasterLayer,
   MapMarker,
   WebviewLeafletMessage,
-  StartupMessage,
-  MapStartupMessage
+  MapStartupMessage,
+  WebViewLeafletLatLng
 } from './models';
 import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
 import { ActivityOverlay } from './ActivityOverlay';
-import { LatLng } from 'leaflet';
 const INDEX_FILE_PATH = require(`./assets/index.html`);
+import * as FileSystem from 'expo-file-system';
 
 export interface Props {
   backgroundColor?: string;
@@ -28,12 +28,13 @@ export interface Props {
   vectorLayers?: MapVectorLayer[];
   rasterLayers?: MapRasterLayer[];
   mapMarkers?: MapMarker[];
-  mapCenterCoords?: LatLng;
+  mapCenterCoords?: WebViewLeafletLatLng;
+  zoom?: number;
 }
 
 interface State {
   debugMessages: string[];
-  indexFile: Asset;
+  webviewContent: string;
   isLoading: boolean;
 }
 
@@ -42,7 +43,9 @@ class WebViewLeaflet extends React.Component<Props, State> {
   static defaultProps = {
     backgroundColor: '#FAEBD7',
     doShowDebugMessages: false,
-    loadingIndicator: <ActivityOverlay />,
+    loadingIndicator: () => {
+      return <ActivityOverlay />;
+    },
     onError: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => {},
     onLoadEnd: () => {},
     onLoadStart: () => {}
@@ -52,31 +55,33 @@ class WebViewLeaflet extends React.Component<Props, State> {
     super(props);
     this.state = {
       debugMessages: [],
-      indexFile: null,
+      webviewContent: null,
       isLoading: null
     };
     this.webViewRef = null;
   }
 
   componentDidMount = () => {
-    AssetUtils.resolveAsync(INDEX_FILE_PATH)
-      .then((res: Asset) => {
-        console.log(res);
-        if (res.localUri) {
-          this.setState({ indexFile: res });
-        } else {
-          console.warn('Unable to find index file uri');
-        }
-      })
-      .catch((error) => {
-        console.warn(error);
-        console.warn('Unable to resolve index file');
-      });
+    this.loadHTMLFile();
+  };
+
+  private loadHTMLFile = async () => {
+    try {
+      let asset: Asset = await AssetUtils.resolveAsync(INDEX_FILE_PATH);
+      let fileString: string = await FileSystem.readAsStringAsync(
+        asset.localUri
+      );
+
+      this.setState({ webviewContent: fileString });
+    } catch (error) {
+      console.warn(error);
+      console.warn('Unable to resolve index file');
+    }
   };
 
   componentDidUpdate = (prevProps: Props, prevState: State) => {
-    const { indexFile } = this.state;
-    if (!prevState.indexFile && indexFile) {
+    const { webviewContent } = this.state;
+    if (!prevState.webviewContent && webviewContent) {
       this.updateDebugMessages('file loaded');
     }
   };
@@ -106,7 +111,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
     handleMessage(${JSON.stringify(message)});
     `;
     /* var event = new Event('message'); */
-    this.webViewRef.current.injectJavaScript(
+    this.webViewRef.injectJavaScript(
       `handleMessage(${stringMessage}, '*'); true;`
     );
   };
@@ -118,7 +123,8 @@ class WebViewLeaflet extends React.Component<Props, State> {
       rasterLayers,
       vectorLayers,
       mapMarkers,
-      mapCenterCoords
+      mapCenterCoords,
+      zoom = 7
     } = this.props;
     if (rasterLayers) {
       startupMessage.rasterLayers = rasterLayers;
@@ -133,10 +139,12 @@ class WebViewLeaflet extends React.Component<Props, State> {
       startupMessage.mapCenterCoords = mapCenterCoords;
     }
 
+    startupMessage.zoom = zoom;
+
     this.setState({ isLoading: false });
     this.updateDebugMessages('sending startup message');
 
-    this.webViewRef.current.injectJavaScript(
+    this.webViewRef.injectJavaScript(
       `window.postMessage(${JSON.stringify(startupMessage)}, '*');`
     );
   };
@@ -162,29 +170,33 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
   // Output rendered item to screen
   render() {
-    const { debugMessages, indexFile } = this.state;
+    const { debugMessages, webviewContent } = this.state;
     const {
       backgroundColor,
       doShowDebugMessages,
       loadingIndicator
     } = this.props;
 
-    return (
-      <WebViewLeafletView
-        backgroundColor={backgroundColor}
-        debugMessages={debugMessages}
-        doShowDebugMessages={doShowDebugMessages}
-        handleMessage={this.handleMessage}
-        indexFile={indexFile}
-        loadingIndicator={loadingIndicator}
-        onError={this.onError}
-        onLoadEnd={this.onLoadEnd}
-        onLoadStart={this.onLoadStart}
-        setWebViewRef={(ref: WebView) => {
-          this.webViewRef = ref;
-        }}
-      />
-    );
+    if (webviewContent) {
+      return (
+        <WebViewLeafletView
+          backgroundColor={backgroundColor}
+          debugMessages={debugMessages}
+          doShowDebugMessages={doShowDebugMessages}
+          handleMessage={this.handleMessage}
+          webviewContent={webviewContent}
+          loadingIndicator={loadingIndicator}
+          onError={this.onError}
+          onLoadEnd={this.onLoadEnd}
+          onLoadStart={this.onLoadStart}
+          setWebViewRef={(ref: WebView) => {
+            this.webViewRef = ref;
+          }}
+        />
+      );
+    } else {
+      return null;
+    }
   }
 }
 

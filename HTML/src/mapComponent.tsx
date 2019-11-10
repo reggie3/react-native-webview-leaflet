@@ -51,7 +51,7 @@ interface State {
   isLoaded: boolean;
   lat: number;
   lng: number;
-  mapRasterLayers?: MapRasterLayer[];
+  rasterLayers?: MapRasterLayer[];
   mapMarkers?: MapMarker[];
   ownPositionMarker: MapMarker | null;
   useMarkerClustering: boolean;
@@ -76,7 +76,7 @@ class MapComponent extends React.Component<Props, State> {
       isLoaded: false,
       lat: 51.505,
       lng: -0.09,
-      mapRasterLayers: [],
+      rasterLayers: [],
       mapMarkers: [],
       ownPositionMarker: null,
       panToLocation: null,
@@ -142,7 +142,8 @@ class MapComponent extends React.Component<Props, State> {
       this.sendMessage({
         msg: 'DOCUMENT_EVENT_LISTENER_REMOVED'
       });
-    } else if (window) {
+    }
+    if (window) {
       window.removeEventListener('message', this.handleMessage);
       this.sendMessage({
         msg: 'WINDOW_EVENT_LISTENER_REMOVED'
@@ -150,7 +151,7 @@ class MapComponent extends React.Component<Props, State> {
     }
   };
 
-  private addDebugMessage = (msg) => {
+  private addDebugMessage = (msg: any) => {
     if (typeof msg === 'object') {
       this.addDebugMessage('STRINGIFIED');
       this.setState({
@@ -165,6 +166,7 @@ class MapComponent extends React.Component<Props, State> {
   };
 
   private handleMessage = (event) => {
+    this.addDebugMessage(event.data);
     try {
       this.setState({ ...this.state, ...event.data });
     } catch (error) {
@@ -274,7 +276,7 @@ class MapComponent extends React.Component<Props, State> {
         }
       },
       vectorLayers: mockVectorLayers,
-      mapRasterLayers: mockMapLayers,
+      rasterLayers: mockMapLayers,
       useMarkerClustering: true
     });
 
@@ -309,7 +311,7 @@ class MapComponent extends React.Component<Props, State> {
   render() {
     return (
       <MapComponentView
-        vectorLayers={this.state.vectorLayers}
+        addDebugMessage={this.addDebugMessage}
         boundsOptions={this.state.boundsOptions}
         bounds={this.state.bounds}
         panToLocation={this.state.panToLocation}
@@ -320,7 +322,7 @@ class MapComponent extends React.Component<Props, State> {
         isLoaded={this.state.isLoaded}
         lat={this.state.lat}
         lng={this.state.lng}
-        mapRasterLayers={this.state.mapRasterLayers}
+        mapRasterLayers={this.state.rasterLayers}
         mapMarkers={this.state.mapMarkers}
         onClick={this.onClick}
         onWhenReady={this.onWhenReady}
@@ -328,6 +330,7 @@ class MapComponent extends React.Component<Props, State> {
         onMapRef={this.onMapRef}
         ownPositionMarker={this.state.ownPositionMarker}
         useMarkerClustering={this.state.useMarkerClustering}
+        vectorLayers={this.state.vectorLayers}
         zoom={this.state.zoom}
       />
     );

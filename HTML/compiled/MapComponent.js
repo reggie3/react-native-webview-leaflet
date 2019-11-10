@@ -106,7 +106,7 @@ var MapComponent = /** @class */ (function (_super) {
                     msg: 'DOCUMENT_EVENT_LISTENER_REMOVED'
                 });
             }
-            else if (window) {
+            if (window) {
                 window.removeEventListener('message', _this.handleMessage);
                 _this.sendMessage({
                     msg: 'WINDOW_EVENT_LISTENER_REMOVED'
@@ -127,6 +127,7 @@ var MapComponent = /** @class */ (function (_super) {
             }
         };
         _this.handleMessage = function (event) {
+            _this.addDebugMessage(event.data);
             try {
                 _this.setState(__assign(__assign({}, _this.state), event.data));
             }
@@ -223,7 +224,7 @@ var MapComponent = /** @class */ (function (_super) {
                     }
                 },
                 vectorLayers: mockVectorLayers_1.default,
-                mapRasterLayers: mockMapLayers_1.default,
+                rasterLayers: mockMapLayers_1.default,
                 useMarkerClustering: true
             });
             setTimeout(function () {
@@ -256,7 +257,7 @@ var MapComponent = /** @class */ (function (_super) {
             isLoaded: false,
             lat: 51.505,
             lng: -0.09,
-            mapRasterLayers: [],
+            rasterLayers: [],
             mapMarkers: [],
             ownPositionMarker: null,
             panToLocation: null,
@@ -269,7 +270,7 @@ var MapComponent = /** @class */ (function (_super) {
         return _this;
     }
     MapComponent.prototype.render = function () {
-        return (React.createElement(MapComponent_view_1.default, { vectorLayers: this.state.vectorLayers, boundsOptions: this.state.boundsOptions, bounds: this.state.bounds, panToLocation: this.state.panToLocation, showZoomControl: this.state.showZoomControl, showAttributionControl: this.state.showAttributionControl, mapCenterCoords: this.state.mapCenterCoords, debugMessages: this.state.debugMessages, isLoaded: this.state.isLoaded, lat: this.state.lat, lng: this.state.lng, mapRasterLayers: this.state.mapRasterLayers, mapMarkers: this.state.mapMarkers, onClick: this.onClick, onWhenReady: this.onWhenReady, onMapEvent: this.onMapEvent, onMapRef: this.onMapRef, ownPositionMarker: this.state.ownPositionMarker, useMarkerClustering: this.state.useMarkerClustering, zoom: this.state.zoom }));
+        return (React.createElement(MapComponent_view_1.default, { addDebugMessage: this.addDebugMessage, boundsOptions: this.state.boundsOptions, bounds: this.state.bounds, panToLocation: this.state.panToLocation, showZoomControl: this.state.showZoomControl, showAttributionControl: this.state.showAttributionControl, mapCenterCoords: this.state.mapCenterCoords, debugMessages: this.state.debugMessages, isLoaded: this.state.isLoaded, lat: this.state.lat, lng: this.state.lng, mapRasterLayers: this.state.rasterLayers, mapMarkers: this.state.mapMarkers, onClick: this.onClick, onWhenReady: this.onWhenReady, onMapEvent: this.onMapEvent, onMapRef: this.onMapRef, ownPositionMarker: this.state.ownPositionMarker, useMarkerClustering: this.state.useMarkerClustering, vectorLayers: this.state.vectorLayers, zoom: this.state.zoom }));
     };
     return MapComponent;
 }(React.Component));

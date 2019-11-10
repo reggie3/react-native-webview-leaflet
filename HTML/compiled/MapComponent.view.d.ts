@@ -6,7 +6,7 @@ import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 interface Props {
-    vectorLayers: (MapVectorLayerCircle | MapVectorLayerCircleMarker | MapVectorLayerPolyline | MapVectorLayerPolygon | MapVectorLayerRectangle)[];
+    addDebugMessage: (msg: any) => void;
     boundsOptions: any;
     bounds: any;
     panToLocation: any;
@@ -25,7 +25,8 @@ interface Props {
     onWhenReady: () => void;
     ownPositionMarker: MapMarker;
     useMarkerClustering: boolean;
+    vectorLayers: (MapVectorLayerCircle | MapVectorLayerCircleMarker | MapVectorLayerPolyline | MapVectorLayerPolygon | MapVectorLayerRectangle)[];
     zoom: number;
 }
-declare const MapComponentView: ({ vectorLayers, boundsOptions, bounds, panToLocation, showZoomControl, showAttributionControl, mapCenterCoords, debugMessages, isLoaded, lat, lng, mapRasterLayers, mapMarkers, onClick, onWhenReady, onMapEvent, onMapRef, ownPositionMarker, useMarkerClustering, zoom }: Props) => JSX.Element;
+declare const MapComponentView: ({ addDebugMessage, vectorLayers, boundsOptions, bounds, panToLocation, showZoomControl, showAttributionControl, mapCenterCoords, debugMessages, isLoaded, lat, lng, mapRasterLayers, mapMarkers, onClick, onWhenReady, onMapEvent, onMapRef, ownPositionMarker, useMarkerClustering, zoom }: Props) => JSX.Element;
 export default MapComponentView;

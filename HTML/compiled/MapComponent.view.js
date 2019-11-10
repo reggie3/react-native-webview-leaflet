@@ -15,14 +15,14 @@ require('react-leaflet-markercluster/dist/styles.min.css');
 var SHOW_DEBUG_INFORMATION = true;
 var ENABLE_BROWSER_TESTING = true;
 var MapComponentView = function (_a) {
-    var vectorLayers = _a.vectorLayers, boundsOptions = _a.boundsOptions, bounds = _a.bounds, panToLocation = _a.panToLocation, showZoomControl = _a.showZoomControl, showAttributionControl = _a.showAttributionControl, mapCenterCoords = _a.mapCenterCoords, debugMessages = _a.debugMessages, isLoaded = _a.isLoaded, lat = _a.lat, lng = _a.lng, _b = _a.mapRasterLayers, mapRasterLayers = _b === void 0 ? [] : _b, _c = _a.mapMarkers, mapMarkers = _c === void 0 ? [] : _c, onClick = _a.onClick, onWhenReady = _a.onWhenReady, onMapEvent = _a.onMapEvent, onMapRef = _a.onMapRef, ownPositionMarker = _a.ownPositionMarker, useMarkerClustering = _a.useMarkerClustering, zoom = _a.zoom;
+    var addDebugMessage = _a.addDebugMessage, vectorLayers = _a.vectorLayers, boundsOptions = _a.boundsOptions, bounds = _a.bounds, panToLocation = _a.panToLocation, showZoomControl = _a.showZoomControl, showAttributionControl = _a.showAttributionControl, mapCenterCoords = _a.mapCenterCoords, debugMessages = _a.debugMessages, isLoaded = _a.isLoaded, lat = _a.lat, lng = _a.lng, _b = _a.mapRasterLayers, mapRasterLayers = _b === void 0 ? [] : _b, _c = _a.mapMarkers, mapMarkers = _c === void 0 ? [] : _c, onClick = _a.onClick, onWhenReady = _a.onWhenReady, onMapEvent = _a.onMapEvent, onMapRef = _a.onMapRef, ownPositionMarker = _a.ownPositionMarker, useMarkerClustering = _a.useMarkerClustering, zoom = _a.zoom;
     return (React.createElement(React.Fragment, null,
-        mapRasterLayers.length < 1 ? (React.createElement("div", null, "waiting on map layers")) : (React.createElement(react_leaflet_1.Map, { style: {
+        mapRasterLayers.length < 1 ? (React.createElement("div", null, "waiting for map layers")) : (React.createElement(react_leaflet_1.Map, { style: {
                 width: '100%',
                 backgroundColor: 'lightblue'
-            }, ref: function (component) {
+            }, zoom: zoom, ref: function (component) {
                 onMapRef(component);
-            }, center: mapCenterCoords, attributionControl: showAttributionControl, zoomControl: showZoomControl, panToLocation: panToLocation, maxZoom: 18, zoom: zoom, bounds: bounds, boundsOptions: boundsOptions, whenReady: onWhenReady, onClick: onClick, onZoomLevelsChange: function () {
+            }, center: mapCenterCoords, attributionControl: showAttributionControl, zoomControl: showZoomControl, panToLocation: panToLocation, maxZoom: 18, bounds: bounds, boundsOptions: boundsOptions, whenReady: onWhenReady, onClick: onClick, onZoomLevelsChange: function () {
                 onMapEvent(models_1.MapEvent.ON_ZOOM_LEVELS_CHANGE);
             }, onResize: function () {
                 onMapEvent(models_1.MapEvent.ON_RESIZE);
@@ -43,10 +43,8 @@ var MapComponentView = function (_a) {
             }, onViewReset: function () {
                 onMapEvent(models_1.MapEvent.ON_VIEW_RESET);
             } },
-            React.createElement(react_leaflet_1.Polyline, { color: "red", positions: [[51.5, -0.05], [51.5, -0.06], [51.52, -0.06]] }),
-            mapRasterLayers.length === 1 ? (React.createElement(RasterLayer_1.default, { layer: mapRasterLayers[0] })) : (React.createElement(react_leaflet_1.LayersControl, { position: "topright" },
-                React.createElement(ControlsLayer_1.default, { mapRasterLayers: mapRasterLayers }))),
-            "\\",
+            mapRasterLayers.length === 1 ? (React.createElement(RasterLayer_1.default, { layer: mapRasterLayers[0], addDebugMessage: addDebugMessage })) : (React.createElement(react_leaflet_1.LayersControl, { position: "topright" },
+                React.createElement(ControlsLayer_1.default, { mapRasterLayers: mapRasterLayers, addDebugMessage: addDebugMessage }))),
             isLoaded && (React.createElement(react_leaflet_1.LayersControl, { position: "topleft" },
                 React.createElement(react_leaflet_1.LayersControl.Overlay, { name: "Markers", checked: true },
                     isLoaded && React.createElement(VectorLayers_1.default, { vectorLayers: vectorLayers }),

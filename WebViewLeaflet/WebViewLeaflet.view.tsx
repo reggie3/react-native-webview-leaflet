@@ -10,7 +10,7 @@ export interface Props {
   debugMessages: string[];
   doShowDebugMessages: boolean;
   handleMessage: (data: string) => void;
-  indexFile: Asset;
+  webviewContent: string;
   loadingIndicator: () => ReactElement;
   onError: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => void;
   onLoadEnd: () => void;
@@ -23,7 +23,7 @@ const WebViewLeafletView = ({
   debugMessages,
   doShowDebugMessages,
   handleMessage,
-  indexFile,
+  webviewContent,
   loadingIndicator,
   onError,
   onLoadEnd,
@@ -38,14 +38,14 @@ const WebViewLeafletView = ({
         backgroundColor: backgroundColor
       }}
     >
-      {indexFile && indexFile.uri && (
+      {webviewContent && (
         <WebView
           containerStyle={{
             flex: 0,
             height: '100%',
             width: '100%'
           }}
-          style={{ flex: 0, height: '100%', width: '100%' }}
+          /*  style={{ flex: 0, height: '100%', width: '100%' }} */
           ref={(component) => {
             setWebViewRef(component);
           }}
@@ -57,12 +57,18 @@ const WebViewLeafletView = ({
               handleMessage(event.nativeEvent.data);
             }
           }}
+          domStorageEnabled={true}
+          useWebKit={true}
+          startInLoadingState={true}
           onError={onError}
           originWhitelist={['*']}
-          renderLoading={loadingIndicator}
+         /*  renderLoading={loadingIndicator || null} */
           source={{
-            uri: indexFile.uri
+            html: webviewContent
           }}
+          allowFileAccess={true}
+        allowUniversalAccessFromFileURLs={true}
+        allowFileAccessFromFileURLs={true}
         />
       )}
       <DebugMessageBox

@@ -8,11 +8,13 @@ import {
 } from 'react-leaflet';
 
 interface Props {
+  addDebugMessage: (msg: any) => void;
   layer: MapRasterLayer;
 }
 
 const RasterLayer = (props: Props) => {
-  const { layer } = props;
+  const { addDebugMessage, layer } = props;
+
   if (layer) {
     if (layer.type === MapLayerTypes.TILE_LAYER) {
       return (

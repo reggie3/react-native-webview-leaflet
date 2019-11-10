@@ -929,6 +929,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@mongodb-js/react-mapbox-gl-leaflet@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/react-mapbox-gl-leaflet/-/react-mapbox-gl-leaflet-1.0.0.tgz#74c845cedb4a9d714dff09838bfff534cc6c9dbc"
+  integrity sha512-+gOWR3xqi0FBpNnXxg5RLuJAeaTsJP1/6ntncBP/bphvutWGak19ybL+PZTswSCwgsGb3Vq6GbUlASV24QjHGQ==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

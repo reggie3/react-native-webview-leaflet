@@ -15,7 +15,7 @@ var React = require("react");
 var models_1 = require("./models");
 var react_leaflet_1 = require("react-leaflet");
 var RasterLayer = function (props) {
-    var layer = props.layer;
+    var addDebugMessage = props.addDebugMessage, layer = props.layer;
     if (layer) {
         if (layer.type === models_1.MapLayerTypes.TILE_LAYER) {
             return (React.createElement(react_leaflet_1.TileLayer, __assign({ attribution: layer.attribution, url: layer.url, zIndex: layer.zIndex || 0 }, props)));

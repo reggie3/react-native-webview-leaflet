@@ -10,7 +10,7 @@ import { MapMarker } from 'react-native-webview-leaflet';
 const mapMarkers: MapMarker[] = [
   {
     id: 2,
-    coords: new LatLng(37.06452161, -75.67364786),
+    coords: { lat: 37.06452161, lng: -75.67364786 },
     icon: '😴',
     size: [
       64,
@@ -25,7 +25,7 @@ const mapMarkers: MapMarker[] = [
   },
   {
     id: 1,
-    coords: new LatLng(36.46410354, -75.6432701),
+    coords: { lat: 36.46410354, lng: -75.6432701 },
     icon:
       'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
     size: [32, 32],

@@ -22,9 +22,18 @@ gulp.task('cleanCompiled', function(done) {
 
 // Empty the preCompile directory
 gulp.task('cleanPrecompile', function(done) {
-  return gulp
-    .src('./precompile', { read: false, allowEmpty: true })
+  gulp.src('./precompile', { read: false, allowEmpty: true }).pipe(clean());
+  setTimeout(() => {
+    done();
+  }, 3000);
+});
+
+// Empty the assets directory of the WebviewLeafletComponent
+gulp.task('cleanAssets', function(done) {
+  gulp
+    .src('../WebviewLeaflet/assets', { read: false, allowEmpty: true })
     .pipe(clean());
+  done();
 });
 
 // copy all the files from HTML/src to HTML/dist
@@ -33,7 +42,20 @@ gulp.task('copySource', function(done) {
 });
 
 // remove debugging flags from MapComponent.tsx file and copy that to the dist folder
-gulp.task('replaceStrings', function() {
+gulp.task('replaceStringsDist', function() {
+  return gulp
+    .src(['./src/MapComponent.tsx']) // Any file globs are supported
+    .pipe(
+      replace('SHOW_DEBUG_INFORMATION = true', 'SHOW_DEBUG_INFORMATION = false')
+    )
+    .pipe(
+      replace('ENABLE_BROWSER_TESTING = true', 'ENABLE_BROWSER_TESTING = false')
+    )
+    .pipe(gulp.dest('./precompile'));
+});
+
+// remove debugging flags from MapComponent.tsx file and copy that to the dist folder
+gulp.task('replaceStringsDev', function() {
   return gulp
     .src(['./src/MapComponent.tsx']) // Any file globs are supported
     .pipe(
@@ -84,7 +106,26 @@ gulp.task('sourceBuild', async (done) => {
 });
 
 gulp.task('clean', (done) => {
-  const tasks = gulp.parallel(['cleanCache', 'cleanCompiled', 'cleanDist']);
+  const tasks = gulp.parallel([
+    'cleanCache',
+    'cleanCompiled',
+    'cleanDist',
+    'cleanPrecompile'
+  ]);
+  tasks();
+  done();
+});
+
+gulp.task('dev', (done) => {
+  const tasks = gulp.series([
+    'clean',
+    'copySource',
+    'replaceStringsDev',
+    'compileTSC',
+    'replaceHtmlTsxImport',
+    'copyNonTSFilesToCompile',
+    'buildToWebViewLeaflet'
+  ]);
   tasks();
   done();
 });
@@ -93,7 +134,7 @@ gulp.task('dist', (done) => {
   const tasks = gulp.series([
     'clean',
     'copySource',
-    'replaceStrings',
+    'replaceStringsDist',
     'compileTSC',
     'replaceHtmlTsxImport',
     'copyNonTSFilesToCompile',

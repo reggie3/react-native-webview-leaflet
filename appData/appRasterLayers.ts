@@ -10,16 +10,17 @@ const mapLayers: MapRasterLayer[] = [
     url: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`,
     attribution:
       '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  },
-  {
+  }
+  /* {
     name: 'streets',
     type: MapLayerTypes.TILE_LAYER,
     isBaseLayer: true,
-    //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    url: `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
+
+    url: `https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
     attribution:
       '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  },
+  } */
+  /*
   {
     name: 'light',
     type: MapLayerTypes.TILE_LAYER,
@@ -36,7 +37,7 @@ const mapLayers: MapRasterLayer[] = [
     url: `https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
     attribution:
       '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  },
+  }, */
   /* {
      name: 'image',
      type: 'ImageOverlay',
@@ -44,12 +45,12 @@ const mapLayers: MapRasterLayer[] = [
      url: 'http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg',
      bounds: [[40.712216, -74.22655], [40.773941, -74.12544]]
    }, */
-  {
+  /*  {
     name: 'WMS Tile Layer',
     type: MapLayerTypes.TILE_LAYER,
     url: 'https://demo.boundlessgeo.com/geoserver/ows',
     layers: 'nasa:bluemarble'
-  }
+  } */
   /* {
     type: 'VideoOverlay',
     name: 'video',

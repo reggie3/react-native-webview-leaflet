@@ -18,11 +18,11 @@ var ControlsLayer = function (props) {
     return (React.createElement(React.Fragment, null, props.mapRasterLayers.map(function (layer, index) {
         if (layer.isBaseLayer) {
             return (React.createElement(react_leaflet_1.LayersControl.BaseLayer, __assign({ name: layer.name, checked: layer.isChecked || false, key: index }, props),
-                React.createElement(RasterLayer_1.default, __assign({ layer: layer }, props))));
+                React.createElement(RasterLayer_1.default, __assign({ addDebugMessage: props.addDebugMessage, layer: layer }, props))));
         }
         else {
             return (React.createElement(react_leaflet_1.LayersControl.Overlay, __assign({ name: layer.name, checked: layer.isChecked || false, key: index }, props),
-                React.createElement(RasterLayer_1.default, __assign({ layer: layer }, props))));
+                React.createElement(RasterLayer_1.default, __assign({ addDebugMessage: props.addDebugMessage, layer: layer }, props))));
         }
     })));
 };

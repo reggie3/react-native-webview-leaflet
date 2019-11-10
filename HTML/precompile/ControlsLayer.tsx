@@ -4,6 +4,7 @@ import RasterLayer from './RasterLayer';
 import { MapRasterLayer } from './models';
 
 interface Props {
+  addDebugMessage: (msg: any) => void;
   mapRasterLayers: MapRasterLayer[];
 }
 
@@ -19,7 +20,11 @@ const ControlsLayer = (props: Props) => {
               key={index}
               {...props}
             >
-              <RasterLayer layer={layer} {...props} />
+              <RasterLayer
+                addDebugMessage={props.addDebugMessage}
+                layer={layer}
+                {...props}
+              />
             </LayersControl.BaseLayer>
           );
         } else {
@@ -30,7 +35,11 @@ const ControlsLayer = (props: Props) => {
               key={index}
               {...props}
             >
-              <RasterLayer layer={layer} {...props} />
+              <RasterLayer
+                addDebugMessage={props.addDebugMessage}
+                layer={layer}
+                {...props}
+              />
             </LayersControl.Overlay>
           );
         }

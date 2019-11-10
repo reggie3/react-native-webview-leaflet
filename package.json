@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "expo": "^35.0.0",
+    "expo-file-system": "~7.0.0",
     "expo-font": "^7.0.0",
     "leaflet": "^1.5.1",
     "native-base": "^2.13.8",
@@ -20,7 +21,8 @@
     "react-leaflet": "^2.4.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-web": "^0.11.7",
-    "react-native-webview-leaflet": "file:./WebViewLeaflet"
+    "react-native-webview": "7.0.5",
+    "react-native-webview-leaflet": "^4.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",

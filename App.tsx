@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   WebViewLeaflet,
-  WebviewLeafletMessage
+  WebviewLeafletMessage,
+  WebViewLeafletLatLng
 } from 'react-native-webview-leaflet';
 import { Container, Header, Body, Title, View, Content } from 'native-base';
 import { AppLoading } from 'expo';
@@ -14,6 +15,10 @@ import mapMarkers from './appData/appMapMarkers';
 const App: React.FunctionComponent = () => {
   const [hasLoadingStarted, setHasLoadingStarted] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [mapCenterCoords, setMapCenterCoords] = useState<WebViewLeafletLatLng>({
+    lat: 36.56,
+    lng: -76.17
+  });
 
   useEffect(() => {
     if (!hasLoadingStarted) {
@@ -55,11 +60,13 @@ const App: React.FunctionComponent = () => {
         <View style={{ backgroundColor: 'yellow', flex: 1 }}>
           <WebViewLeaflet
             onMessageReceived={onMessageReceived}
-            doShowDebugMessages={true}
+            doShowDebugMessages={false}
             backgroundColor={'#f6b36f'}
-              rasterLayers={rasterLayers}
-            /*vectorLayers={vectorLayers}
-            mapMarkers={mapMarkers} */
+            rasterLayers={rasterLayers}
+            vectorLayers={vectorLayers}
+            /*mapMarkers={mapMarkers} */
+            mapCenterCoords={mapCenterCoords}
+            zoom={8}
           />
         </View>
       </Container>

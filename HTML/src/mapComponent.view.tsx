@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Map, LayersControl, Polyline } from 'react-leaflet';
+import { Map, LayersControl, Polyline, TileLayer } from 'react-leaflet';
 import { LatLngExpression, LeafletMouseEvent } from 'leaflet';
 import {
   MapMarker,
@@ -23,12 +23,8 @@ import MapMarkers from './Markers';
 require('react-leaflet-markercluster/dist/styles.min.css');
 
 interface Props {
-  vectorLayers: (
-    | MapVectorLayerCircle
-    | MapVectorLayerCircleMarker
-    | MapVectorLayerPolyline
-    | MapVectorLayerPolygon
-    | MapVectorLayerRectangle)[];
+  addDebugMessage: (msg: any) => void;
+
   boundsOptions: any;
   bounds: any;
   panToLocation: any;
@@ -47,12 +43,19 @@ interface Props {
   onWhenReady: () => void;
   ownPositionMarker: MapMarker;
   useMarkerClustering: boolean;
+  vectorLayers: (
+    | MapVectorLayerCircle
+    | MapVectorLayerCircleMarker
+    | MapVectorLayerPolyline
+    | MapVectorLayerPolygon
+    | MapVectorLayerRectangle)[];
   zoom: number;
 }
 const SHOW_DEBUG_INFORMATION = true;
 const ENABLE_BROWSER_TESTING = true;
 
 const MapComponentView = ({
+  addDebugMessage,
   vectorLayers,
   boundsOptions,
   bounds,
@@ -77,13 +80,14 @@ const MapComponentView = ({
   return (
     <>
       {mapRasterLayers.length < 1 ? (
-        <div>waiting on map layers</div>
+        <div>waiting for map layers</div>
       ) : (
         <Map
           style={{
             width: '100%',
             backgroundColor: 'lightblue'
           }}
+          zoom={zoom}
           ref={(component) => {
             onMapRef(component);
           }}
@@ -92,7 +96,6 @@ const MapComponentView = ({
           zoomControl={showZoomControl}
           panToLocation={panToLocation}
           maxZoom={18}
-          zoom={zoom}
           bounds={bounds}
           boundsOptions={boundsOptions}
           whenReady={onWhenReady}
@@ -128,18 +131,19 @@ const MapComponentView = ({
             onMapEvent(MapEvent.ON_VIEW_RESET);
           }}
         >
-          <Polyline
-            color="red"
-            positions={[[51.5, -0.05], [51.5, -0.06], [51.52, -0.06]]}
-          />
           {mapRasterLayers.length === 1 ? (
-            <RasterLayer layer={mapRasterLayers[0]} />
+            <RasterLayer
+              layer={mapRasterLayers[0]}
+              addDebugMessage={addDebugMessage}
+            />
           ) : (
             <LayersControl position="topright">
-              <ControlsLayer mapRasterLayers={mapRasterLayers} />
+              <ControlsLayer
+                mapRasterLayers={mapRasterLayers}
+                addDebugMessage={addDebugMessage}
+              />
             </LayersControl>
           )}
-          \
           {isLoaded && (
             <LayersControl position="topleft">
               <LayersControl.Overlay name="Markers" checked={true}>

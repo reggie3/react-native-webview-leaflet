@@ -24,8 +24,7 @@
     "expo-asset-utils": "^1.2.0",
     "leaflet": "^1.5.1",
     "react-dom": "^16.10.2",
-    "react-leaflet": "^2.4.0",
-    "react-native-webview": "^7.4.2"
+    "react-leaflet": "^2.4.0"
   },
   "peerDependencies": {
     "react": "^16.9.0",

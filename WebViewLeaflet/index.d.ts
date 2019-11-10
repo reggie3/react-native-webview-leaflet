@@ -58,6 +58,7 @@ export {
   MapVectorLayerType,
   MapRasterLayer,
   MapLayerTypes,
-  StartupMessage,
-  WebviewLeafletMessage
+  MapStartupMessage,
+  WebViewLeafletLatLng,
+  WebviewLeafletMessage,
 } from './models';
