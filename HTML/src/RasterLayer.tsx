@@ -6,6 +6,10 @@ import {
   ImageOverlay,
   VideoOverlay
 } from 'react-leaflet';
+import {
+  convertWebViewLeafletLatLngToNumberArray,
+  convertWebViewLeafletLatLngBoundsToLeaftletBounds
+} from './utilities';
 
 interface Props {
   addDebugMessage: (msg: any) => void;
@@ -13,7 +17,7 @@ interface Props {
 }
 
 const RasterLayer = (props: Props) => {
-  const { addDebugMessage, layer } = props;
+  const { layer } = props;
 
   if (layer) {
     if (layer.type === MapLayerTypes.TILE_LAYER) {
@@ -40,7 +44,9 @@ const RasterLayer = (props: Props) => {
       return (
         <VideoOverlay
           url={layer.url}
-          bounds={layer.bounds}
+          bounds={convertWebViewLeafletLatLngBoundsToLeaftletBounds(
+            layer.bounds
+          )}
           opacity={layer.opacity || 1}
           play={layer.play || true}
           zIndex={layer.zIndex || 0}

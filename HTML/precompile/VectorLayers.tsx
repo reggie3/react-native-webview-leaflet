@@ -15,7 +15,7 @@ import {
   MapVectorLayerPolygon,
   MapVectorLayerRectangle
 } from './models';
-import {} from 'leaflet';
+import { convertWebViewLeafletLatLngToNumberArray } from './utilities';
 
 interface Props {
   vectorLayers: (
@@ -29,15 +29,17 @@ interface Props {
 const VectorLayers = ({ vectorLayers }: Props) => {
   return (
     <LayerGroup>
-      {vectorLayers.map((mapVectorLayer) => {
+      {vectorLayers.map((mapVectorLayer, index) => {
+        const layerId = mapVectorLayer.id || index;
         switch (mapVectorLayer.type) {
           case MapVectorLayerType.CIRCLE: {
             let layer = mapVectorLayer as MapVectorLayerCircle;
             return (
               <Circle
-                key={layer.id}
+                key={mapVectorLayer.id}
                 color={layer.color || 'white'}
-                center={layer.center}
+                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+                center={convertWebViewLeafletLatLngToNumberArray(layer.center)}
                 radius={layer.radius}
                 attribution={layer.attribution || null}
               />
@@ -48,9 +50,10 @@ const VectorLayers = ({ vectorLayers }: Props) => {
             let layer = mapVectorLayer as MapVectorLayerCircleMarker;
             return (
               <CircleMarker
-                key={layer.id}
+                key={mapVectorLayer.id}
                 color={layer.color || 'white'}
-                center={layer.center}
+                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+                center={convertSingleLatLngToNumberArray(layer.center)}
                 radius={layer.radius}
                 attribution={layer.attribution || null}
               />
@@ -60,9 +63,12 @@ const VectorLayers = ({ vectorLayers }: Props) => {
             let layer = mapVectorLayer as MapVectorLayerPolygon;
             return (
               <Polygon
-                key={layer.id}
+                key={mapVectorLayer.id}
                 color={layer.color || 'white'}
-                positions={layer.positions}
+                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+                positions={convertWebViewLeafletLatLngToNumberArray(
+                  layer.positions
+                )}
                 attribution={layer.attribution || null}
               />
             );
@@ -71,9 +77,12 @@ const VectorLayers = ({ vectorLayers }: Props) => {
             let layer = mapVectorLayer as MapVectorLayerPolyline;
             return (
               <Polyline
-                key={layer.id}
+                key={mapVectorLayer.id}
                 color={layer.color || 'white'}
-                positions={layer.positions}
+                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+                positions={convertWebViewLeafletLatLngToNumberArray(
+                  layer.positions
+                )}
                 attribution={layer.attribution || null}
               />
             );
@@ -82,9 +91,10 @@ const VectorLayers = ({ vectorLayers }: Props) => {
             let layer = mapVectorLayer as MapVectorLayerRectangle;
             return (
               <Rectangle
-                key={layer.id}
+                key={mapVectorLayer.id}
                 color={layer.color || 'white'}
-                bounds={layer.bounds}
+                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+                bounds={convertWebViewLeafletLatLngToNumberArray(layer.bounds)}
                 attribution={layer.attribution || null}
               />
             );

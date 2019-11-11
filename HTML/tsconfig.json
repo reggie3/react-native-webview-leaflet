@@ -12,6 +12,7 @@
   },
   "include": ["./precompile/*"],
   "exclude": [
+    "HTML",
     "typings/main",
     "typings/main.d.ts",
     "typings/index.d.ts",

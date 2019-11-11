@@ -1,0 +1,1 @@
+C:/Users/regin/Dropbox/react-native-webview-leaflet-5/appData/svgIcons.ts

@@ -1,5 +1,3 @@
-import { LatLng, LatLngBounds } from 'leaflet';
-
 export enum MapComponentMessages {
   MAP_COMPONENT_MOUNTED = 'MAP_COMPONENT_MOUNTED',
   DOCUMENT_EVENT_LISTENER_ADDED = 'DOCUMENT_EVENT_LISTENER_ADDED',
@@ -34,7 +32,7 @@ export interface MapMarkerAnimation {
 
 export interface MapMarker {
   animation?: MapMarkerAnimation;
-  coords: LatLng;
+  coords: WebViewLeafletLatLng;
   divIcon?: L.DivIcon;
   icon: any;
   iconAnchor?: L.PointExpression;
@@ -59,21 +57,21 @@ export interface MapVectorLayer extends MapLayer {
 }
 
 export interface MapVectorLayerCircle extends MapVectorLayer {
-  center: LatLng;
+  center: WebViewLeafletLatLng;
   radius: number;
 }
 export interface MapVectorLayerCircleMarker extends MapVectorLayer {
-  center: LatLng;
+  center: WebViewLeafletLatLng;
   radius: number;
 }
 export interface MapVectorLayerPolyline extends MapVectorLayer {
-  positions: LatLng[] | LatLng[][];
+  positions: WebViewLeafletLatLng[] | WebViewLeafletLatLng[][];
 }
 export interface MapVectorLayerPolygon extends MapVectorLayer {
-  positions: LatLng[] | LatLng[][];
+  positions: WebViewLeafletLatLng[] | WebViewLeafletLatLng[][];
 }
 export interface MapVectorLayerRectangle extends MapVectorLayer {
-  bounds: LatLngBounds;
+  bounds: WebViewLeafletLatLngBounds;
 }
 
 export enum MapVectorLayerType {
@@ -87,14 +85,12 @@ export enum MapVectorLayerType {
 export interface MapRasterLayer extends MapLayer {
   // attribution string to be shown for this layer
   attribution?: string; //'&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors'
-  bounds?: LatLngBounds;
+  bounds?: WebViewLeafletLatLngBounds;
   layers?: MapLayer[] | string;
   play?: boolean;
   // url of tiles
   url?: string; //`https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
 }
-
-export interface MapVectorLayer {}
 
 export enum MapLayerTypes {
   IMAGE_LAYER = 'ImageOverlay',
@@ -104,11 +100,30 @@ export enum MapLayerTypes {
   WMS_TILE_LAYER = 'WMSTileLayer'
 }
 
-export interface StartupMessage {}
+export interface MapStartupMessage {
+  rasterLayers?: MapRasterLayer[];
+  vectorLayers?: MapVectorLayer[];
+  mapMarkers?: MapMarker[];
+  mapCenterCoords?: WebViewLeafletLatLng;
+  zoom?: number;
+}
+
+export interface WebViewLeafletLatLng {
+  lat: number;
+  lng: number;
+}
+export type WebViewLeafletLatLngBounds =
+  | WebViewLeafletLatLngBoundsCorners
+  | WebViewLeafletLatLng[];
 
 export interface WebviewLeafletMessage {
   event?: any;
   msg?: string;
   error?: string;
   payload?: any;
+}
+
+export interface WebViewLeafletLatLngBoundsCorners {
+  southWest: WebViewLeafletLatLng;
+  northEast: WebViewLeafletLatLng;
 }

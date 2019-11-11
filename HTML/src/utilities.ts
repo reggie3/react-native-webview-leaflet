@@ -1,7 +1,13 @@
-import { DivIcon } from 'leaflet';
-import L = require('leaflet');
-import { MapMarkerAnimation, MapMarker } from './models';
+import { DivIcon, LatLng, Bounds, LatLngBounds } from 'leaflet';
+const L = require('leaflet');
+import {
+  MapMarkerAnimation,
+  MapMarker,
+  WebViewLeafletLatLngBounds,
+  WebViewLeafletLatLngBoundsCorners
+} from './models';
 import base64Image from './webBase64Image';
+import { WebViewLeafletLatLng } from '../../WebViewLeaflet/models';
 
 export const createDivIcon = (mapMarker: MapMarker): DivIcon => {
   let divIcon: DivIcon = L.divIcon({
@@ -61,4 +67,57 @@ const getIconFromEmojiOrImageOrSVG = (icon, size: L.PointExpression) => {
   ${icon}
   </div>`;
   }
+};
+
+export const convertSingleLatLngToNumberArray = (
+  latLng: WebViewLeafletLatLng
+): [number, number] => {
+  return [latLng.lat, latLng.lng];
+};
+
+export const convertLatLngArrayToNumberArray = (
+  latLngs: WebViewLeafletLatLng[]
+) => {
+  return latLngs.map((latLng: WebViewLeafletLatLng) => {
+    return convertSingleLatLngToNumberArray(latLng);
+  });
+};
+
+export const convertWebViewLeafletLatLngToNumberArray = (
+  latLngs:
+    | WebViewLeafletLatLng
+    | WebViewLeafletLatLng[]
+    | WebViewLeafletLatLng[][]
+): [number, number] | [number, number][] => {
+  // received a signle LatLng
+  if (!Array.isArray(latLngs)) {
+    return convertSingleLatLngToNumberArray(latLngs);
+  } else {
+    // @ts-ignore TS doesn't like that I'm mapping this.
+    return latLngs.map((latLng) => {
+      return convertWebViewLeafletLatLngToNumberArray(latLng);
+    });
+  }
+};
+
+export const convertWebViewLeafletLatLngBoundsToLeaftletBounds = (
+  bounds: WebViewLeafletLatLngBounds
+): LatLngBounds => {
+  let convertedBounds = null;
+  if (bounds.hasOwnProperty('southWest')) {
+    const {
+      southWest,
+      northEast
+    } = bounds as WebViewLeafletLatLngBoundsCorners;
+    convertedBounds = {
+      southWest: convertWebViewLeafletLatLngToNumberArray(southWest),
+      northEast: convertWebViewLeafletLatLngToNumberArray(northEast)
+    };
+  } else {
+    convertedBounds = convertWebViewLeafletLatLngToNumberArray(
+      bounds as WebViewLeafletLatLng[]
+    );
+  }
+  console.log(convertedBounds);
+  return convertedBounds;
 };

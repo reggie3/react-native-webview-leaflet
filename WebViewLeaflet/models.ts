@@ -123,7 +123,7 @@ export interface WebviewLeafletMessage {
   payload?: any;
 }
 
-interface WebViewLeafletLatLngBoundsCorners {
+export interface WebViewLeafletLatLngBoundsCorners {
   southWest: WebViewLeafletLatLng;
   northEast: WebViewLeafletLatLng;
 }

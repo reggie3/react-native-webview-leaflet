@@ -36,12 +36,12 @@ gulp.task('cleanAssets', function(done) {
   done();
 });
 
-// copy all the files from HTML/src to HTML/dist
+// copy all the files from HTML/src to HTML/precompile
 gulp.task('copySource', function(done) {
   return gulp.src('./src/**/*').pipe(gulp.dest('./precompile'));
 });
 
-// remove debugging flags from MapComponent.tsx file and copy that to the dist folder
+// remove debugging flags from MapComponent.tsx file and copy that to the precompile folder
 gulp.task('replaceStringsDist', function() {
   return gulp
     .src(['./src/MapComponent.tsx']) // Any file globs are supported
@@ -54,7 +54,7 @@ gulp.task('replaceStringsDist', function() {
     .pipe(gulp.dest('./precompile'));
 });
 
-// remove debugging flags from MapComponent.tsx file and copy that to the dist folder
+// remove debugging flags from MapComponent.tsx file and copy that to the dist precompile
 gulp.task('replaceStringsDev', function() {
   return gulp
     .src(['./src/MapComponent.tsx']) // Any file globs are supported
@@ -75,7 +75,7 @@ gulp.task('compileTSC', (done) => {
 // replace the import for index.tsx with index.js
 gulp.task('replaceHtmlTsxImport', function() {
   return gulp
-    .src(['./src/index.html']) // Any file globs are supported
+    .src(['./src/index.html'])
     .pipe(replace('index.tsx', 'index.js'))
     .pipe(gulp.dest('./compiled'));
 });

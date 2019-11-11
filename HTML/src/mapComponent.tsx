@@ -17,9 +17,9 @@ import {
   MapVectorLayerRectangle,
   MapRasterLayer
 } from './models';
-import mockVectorLayers from './mocks/mockVectorLayers';
-import mockMapLayers from './mocks/mockMapLayers';
-import mockMapMarkers from './mocks/mockMapMarkers';
+import mockVectorLayers from '../../appData/appVectorLayers';
+import mockMapLayers from '../../appData/appRasterLayers';
+import mockMapMarkers from '../../appData/appMapMarkers';
 import MapComponentView from './MapComponent.view';
 
 require('react-leaflet-markercluster/dist/styles.min.css');
@@ -263,7 +263,7 @@ class MapComponent extends React.Component<Props, State> {
 
   private setupBrowserTesting = () => {
     this.setState({
-      mapMarkers: mockMapMarkers as MapMarker[],
+      mapMarkers: (mockMapMarkers as unknown) as MapMarker[],
       ownPositionMarker: {
         coords: new LatLng(36.56, -76.17),
         icon: '🎃',

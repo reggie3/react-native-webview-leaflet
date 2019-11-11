@@ -47,6 +47,7 @@
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-inliner": "^1.0.10",
+    "react-native-testing-library": "^1.11.1",
     "react-test-renderer": "^16.10.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"

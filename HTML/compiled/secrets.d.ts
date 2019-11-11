@@ -1,1 +1,1 @@
-export declare const mapboxToken = "pk.eyJ1Ijoid2hlcmVzbXl3YXZlcyIsImEiOiJjanJ6cGZtd24xYmU0M3lxcmVhMDR2dWlqIn0.QQSWbd-riqn1U5ppmyQjRw";
+export declare const mapboxToken = "pk.eyJ1IjoicmVnZ2llMyIsImEiOiJjamp1aDhjbzgwZXdrM3FtYjVicDFreWEyIn0.guMquqkaxyuaWs2ujtUGBg";
