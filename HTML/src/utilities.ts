@@ -28,7 +28,7 @@ export const createDivIcon = (mapMarker: MapMarker): DivIcon => {
   Get the HTML string containing the icon div, and animation parameters
   */
 const getAnimatedHTMLString = (
-  icon,
+  icon: any,
   animation: MapMarkerAnimation,
   size: L.PointExpression = [24, 24]
 ) => {
@@ -47,7 +47,7 @@ const getAnimatedHTMLString = (
 };
 
 const getUnanimatedHTMLString = (
-  icon,
+  icon: any,
   size: L.PointExpression = [24, 24]
 ): string => {
   return `<div class='unanimatedIconContainer' >
@@ -55,7 +55,7 @@ const getUnanimatedHTMLString = (
     </div>`;
 };
 
-const getIconFromEmojiOrImageOrSVG = (icon, size: L.PointExpression) => {
+const getIconFromEmojiOrImageOrSVG = (icon: any, size: L.PointExpression) => {
   if (icon.includes('svg') || icon.includes('SVG')) {
     return ` <div style='font-size: ${Math.max(size[0], size[1])}px'>
     ${icon}
@@ -119,5 +119,5 @@ export const convertWebViewLeafletLatLngBoundsToLeaftletBounds = (
     );
   }
   console.log(convertedBounds);
-  return convertedBounds;
+  return convertedBounds as LatLngBounds;
 };

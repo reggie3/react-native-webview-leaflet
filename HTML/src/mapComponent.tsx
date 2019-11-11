@@ -17,9 +17,9 @@ import {
   MapVectorLayerRectangle,
   MapRasterLayer
 } from './models';
-import mockVectorLayers from '../../appData/appVectorLayers';
-import mockMapLayers from '../../appData/appRasterLayers';
-import mockMapMarkers from '../../appData/appMapMarkers';
+import mockVectorLayers from './mocks/appVectorLayers';
+import mockMapLayers from './mocks/appRasterLayers';
+import mockMapMarkers from './mocks/appMapMarkers';
 import MapComponentView from './MapComponent.view';
 
 require('react-leaflet-markercluster/dist/styles.min.css');

@@ -3,6 +3,7 @@ const run = require('gulp-run');
 const replace = require('gulp-string-replace');
 const clean = require('gulp-clean');
 const { series, parallel } = require('gulp');
+const ts = require('gulp-typescript');
 
 // Empty the HTML/dist directory
 gulp.task('cleanCache', function(done) {
@@ -69,7 +70,22 @@ gulp.task('replaceStringsDev', function() {
 
 // compile files to Typescript
 gulp.task('compileTSC', (done) => {
-  return run('yarn tsc').exec();
+  /* return run('yarn tsc').exec(); */
+  var tsResult = gulp.src('src/*.ts').pipe(
+    ts({
+      noImplicitAny: true,
+      target: 'es5',
+      lib: ['es6', 'dom'],
+      sourceMap: true,
+      jsx: 'react',
+      declaration: true,
+      /*       moduleResolution: 'node',
+       */ types: ['react', 'jest', 'node'],
+      noEmitOnError: false,
+      outFile: 'out'
+    })
+  );
+  return tsResult.js.pipe(gulp.dest('built/local'));
 });
 
 // replace the import for index.tsx with index.js
@@ -123,8 +139,8 @@ gulp.task('dev', (done) => {
     'replaceStringsDev',
     'compileTSC',
     'replaceHtmlTsxImport',
-    'copyNonTSFilesToCompile',
-    'buildToWebViewLeaflet'
+    'copyNonTSFilesToCompile'
+    /* 'buildToWebViewLeaflet' */
   ]);
   tasks();
   done();

@@ -7,7 +7,6 @@ import {
   VideoOverlay
 } from 'react-leaflet';
 import {
-  convertWebViewLeafletLatLngToNumberArray,
   convertWebViewLeafletLatLngBoundsToLeaftletBounds
 } from './utilities';
 

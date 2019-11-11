@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "outDir": "./compiled",
+    "outDir": "./compiled/",
     "module": "commonjs",
     "target": "es5",
     "lib": ["es6", "dom"],
     "sourceMap": true,
     "jsx": "react",
     "declaration": true,
-    "moduleResolution": "node",
-    "types": ["react", "jest", "node"]
+    /* "moduleResolution": "node", */
+    "types": ["react", "jest", "node"],
+    "rootDirs": ["HTML/precompile"]
   },
-  "include": ["./precompile/*"],
+  "include": ["./precompile/**/*"],
   "exclude": [
     "HTML",
     "typings/main",
@@ -24,6 +25,8 @@
     ".expo",
     "src/setupTests.ts",
     "gulpfile.ts",
-    "typings"
+    "typings",
+    "secrets.js",
+    "secrets.ts"
   ]
 }
