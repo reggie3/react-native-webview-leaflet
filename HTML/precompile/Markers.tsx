@@ -70,6 +70,7 @@ const MapMarkers = ({
             <Marker
               key={marker.id}
               position={marker.coords}
+              // @ts-ignore
               icon={marker.divIcon}
               onClick={() => {
                 onMapEvent(MapEvent.ON_MAP_MARKER_CLICKED, {

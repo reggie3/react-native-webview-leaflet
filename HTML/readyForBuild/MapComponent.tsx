@@ -60,7 +60,7 @@ interface State {
 
 interface Props {}
 const SHOW_DEBUG_INFORMATION = true;
-const ENABLE_BROWSER_TESTING = true;
+const ENABLE_BROWSER_TESTING = false;
 
 class MapComponent extends React.Component<Props, State> {
   state: State;
