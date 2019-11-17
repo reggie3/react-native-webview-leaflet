@@ -48,7 +48,8 @@ interface Props {
     | MapVectorLayerCircleMarker
     | MapVectorLayerPolyline
     | MapVectorLayerPolygon
-    | MapVectorLayerRectangle)[];
+    | MapVectorLayerRectangle
+  )[];
   zoom: number;
 }
 const SHOW_DEBUG_INFORMATION = true;
@@ -144,7 +145,7 @@ const MapComponentView = ({
               />
             </LayersControl>
           )}
-          {isLoaded && (
+          {/* isLoaded && (
             <LayersControl position="topleft">
               <LayersControl.Overlay name="Markers" checked={true}>
                 {isLoaded && <VectorLayers vectorLayers={vectorLayers} />}
@@ -157,7 +158,7 @@ const MapComponentView = ({
                 )}
               </LayersControl.Overlay>
             </LayersControl>
-          )}
+          ) */}
         </Map>
       )}
       {SHOW_DEBUG_INFORMATION ? (

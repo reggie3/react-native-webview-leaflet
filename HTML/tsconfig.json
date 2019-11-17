@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     /*     "outFile": "./compiled/local/tsc.js",
-     */ "outDir": "./compiled/",
+     */
+
+    "outDir": "./compiled/",
     "module": "commonjs",
     "target": "es5",
     "lib": ["es6", "dom"],

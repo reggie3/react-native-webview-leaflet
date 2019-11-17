@@ -132,8 +132,8 @@ gulp.task('clean', (done) => {
   const tasks = gulp.parallel([
     'cleanCache',
     'cleanCompiled',
-    'cleanDist',
-    'cleanPrecompile'
+    'cleanDist'
+    /* 'cleanPrecompile' */
   ]);
   tasks();
   done();
