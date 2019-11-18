@@ -123,8 +123,6 @@ const mapMarker = {
 describe('getAnimatedHTMLString', () => {
   it('returns a div with an animated emoji', () => {
     const div = getAnimatedHTMLString(mapMarker.icon, mapMarker.animation);
-    console.log(div);
-    console.log('=====================');
     expect(div).toBe(`<div class='animationContainer' style="
 animation-name: bounce;
 animation-duration: 1s ;

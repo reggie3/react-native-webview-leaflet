@@ -33,7 +33,7 @@ const App: React.FunctionComponent = () => {
   }, [hasLoadingStarted]);
 
   const onMessageReceived = (message: WebviewLeafletMessage) => {
-    console.log('onMessageReceived', onMessageReceived);
+    console.log('onMessageReceived', message);
   };
 
   if (!isLoadingComplete) {
