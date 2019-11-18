@@ -14,7 +14,7 @@
     "inlineSourceMap": true,
     "inlineSources": true
   },
-  "include": ["./precompile/index.tsx"],
+  "files": ["./precompile/index.tsx"],
   "exclude": [
     "typings/main",
     "typings/main.d.ts",

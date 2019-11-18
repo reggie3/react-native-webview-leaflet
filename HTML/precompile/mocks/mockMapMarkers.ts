@@ -2,10 +2,10 @@ const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇'];
 const animations = ['bounce', 'fade', 'pulse', 'jump', 'waggle', 'spin'];
 const duration = Math.floor(Math.random() * 3) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
-const interationCount = 'infinite';
+const iterationCount = 'infinite';
 import * as svgIcons from './svgIcons';
 import { LatLng } from 'leaflet';
-import { MapMarker } from 'react-native-webview-leaflet';
+import { MapMarker, AnimationType } from '../models';
 
 const mapMarkers: MapMarker[] = [
   {
@@ -20,7 +20,7 @@ const mapMarkers: MapMarker[] = [
       name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount
     } */
   },
   {
@@ -30,10 +30,10 @@ const mapMarkers: MapMarker[] = [
       'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
     size: [32, 32],
     animation: {
-      name: 'bounce',
       duration,
       delay,
-      interationCount
+      iterationCount,
+      type: AnimationType.BOUNCE
     }
   },
   {
@@ -41,10 +41,10 @@ const mapMarkers: MapMarker[] = [
     coords: new LatLng(37.23310632, -76.23518332),
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount,
+      type: AnimationType.WAGGLE
     }
   },
   /* {
@@ -56,7 +56,7 @@ const mapMarkers: MapMarker[] = [
       name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount
     }
   },*/
   {
@@ -64,10 +64,10 @@ const mapMarkers: MapMarker[] = [
     coords: new LatLng(36.60061515, -76.48888338),
     icon: svgIcons.greenCircle,
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount,
+      type: AnimationType.PULSE
     }
   }
 
@@ -79,7 +79,7 @@ const mapMarkers: MapMarker[] = [
       name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount
     }
   },
   {
@@ -91,7 +91,7 @@ const mapMarkers: MapMarker[] = [
       name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      interationCount
+      iterationCount
     }
   } */
   /*
@@ -103,7 +103,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -114,7 +114,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -125,7 +125,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -136,7 +136,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -147,7 +147,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -158,7 +158,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -169,7 +169,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -180,7 +180,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -191,7 +191,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -202,7 +202,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -213,7 +213,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -224,7 +224,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -235,7 +235,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -246,7 +246,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	},
 	{
@@ -257,7 +257,7 @@ const mapMarkers: MapMarker[] = [
 			name: animations[Math.floor(Math.random() * animations.length)],
 			duration: Math.floor(Math.random() * 3) + 1,
 			delay: Math.floor(Math.random()) * 0.5,
-			interationCount
+			iterationCount
 		}
 	} */
 ];

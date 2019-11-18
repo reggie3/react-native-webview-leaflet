@@ -15,11 +15,12 @@ import {
   MapVectorLayerPolyline,
   MapVectorLayerPolygon,
   MapVectorLayerRectangle,
-  MapRasterLayer
+  MapRasterLayer,
+  AnimationType
 } from './models';
-import mockVectorLayers from './mocks/appVectorLayers';
-import mockMapLayers from './mocks/appRasterLayers';
-import mockMapMarkers from './mocks/appMapMarkers';
+import mockVectorLayers from './mocks/mockVectorLayers';
+import mockMapLayers from './mocks/mockRasterLayers';
+import mockMapMarkers from './mocks/mockMapMarkers';
 import MapComponentView from './MapComponent.view';
 
 require('react-leaflet-markercluster/dist/styles.min.css');
@@ -40,7 +41,8 @@ interface State {
     | MapVectorLayerCircleMarker
     | MapVectorLayerPolyline
     | MapVectorLayerPolygon
-    | MapVectorLayerRectangle)[];
+    | MapVectorLayerRectangle
+  )[];
   boundsOptions: any;
   bounds: LatLngBounds | null;
   panToLocation: any;
@@ -269,10 +271,10 @@ class MapComponent extends React.Component<Props, State> {
         icon: '🎃',
         size: [24, 24],
         animation: {
-          name: 'pulse',
-          duration: '.5',
+          duration: 0.5,
           delay: 0,
-          iterationCount: 'infinite'
+          iterationCount: 'infinite',
+          type: AnimationType.BOUNCE
         }
       },
       vectorLayers: mockVectorLayers,

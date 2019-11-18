@@ -1,11 +1,11 @@
 import {
+  MapVectorLayerPolygon,
   MapVectorLayerCircle,
   MapVectorLayerType,
-  MapVectorLayerCircleMarker,
-  MapVectorLayerPolygon,
   MapVectorLayerPolyline,
+  MapVectorLayerCircleMarker,
   MapVectorLayerRectangle
-} from 'react-native-webview-leaflet';
+} from '../../src/models';
 
 export const circle: MapVectorLayerCircle = {
   type: MapVectorLayerType.CIRCLE,

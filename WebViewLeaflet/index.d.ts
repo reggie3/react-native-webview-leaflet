@@ -44,6 +44,7 @@ declare class WebViewLeaflet extends React.Component<
 
 export { default as WebViewLeaflet } from './WebViewLeaflet';
 export {
+  AnimationType,
   MapComponentMessages,
   MapEvent,
   MapMarkerAnimation,
@@ -60,5 +61,5 @@ export {
   MapLayerTypes,
   MapStartupMessage,
   WebViewLeafletLatLng,
-  WebviewLeafletMessage,
+  WebviewLeafletMessage
 } from './models';

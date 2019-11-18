@@ -38,7 +38,7 @@ gulp.task('cleanAssets', function(done) {
 });
 
 // copy all the files from HTML/src to HTML/precompile
-gulp.task('copySource', function(done) {
+gulp.task('copySourceToPrecompile', function(done) {
   return gulp.src('./src/**/*').pipe(gulp.dest('./precompile'));
 });
 
@@ -111,13 +111,23 @@ gulp.task('copyNonTSFilesToCompile', (done) => {
 // build the bundle and copy it to webviewLeaflet's assets directory
 gulp.task('buildToWebViewLeaflet', async (done) => {
   return run(
-    'parcel build ./readyForBuild/index.html --out-dir ../WebViewLeaflet/assets --public-url .'
+    'parcel build ./precompile/index.html --out-dir ../WebViewLeaflet/assets --public-url .'
   ).exec();
 });
 
+/* gulp.task('buildToWebViewLeaflet', async (done) => {
+  gulp.src ('./precompile/index.html', {read:false})
+    .pipe( parcel({outDir: '../WebViewLeaflet/assets', publicURL: '.', source: './precompile'}))
+    .pipe( gulp.dest('dist'))
+  
+  return run(
+    'parcel build ./precompile/index.html --out-dir ../WebViewLeaflet/assets --public-url .'
+  ).exec();
+}); */
+
 gulp.task('buildForLocal', async (done) => {
   return run(
-    'parcel build ./compiled/index.html --out-dir ./dist --public-url .'
+    'parcel build ./precompile/index.html --out-dir ./dist --public-url .'
   ).exec();
 });
 
@@ -142,13 +152,12 @@ gulp.task('clean', (done) => {
 gulp.task('dev', (done) => {
   const tasks = gulp.series([
     'clean',
-    'copySource',
+    'copySourceToPrecompile',
     'replaceStringsDev',
-    'compileTSC',
     'replaceHtmlTsxImport',
     'copyNonTSFilesToCompile',
-    'copyCompiled'
-    /* 'buildToWebViewLeaflet' */
+    'copyCompiled',
+    'buildToWebViewLeaflet'
   ]);
   tasks();
   done();
@@ -157,7 +166,7 @@ gulp.task('dev', (done) => {
 gulp.task('dist', (done) => {
   const tasks = gulp.series([
     'clean',
-    'copySource',
+    'copySourceToPrecompile',
     'replaceStringsDist',
     'compileTSC',
     'replaceHtmlTsxImport',
@@ -171,7 +180,7 @@ gulp.task('dist', (done) => {
 gulp.task('browserDist', (done) => {
   const tasks = gulp.series([
     'clean',
-    'copySource',
+    'copySourceToPrecompile',
     'compileTSC',
     'replaceHtmlTsxImport',
     'copyNonTSFilesToCompile',

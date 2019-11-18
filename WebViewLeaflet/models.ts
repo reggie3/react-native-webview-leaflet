@@ -22,9 +22,18 @@ export enum MapEvent {
   ON_MAP_MARKER_CLICKED = 'onMapMarkerClicked'
 }
 
+export enum AnimationType {
+  BOUNCE,
+  FADE,
+  PULSE,
+  JUMP,
+  SPIN,
+  WAGGLE
+}
+
 export interface MapMarkerAnimation {
-  name: 'bounce' | 'fade' | 'pulse' | 'jump' | 'waggle' | 'spin';
-  duration?: string;
+  type: AnimationType;
+  duration?: number;
   delay?: number;
   direction?: 'nomal' | 'reverse' | 'alternate' | 'alternate-reverse';
   iterationCount?: number | 'infinite';
@@ -35,9 +44,9 @@ export interface MapMarker {
   coords: WebViewLeafletLatLng;
   divIcon?: L.DivIcon;
   icon: any;
-  iconAnchor?: L.PointExpression;
+  iconAnchor?: [number, number];
   id?: number | string;
-  size: L.PointExpression;
+  size?: [number, number];
   title?: string;
 }
 
