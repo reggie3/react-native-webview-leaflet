@@ -1,11 +1,13 @@
 import {
   convertWebViewLeafletLatLngToNumberArray,
-  convertWebViewLeafletLatLngBoundsToLeaftletBounds
-} from '../utilities';
+  convertWebViewLeafletLatLngBoundsToLeaftletBounds,
+  getAnimatedHTMLString
+} from './utilities';
 import {
   WebViewLeafletLatLng,
   WebViewLeafletLatLngBounds
-} from '../../../WebViewLeaflet/models';
+} from '../../WebViewLeaflet/models';
+import { AnimationType } from './models';
 
 const singleLatLng: WebViewLeafletLatLng = { lat: 34.225727, lng: -77.94471 };
 const latLngArray: WebViewLeafletLatLng[] = [
@@ -80,9 +82,9 @@ const arrayBounds: WebViewLeafletLatLngBounds = [
 ];
 
 describe('convertWebViewLeafletLatLngBoundsToLeaftletBounds', () => {
-  it('can figure out whether the bounds of type WebViewLeafletLatLngBoundsCorners or WebViewLeafletLatLng[]', () => {
+  /*   it('can figure out whether the bounds of type WebViewLeafletLatLngBoundsCorners or WebViewLeafletLatLng[]', () => {
     console.log('******************************');
-  });
+  }); */
 
   it('can covert WebViewLeafletLatLngBoundsCorner objects', () => {
     const convertedBounds = convertWebViewLeafletLatLngBoundsToLeaftletBounds(
@@ -103,5 +105,33 @@ describe('convertWebViewLeafletLatLngBoundsToLeaftletBounds', () => {
       [38.89688, -77.302505],
       [37.829395, -76.756299]
     ]);
+  });
+});
+
+const mapMarker = {
+  id: 2,
+  coords: { lat: 37.06452161, lng: -75.67364786 },
+  icon: '😴',
+  size: [64, 64],
+  animation: {
+    duration: 1,
+    delay: 0.5,
+    type: AnimationType.BOUNCE
+  }
+};
+
+describe('getAnimatedHTMLString', () => {
+  it('returns a div with an animated emoji', () => {
+    const div = getAnimatedHTMLString(mapMarker.icon, mapMarker.animation);
+    console.log(div);
+    console.log('=====================');
+    expect(div).toBe(`<div class='animationContainer' style="
+animation-name: bounce;
+animation-duration: 1s ;
+animation-delay: 0.5s;
+animation-direction: normal;
+animation-iteration-count: infinite">
+<div style='font-size: 24px'>😴</div>
+</div>`);
   });
 });

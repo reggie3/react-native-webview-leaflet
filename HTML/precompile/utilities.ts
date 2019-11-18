@@ -30,10 +30,10 @@ export const createDivIcon = (mapMarker: MapMarker): DivIcon => {
 const getAnimatedHTMLString = (
   icon: any,
   animation: MapMarkerAnimation,
-  size: L.PointExpression = [24, 24]
+  size: [number, number] = [24, 24]
 ) => {
   return `<div class='animationContainer' style="
-    animation-name: ${animation.name ? animation.name : 'bounce'}; 
+    animation-name: ${animation.type ? animation.type : 'bounce'}; 
     animation-duration: ${animation.duration ? animation.duration : 1}s ;
     animation-delay: ${animation.delay ? animation.delay : 0}s;
     animation-direction: ${
@@ -118,6 +118,5 @@ export const convertWebViewLeafletLatLngBoundsToLeaftletBounds = (
       bounds as WebViewLeafletLatLng[]
     );
   }
-  console.log(convertedBounds);
   return convertedBounds as LatLngBounds;
 };

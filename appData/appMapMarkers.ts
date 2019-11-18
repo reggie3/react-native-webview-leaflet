@@ -38,7 +38,7 @@ const mapMarkers: MapMarker[] = [
   {
     id: 100,
     coords: new LatLng(37.23310632, -76.23518332),
-    icon: emoji[Math.floor(Math.random() * emoji.length)],
+    icon: '⛔',
     animation: {
       duration,
       delay,

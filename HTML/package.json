@@ -38,14 +38,17 @@
     "@babel/preset-react": "^7.6.3",
     "@babel/preset-typescript": "^7.6.0",
     "@testing-library/react": "^9.3.0",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.11.1",
     "@types/react-leaflet": "^2.4.0",
     "@types/react-leaflet-markercluster": "^2.0.0",
-    "@types/node": "^12.11.1",
     "@types/react-native": "^0.60.21",
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "gulp-filter": "^6.0.0",
     "gulp-typescript": "^5.0.1",
     "jest": "^24.9.0",
+    "jest-transform-css": "^2.0.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-inliner": "^1.0.10",
@@ -57,6 +60,11 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
-    ]
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      ".+\\.(css|styl|less|sass|scss)$": "jest-transform-css"
+    },
+    "preset": "ts-jest/presets/js-with-ts"
   }
 }

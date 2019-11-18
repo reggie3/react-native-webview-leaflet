@@ -145,7 +145,7 @@ const MapComponentView = ({
               />
             </LayersControl>
           )}
-          {/* isLoaded && (
+          {isLoaded && (
             <LayersControl position="topleft">
               <LayersControl.Overlay name="Markers" checked={true}>
                 {isLoaded && <VectorLayers vectorLayers={vectorLayers} />}
@@ -158,7 +158,7 @@ const MapComponentView = ({
                 )}
               </LayersControl.Overlay>
             </LayersControl>
-          ) */}
+          )}
         </Map>
       )}
       {SHOW_DEBUG_INFORMATION ? (

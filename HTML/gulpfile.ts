@@ -4,6 +4,7 @@ const replace = require('gulp-string-replace');
 const clean = require('gulp-clean');
 const { series, parallel } = require('gulp');
 const ts = require('gulp-typescript');
+const filter = require('gulp-filter');
 
 // Empty the HTML/dist directory
 gulp.task('cleanCache', function(done) {
@@ -39,7 +40,9 @@ gulp.task('cleanAssets', function(done) {
 
 // copy all the files from HTML/src to HTML/precompile
 gulp.task('copySourceToPrecompile', function(done) {
-  return gulp.src('./src/**/*').pipe(gulp.dest('./precompile'));
+  return gulp
+    .src(['./src/**/*', '!./src/*.test.*'])
+    .pipe(gulp.dest('./precompile'));
 });
 
 // remove debugging flags from MapComponent.tsx file and copy that to the readyForBuild folder

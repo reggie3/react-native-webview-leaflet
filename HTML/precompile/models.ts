@@ -23,12 +23,12 @@ export enum MapEvent {
 }
 
 export enum AnimationType {
-  BOUNCE,
-  FADE,
-  PULSE,
-  JUMP,
-  SPIN,
-  WAGGLE
+  BOUNCE = 'bounce',
+  FADE = 'fade',
+  PULSE = 'pulse',
+  JUMP = 'jump',
+  SPIN = 'spin',
+  WAGGLE = 'waggle'
 }
 
 export interface MapMarkerAnimation {
