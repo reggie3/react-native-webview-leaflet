@@ -10,10 +10,11 @@
     "webview"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "./node_modules/.bin/jest",
     "build": "parcel ./src/index.html --out-dir ./build/",
     "dist": "parcel build ./build/index.html --out-dir ./dist/ --public-url .",
-    "serve": "parcel ./dist/index.html"
+    "serve": "parcel ./dist/index.html",
+    "dev": "gulp dev && parcel build ./precompile/index.html --out-dir ../WebViewLeaflet/assets --public-url ."
   },
   "author": "",
   "license": "ISC",
@@ -56,15 +57,5 @@
     "react-test-renderer": "^16.10.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
-    ],
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      ".+\\.(css|styl|less|sass|scss)$": "jest-transform-css"
-    },
-    "preset": "ts-jest/presets/js-with-ts"
   }
 }

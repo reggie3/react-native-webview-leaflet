@@ -62,7 +62,7 @@ var MapComponent = /** @class */ (function (_super) {
             _this.setState({ debugMessages: __spreadArrays(_this.state.debugMessages, ['componentDidMount']) }, function () {
                 try {
                     _this.sendMessage({
-                        msg: 'MAP_COMREADY'
+                        msg: 'MAP_READY'
                     });
                 }
                 catch (error) {

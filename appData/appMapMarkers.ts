@@ -6,7 +6,9 @@ import * as svgIcons from './svgIcons';
 import { LatLng } from 'leaflet';
 import { MapMarker, AnimationType } from 'react-native-webview-leaflet';
 
-const mapMarkers: MapMarker[] = [
+const mapMarkers: MapMarker[] = [];
+
+let cat = [
   {
     id: 2,
     coords: { lat: 37.06452161, lng: -75.67364786 },

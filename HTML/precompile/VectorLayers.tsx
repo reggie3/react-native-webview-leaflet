@@ -23,8 +23,22 @@ interface Props {
     | MapVectorLayerCircleMarker
     | MapVectorLayerPolyline
     | MapVectorLayerPolygon
-    | MapVectorLayerRectangle)[];
+    | MapVectorLayerRectangle
+  )[];
 }
+
+export const CircleLayer = ({ layer }: { layer: MapVectorLayerCircle }) => {
+  return (
+    <Circle
+      key={layer.id}
+      color={layer.color || 'white'}
+      // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
+      center={convertWebViewLeafletLatLngToNumberArray(layer.center)}
+      radius={layer.radius}
+      attribution={layer.attribution || null}
+    />
+  );
+};
 
 const VectorLayers = ({ vectorLayers }: Props) => {
   return (
@@ -33,16 +47,8 @@ const VectorLayers = ({ vectorLayers }: Props) => {
         const layerId = mapVectorLayer.id || index;
         switch (mapVectorLayer.type) {
           case MapVectorLayerType.CIRCLE: {
-            let layer = mapVectorLayer as MapVectorLayerCircle;
-            return (
-              <Circle
-                key={mapVectorLayer.id}
-                color={layer.color || 'white'}
-                // @ts-ignore convertWebViewLeafletLatLngToNumberArray can handle single, array, or 2dArray
-                center={convertWebViewLeafletLatLngToNumberArray(layer.center)}
-                radius={layer.radius}
-                attribution={layer.attribution || null}
-              />
+            let layer = (
+              <CircleLayer layer={mapVectorLayer as MapVectorLayerCircle} />
             );
           }
 

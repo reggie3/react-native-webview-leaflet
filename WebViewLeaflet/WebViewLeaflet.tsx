@@ -92,7 +92,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
     let message: WebviewLeafletMessage = JSON.parse(data);
     this.updateDebugMessages(`received: ${JSON.stringify(message)}`);
-    if (message.msg === 'MAP_COMREADY') {
+    if (message.msg === 'MAP_READY') {
       this.sendStartupMessage();
     }
     onMessageReceived(message);

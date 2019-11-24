@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Map, LayersControl, Polyline, TileLayer } from 'react-leaflet';
+import { Map, LayersControl, Polyline, TileLayer, Circle } from 'react-leaflet';
 import { LatLngExpression, LeafletMouseEvent } from 'leaflet';
 import {
   MapMarker,
@@ -19,6 +19,7 @@ import 'leaflet/dist/images/marker-shadow.png';
 import './markers.css';
 import VectorLayers from './VectorLayers';
 import MapMarkers from './Markers';
+import VectorLayers from '../precompile/VectorLayers';
 
 require('react-leaflet-markercluster/dist/styles.min.css');
 
@@ -145,10 +146,9 @@ const MapComponentView = ({
               />
             </LayersControl>
           )}
-          {isLoaded && (
+          {/* isLoaded && (
             <LayersControl position="topleft">
               <LayersControl.Overlay name="Markers" checked={true}>
-                {isLoaded && <VectorLayers vectorLayers={vectorLayers} />}
                 {isLoaded && (
                   <MapMarkers
                     mapMarkers={mapMarkers}
@@ -158,7 +158,9 @@ const MapComponentView = ({
                 )}
               </LayersControl.Overlay>
             </LayersControl>
-          )}
+          ) */}
+          {/* {isLoaded &&
+            vectorLayers.length()(<VectorLayers vectorLayers={vectorLayers} />) }*/}
         </Map>
       )}
       {SHOW_DEBUG_INFORMATION ? (

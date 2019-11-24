@@ -97,7 +97,7 @@ class MapComponent extends React.Component<Props, State> {
       () => {
         try {
           this.sendMessage({
-            msg: 'MAP_COMREADY'
+            msg: 'MAP_READY'
           });
         } catch (error) {
           this.addDebugMessage(error);
@@ -170,7 +170,7 @@ class MapComponent extends React.Component<Props, State> {
   private handleMessage = (event) => {
     this.addDebugMessage(event.data);
     try {
-      this.setState({ ...this.state, ...event.data });
+      // this.setState({ ...this.state, ...event.data });
     } catch (error) {
       this.addDebugMessage({ error: JSON.stringify(error) });
     }
@@ -265,7 +265,7 @@ class MapComponent extends React.Component<Props, State> {
 
   private setupBrowserTesting = () => {
     this.setState({
-      mapMarkers: (mockMapMarkers as unknown) as MapMarker[],
+      mapMarkers: [] as MapMarker[],
       ownPositionMarker: {
         coords: new LatLng(36.56, -76.17),
         icon: '🎃',
