@@ -101,10 +101,10 @@ const mapVectorLayers: (
   | MapVectorLayerPolygon
   | MapVectorLayerRectangle
 )[] = [
-  circle
-  /* circleMarker,
-  polygon,
-  multiPolygon,
+  /* circle,
+  circleMarker, */
+  polygon
+  /* multiPolygon,
   polyline,
   multiPolyline,
   rectangle */

@@ -60,10 +60,10 @@ const App: React.FunctionComponent = () => {
         <View style={{ backgroundColor: 'yellow', flex: 1 }}>
           <WebViewLeaflet
             onMessageReceived={onMessageReceived}
-            doShowDebugMessages={true}
+            doShowDebugMessages={false}
             backgroundColor={'#f6b36f'}
             rasterLayers={rasterLayers}
-            /* vectorLayers={vectorLayers} */
+            vectorLayers={vectorLayers}
             mapMarkers={[]}
             mapCenterCoords={mapCenterCoords}
             zoom={8}

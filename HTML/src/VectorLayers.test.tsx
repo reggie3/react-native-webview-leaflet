@@ -2,8 +2,8 @@ import VectorLayers from './VectorLayers';
 import * as React from 'react';
 import { MapVectorLayerType, MapVectorLayerCircle } from './models';
 import { CircleLayer } from './VectorLayers';
-import { render, fireEvent } from 'react-native-testing-library';
-import { Text } from 'react-native';
+import { render, fireEvent } from '@testing-library/react';
+import * as renderer from 'react-test-renderer';
 
 const circle: MapVectorLayerCircle = {
   type: MapVectorLayerType.CIRCLE,
@@ -14,12 +14,11 @@ const circle: MapVectorLayerCircle = {
 };
 
 const Test = ({ layer }) => {
-  return <Text>Hello</Text>;
+  return <p>Hello</p>;
 };
 describe('VectorLayers component', () => {
   it('should render', () => {
-    /*  const res = render(<Test layer={circle} />);
-    console.log(res);
-    console.log('---------------------------'); */
+    const tree = renderer.create(<CircleLayer layer={circle} />).toJSON();
+    expect(tree).toMatchSnapshot();
   });
 });

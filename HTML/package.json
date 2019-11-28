@@ -24,9 +24,9 @@
     "leaflet": "^1.5.1",
     "leaflet.markercluster": "^1.4.1",
     "prop-types": "^15.7.2",
-    "react": "16.9.0",
-    "react-dom": "^16.10.2",
-    "react-leaflet": "^2.4.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-leaflet": "^2.6.0",
     "react-leaflet-markercluster": "2.0.0-rc3",
     "util": "^0.12.1"
   },
@@ -38,10 +38,10 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "@babel/preset-typescript": "^7.6.0",
-    "@testing-library/react": "^9.3.0",
+    "@testing-library/react": "^9.3.2",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.11.1",
-    "@types/react-leaflet": "^2.4.0",
+    "@types/react-leaflet": "^2.5.0",
     "@types/react-leaflet-markercluster": "^2.0.0",
     "@types/react-native": "^0.60.21",
     "babel-jest": "^24.9.0",
@@ -53,9 +53,8 @@
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-inliner": "^1.0.10",
-    "react-native-testing-library": "^1.11.1",
     "react-test-renderer": "^16.10.2",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.2"
   }
 }

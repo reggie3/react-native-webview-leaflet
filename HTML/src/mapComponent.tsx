@@ -70,22 +70,22 @@ class MapComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      boundsOptions: null,
-      bounds: null,
-      mapCenterCoords: null,
-      debugMessages: ['test'],
-      vectorLayers: [],
-      isLoaded: false,
-      lat: 51.505,
-      lng: -0.09,
-      rasterLayers: [],
-      mapMarkers: [],
-      ownPositionMarker: null,
-      panToLocation: null,
-      showZoomControl: false,
-      showAttributionControl: false,
-      useMarkerClustering: true,
-      zoom: 13
+           bounds: null,
+      debugMessages: ['test'],
+      isLoaded: false,
+      lat: 51.505,
+      lng: -0.09,
+      mapCenterCoords: null,
+      mapMarkers: [],
+      ownPositionMarker: null,
+      panToLocation: null,
+      rasterLayers: [],
+      showAttributionControl: false,
+      showZoomControl: false,
+      useMarkerClustering: true,
+      vectorLayers: [],
+      zoom: 13
+ boundsOptions: null,
     };
     console.log('Here');
   }
@@ -204,9 +204,9 @@ class MapComponent extends React.Component<Props, State> {
             zoom: mapZoom
           };
         }
-        this.printElement(
+        /* this.printElement(
           `onMapEvent: event = ${event}, payload = ${JSON.stringify(payload)}`
-        );
+        ); */
 
         this.sendMessage({
           event,

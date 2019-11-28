@@ -25,7 +25,6 @@ require('react-leaflet-markercluster/dist/styles.min.css');
 
 interface Props {
   addDebugMessage: (msg: any) => void;
-
   boundsOptions: any;
   bounds: any;
   panToLocation: any;
@@ -159,8 +158,13 @@ const MapComponentView = ({
               </LayersControl.Overlay>
             </LayersControl>
           ) */}
-          {/* {isLoaded &&
-            vectorLayers.length()(<VectorLayers vectorLayers={vectorLayers} />) }*/}
+          {isLoaded && !!vectorLayers.length && (
+            <VectorLayers
+              addDebugMessage={addDebugMessage}
+              debugMessages={debugMessages}
+              vectorLayers={vectorLayers}
+            />
+          )}
         </Map>
       )}
       {SHOW_DEBUG_INFORMATION ? (

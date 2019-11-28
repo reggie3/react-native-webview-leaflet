@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import {
   Circle,
   LayerGroup,
@@ -18,6 +19,8 @@ import {
 import { convertWebViewLeafletLatLngToNumberArray } from './utilities';
 
 interface Props {
+  addDebugMessage: (msg: any) => void;
+  debugMessages: string[];
   vectorLayers: (
     | MapVectorLayerCircle
     | MapVectorLayerCircleMarker
@@ -40,17 +43,32 @@ export const CircleLayer = ({ layer }: { layer: MapVectorLayerCircle }) => {
   );
 };
 
-const VectorLayers = ({ vectorLayers }: Props) => {
+const VectorLayers = ({
+  addDebugMessage,
+  debugMessages,
+  vectorLayers
+}: Props) => {
+  const [layerIds, setLayerIds] = useState<any[]>([]);
+
+  // Use this to only add to the parent's debug message array when
+  // this functions debug message array changes
+  useEffect(() => {
+    addDebugMessage(layerIds);
+  }, [layerIds]);
+
   return (
-    <LayerGroup>
+    <>
       {vectorLayers.map((mapVectorLayer, index) => {
         const layerId = mapVectorLayer.id || index;
+        if (!layerIds.includes(JSON.stringify(mapVectorLayer))) {
+          setLayerIds([...layerIds, JSON.stringify(mapVectorLayer)]);
+        }
+
         switch (mapVectorLayer.type) {
-          case MapVectorLayerType.CIRCLE: {
-            let layer = (
+          case MapVectorLayerType.CIRCLE:
+            return (
               <CircleLayer layer={mapVectorLayer as MapVectorLayerCircle} />
             );
-          }
 
           case MapVectorLayerType.CIRCLE_MARKER: {
             let layer = mapVectorLayer as MapVectorLayerCircleMarker;
@@ -109,7 +127,7 @@ const VectorLayers = ({ vectorLayers }: Props) => {
             console.warn('Unknown vector layer type', mapVectorLayer.type);
         }
       })}
-    </LayerGroup>
+    </>
   );
 };
 

@@ -102,12 +102,12 @@ const mapVectorLayers: (
   | MapVectorLayerRectangle
 )[] = [
   circle
-  /* circleMarker,
+  circleMarker,
   polygon,
   multiPolygon,
   polyline,
   multiPolyline,
-  rectangle */
+  rectangle 
 ];
 
 export default mapVectorLayers;
