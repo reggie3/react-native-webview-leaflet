@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { NativeSyntheticEvent, View } from 'react-native';
-import { WebView } from 'react-native-webview';
-import AssetUtils from 'expo-asset-utils';
-import { Asset } from 'expo-asset';
-import WebViewLeafletView from './WebViewLeaflet.view';
+import * as React from "react";
+import { NativeSyntheticEvent } from "react-native";
+import { WebView } from "react-native-webview";
+import AssetUtils from "expo-asset-utils";
+import { Asset } from "expo-asset";
+import WebViewLeafletView from "./WebViewLeaflet.view";
 import {
   MapVectorLayer,
   MapRasterLayer,
@@ -11,11 +11,11 @@ import {
   WebviewLeafletMessage,
   MapStartupMessage,
   WebViewLeafletLatLng
-} from './models';
-import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
-import { ActivityOverlay } from './ActivityOverlay';
+} from "./models";
+import { WebViewError } from "react-native-webview/lib/WebViewTypes";
+import { ActivityOverlay } from "./ActivityOverlay";
 const INDEX_FILE_PATH = require(`./assets/index.html`);
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from "expo-file-system";
 
 export interface Props {
   backgroundColor?: string;
@@ -41,7 +41,7 @@ interface State {
 class WebViewLeaflet extends React.Component<Props, State> {
   private webViewRef: any;
   static defaultProps = {
-    backgroundColor: '#FAEBD7',
+    backgroundColor: "#FAEBD7",
     doShowDebugMessages: false,
     loadingIndicator: () => {
       return <ActivityOverlay />;
@@ -75,14 +75,14 @@ class WebViewLeaflet extends React.Component<Props, State> {
       this.setState({ webviewContent: fileString });
     } catch (error) {
       console.warn(error);
-      console.warn('Unable to resolve index file');
+      console.warn("Unable to resolve index file");
     }
   };
 
   componentDidUpdate = (prevProps: Props, prevState: State) => {
     const { webviewContent } = this.state;
     if (!prevState.webviewContent && webviewContent) {
-      this.updateDebugMessages('file loaded');
+      this.updateDebugMessages("file loaded");
     }
   };
 
@@ -92,7 +92,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
     let message: WebviewLeafletMessage = JSON.parse(data);
     this.updateDebugMessages(`received: ${JSON.stringify(message)}`);
-    if (message.msg === 'MAP_READY') {
+    if (message.msg === "MAP_READY") {
       this.sendStartupMessage();
     }
     onMessageReceived(message);
@@ -142,7 +142,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
     startupMessage.zoom = zoom;
 
     this.setState({ isLoading: false });
-    this.updateDebugMessages('sending startup message');
+    this.updateDebugMessages("sending startup message");
 
     this.webViewRef.injectJavaScript(
       `window.postMessage(${JSON.stringify(startupMessage)}, '*');`

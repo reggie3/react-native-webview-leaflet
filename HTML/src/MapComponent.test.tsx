@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import MapComponent from "./MapComponent";
 
 test("renders learn react link", () => {
-  const { getByText } = render(<MapComponent />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const { getByTestId } = render(<MapComponent />);
+  const element = getByTestId("MapComponentView");
 });

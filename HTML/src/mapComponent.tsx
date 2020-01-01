@@ -3,9 +3,10 @@ import "leaflet/dist/leaflet.css";
 import "leaflet/dist/images/layers-2x.png";
 import "leaflet/dist/images/layers.png";
 import "leaflet/dist/images/marker-icon-2x.png";
-import "leaflet/dist/images/marker-icon.png";
-import "leaflet/dist/images/marker-shadow.png";
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import MapComponentView from "./MapComponent.view";
+import L from "leaflet";
 
 interface State {
   mapCenterCoords: [number, number];
@@ -19,11 +20,20 @@ export default class MapComponent extends Component<{}, State> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      mapCenterCoords: null,
+      mapCenterCoords: [36.56, -76.17],
       mapRef: null,
       zoom: 13
     };
   }
+
+  componentDidMount = () => {
+    let DefaultIcon = L.icon({
+      iconUrl: icon,
+      shadowUrl: iconShadow
+    });
+    L.Marker.prototype.options.icon = DefaultIcon;
+  };
+
   componentDidUpdate = (prevProps: any, prevState: State) => {
     if (this.state.mapRef && !prevState.mapRef) {
       this.state.mapRef.current?.leafletElement.invalidateSize();
@@ -34,6 +44,8 @@ export default class MapComponent extends Component<{}, State> {
   setMapRef = (mapRef: any) => {
     if (!this.state.mapRef) {
       this.setState({ mapRef });
+      console.log(mapRef);
+      console.log("setting map ref");
     }
   };
 

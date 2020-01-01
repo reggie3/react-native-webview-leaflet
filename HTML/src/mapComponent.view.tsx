@@ -1,8 +1,15 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import Measure from "react-measure";
-import { Map, TileLayer, Marker, Popup, LatLng } from "react-leaflet";
-import L from "leaflet";
+import {
+  Map,
+  TileLayer,
+  Marker,
+  Popup,
+  LatLng,
+  LayersControl
+} from "react-leaflet";
+const { BaseLayer, Overlay } = LayersControl;
 
 interface MapComponentViewProps {
   mapCenterCoords: [number, number];
@@ -43,14 +50,29 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
               ref={ref => {
                 setMapRef(ref);
               }}
-              center={[36.56, -76.17]}
+              center={mapCenterCoords}
               zoom={zoom}
               style={{ width: "100%", height: dimensions.height }}
             >
-              <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+              <LayersControl>
+                <BaseLayer checked name="OpenStreetMap.Mapnik">
+                  <TileLayer
+                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                </BaseLayer>
+                <BaseLayer name="OpenStreetMap.BlackAndWhite">
+                  <TileLayer
+                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
+                  />
+                </BaseLayer>
+                <Marker position={mapCenterCoords}>
+                  <Popup>
+                    A pretty CSS3 popup. <br /> Easily customizable.
+                  </Popup>
+                </Marker>
+              </LayersControl>
             </Map>
           )}
         </div>
