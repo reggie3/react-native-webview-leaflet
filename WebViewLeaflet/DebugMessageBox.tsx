@@ -1,6 +1,5 @@
-import { View } from 'native-base';
-import React from 'react';
-import { ScrollView, Text } from 'react-native';
+import React from "react";
+import { ScrollView, Text, View } from "react-native";
 
 export interface Props {
   debugMessages: string[];
@@ -16,9 +15,9 @@ const DebugMessageBox = ({
       <View
         style={{
           height: 100,
-          backgroundColor: 'aliceblue',
+          backgroundColor: "aliceblue",
           padding: 5,
-          position: 'absolute',
+          position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
@@ -27,7 +26,7 @@ const DebugMessageBox = ({
       >
         <ScrollView>
           {debugMessages.map((msg, idx) => {
-            if (typeof msg === 'object') {
+            if (typeof msg === "object") {
               return (
                 <Text style={{ fontSize: 10 }} key={idx}>{`- ${JSON.stringify(
                   msg

@@ -1,51 +1,6 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
-    "build": "parcel ./HTML/dev/index.html --out-dir ./HTML/build/",
-    "dist": "parcel build ./HTML/build/index.html --out-dir ./HTML/dist/ --public-url .",
-    "serve": "parcel ./dist/index.html"
-  },
-  "dependencies": {
-    "expo": "^35.0.0",
-    "expo-file-system": "~7.0.0",
-    "expo-font": "^7.0.0",
-    "leaflet": "^1.5.1",
-    "minipass": "2.8.5",
-    "native-base": "^2.13.8",
-    "react": "16.8.3",
-    "react-dom": "16.8.3",
-    "react-leaflet": "^2.4.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
-    "react-native-web": "^0.11.7",
-    "react-native-webview": "7.0.5",
-    "react-native-webview-leaflet": "file:./WebViewLeaflet"
-  },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-syntax-export-default-from": "^7.2.0",
-    "@types/expo": "^32.0.13",
-    "@types/jest": "^24.0.18",
-    "@types/leaflet": "^1.5.3",
-    "@types/react": "^16.8.23",
-    "@types/react-native": "^0.57.65",
-    "babel-preset-expo": "^7.0.0",
     "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0",
-    "gulp-run": "^1.7.1",
-    "gulp-string-replace": "^1.1.2",
-    "rollup": "^1.25.0",
-    "ts-node": "^8.4.1",
-    "tslib": "^1.10.0",
-    "typescript": "^3.6.4",
-    "typescript-node": "^0.1.3",
-    "typescript-register": "^1.1.0",
-    "typescript-require": "^0.2.10"
-  },
-  "private": true
+    "gulp-run": "^1.7.1"
+  }
 }

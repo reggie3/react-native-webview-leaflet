@@ -1,34 +1,20 @@
 {
   "compilerOptions": {
-    /*     "outFile": "./compiled/local/tsc.js",
-     */
-
-    "outDir": "./compiled/",
-    "module": "commonjs",
     "target": "es5",
-    "lib": ["es6", "dom"],
-    "jsx": "react",
-    "declaration": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
     "moduleResolution": "node",
-    "types": ["react", "jest", "node"],
-    "inlineSourceMap": true,
-    "inlineSources": true
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "strict": true,
+    "strictNullChecks": false
   },
-  "files": ["./precompile/index.tsx"],
-  "exclude": [
-    "typings/main",
-    "typings/main.d.ts",
-    "typings/index.d.ts",
-    "node_modules",
-    "build",
-    "scripts",
-    "__tests__/**/*",
-    "preDist",
-    ".expo",
-    "src/setupTests.ts",
-    "gulpfile.ts",
-    "typings",
-    "secrets.js",
-    "secrets.ts"
-  ]
+  "include": ["src"]
 }

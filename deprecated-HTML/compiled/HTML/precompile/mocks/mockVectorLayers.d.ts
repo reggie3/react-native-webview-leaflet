@@ -1,0 +1,10 @@
+import { MapVectorLayerPolygon, MapVectorLayerCircle, MapVectorLayerPolyline, MapVectorLayerCircleMarker, MapVectorLayerRectangle } from '../../src/models';
+export declare const circle: MapVectorLayerCircle;
+export declare const circleMarker: MapVectorLayerCircleMarker;
+export declare const polygon: MapVectorLayerPolygon;
+export declare const multiPolygon: MapVectorLayerPolygon;
+export declare const polyline: MapVectorLayerPolyline;
+export declare const multiPolyline: MapVectorLayerPolyline;
+export declare const rectangle: MapVectorLayerRectangle;
+declare const mapVectorLayers: (MapVectorLayerCircle | MapVectorLayerCircleMarker | MapVectorLayerPolyline | MapVectorLayerPolygon | MapVectorLayerRectangle)[];
+export default mapVectorLayers;
