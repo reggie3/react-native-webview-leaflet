@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MapComponentView it renders 1`] = `
+<DocumentFragment>
+  <div
+    id="map-container"
+    style="position: absolute; top: 0px; bottom: 0px; background-color: greenyellow; left: 0px; right: 0px;"
+  />
+</DocumentFragment>
+`;
