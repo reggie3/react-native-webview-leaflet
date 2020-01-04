@@ -2,19 +2,27 @@ import * as React from "react";
 import {
   TileLayer,
   LayersControl,
+  WMSTileLayer,
+  WMSTileLayerProps,
   TileLayerProps,
-  useLeaflet,
-  LayerGroup
+  ImageOverlay,
+  ImageOverlayProps
 } from "react-leaflet";
-const { BaseLayer, Overlay } = LayersControl;
+import { MapLayerTypes } from "./models";
+const { BaseLayer } = LayersControl;
 
 export type MapLayer = {
   attribution?: string;
   baseLayer?: boolean;
   baseLayerIsChecked?: boolean;
   baseLayerName?: string;
+  bounds?: number[][];
+  layerType?: MapLayerTypes;
+  opacity?: number;
   pane?: string;
+  subLayer?: string;
   url?: string;
+  zIndex?: number;
 };
 
 interface MapLayersProps {
@@ -22,19 +30,15 @@ interface MapLayersProps {
 }
 
 class MapLayers extends React.Component<MapLayersProps> {
-  private Layer = ({
-    layer,
-    index
-  }: {
-    layer: MapLayer;
-    index?: number;
-  }): JSX.Element => {
+  private Layer = ({ layer }: { layer: MapLayer }): JSX.Element => {
     let props: MapLayer & { key?: string } = {};
 
     props.attribution = layer.attribution;
+    props.bounds = layer.bounds;
+    props.opacity = layer.opacity;
+    props.subLayer = layer.subLayer;
     props.url = layer.url;
-    // props.pane = layer.pane;
-    // props.key = `layer-${index}`;
+    props.zIndex = layer.zIndex;
 
     //removed undefined keys
     Object.keys(props).forEach((key: string) => {
@@ -46,7 +50,14 @@ class MapLayers extends React.Component<MapLayersProps> {
       }
     });
 
-    return <TileLayer {...(props as TileLayerProps)} />;
+    switch (layer.layerType) {
+      case MapLayerTypes.WMS_TILE_LAYER:
+        return <WMSTileLayer {...(props as WMSTileLayerProps)} />;
+      case MapLayerTypes.IMAGE_LAYER:
+        return <ImageOverlay {...(props as ImageOverlayProps)} />;
+      default:
+        return <TileLayer {...(props as TileLayerProps)} />;
+    }
   };
 
   private Layers = (): JSX.Element[] => {
@@ -64,9 +75,7 @@ class MapLayers extends React.Component<MapLayersProps> {
             </BaseLayer>
           );
         }
-        return (
-          <this.Layer key={`layer-${index}`} layer={layer} index={index} />
-        );
+        return <this.Layer key={`layer-${index}`} layer={layer} />;
       }
     );
   };

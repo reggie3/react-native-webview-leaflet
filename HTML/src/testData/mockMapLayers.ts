@@ -1,4 +1,5 @@
 import { MapLayer } from "../MapLayers";
+import { MapLayerTypes } from "../models";
 
 const mockMapLayers: MapLayer[] = [
   {
@@ -14,6 +15,21 @@ const mockMapLayers: MapLayer[] = [
     baseLayerIsChecked: false,
     baseLayerName: "OpenStreetMap.BlackAndWhite",
     url: "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
+  },
+  {
+    baseLayerName: "WMS Tile Layer",
+    subLayer: "nasa:bluemarble",
+    layerType: MapLayerTypes.WMS_TILE_LAYER,
+    url: "https://demo.boundlessgeo.com/geoserver/ows"
+  },
+  {
+    baseLayerName: "Image",
+    layerType: MapLayerTypes.IMAGE_LAYER,
+    url: "http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg",
+    bounds: [
+      [40.712216, -74.22655],
+      [40.773941, -74.12544]
+    ]
   }
 ];
 
