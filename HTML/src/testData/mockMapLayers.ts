@@ -1,5 +1,4 @@
-import { MapLayer } from "../MapLayers";
-import { MapLayerTypes } from "../models";
+import { MapLayer, MapLayerType } from "../MapLayers";
 
 const mockMapLayers: MapLayer[] = [
   {
@@ -19,12 +18,12 @@ const mockMapLayers: MapLayer[] = [
   {
     baseLayerName: "WMS Tile Layer",
     subLayer: "nasa:bluemarble",
-    layerType: MapLayerTypes.WMS_TILE_LAYER,
+    layerType: MapLayerType.WMS_TILE_LAYER,
     url: "https://demo.boundlessgeo.com/geoserver/ows"
   },
   {
     baseLayerName: "Image",
-    layerType: MapLayerTypes.IMAGE_LAYER,
+    layerType: MapLayerType.IMAGE_LAYER,
     url: "http://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg",
     bounds: [
       [40.712216, -74.22655],
