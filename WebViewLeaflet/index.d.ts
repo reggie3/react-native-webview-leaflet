@@ -1,11 +1,6 @@
-import { MapVectorLayer } from '.';
-import { MapRasterLayer } from '.';
-import { MapMarker } from '.';
-import { NativeSyntheticEvent } from 'react-native';
-import { LatLng } from 'leaflet';
-import React from 'react';
-import { WebviewLeafletMessage } from 'react-native-webview-leaflet';
-import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
+import { LatLng } from "leaflet";
+import React from "react";
+import { WebViewError } from "react-native-webview/lib/WebViewTypes";
 
 // Type definitions for react-native-webivew-leaflet
 // Project: react-native-webview-leaflet
@@ -23,43 +18,15 @@ import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
  */
 export as namespace ReactNativeWebViewLeaflet;
 
-export interface WebViewLeafletProps extends React.Props<WebViewLeaflet> {
-  backgroundColor?: string;
-  doShowDebugMessages?: boolean;
-  loadingIndicator?: () => React.ReactElement;
-  onError?: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => void;
-  onLoadEnd?: () => void;
-  onLoadStart?: () => void;
-  onMessageReceived: (message: WebviewLeafletMessage) => void;
-  vectorLayers?: MapVectorLayer[];
-  rasterLayers?: MapRasterLayer[];
-  mapMarkers?: MapMarker[];
-  mapCenterCoords?: LatLng;
-}
-
-declare class WebViewLeaflet extends React.Component<
-  WebViewLeafletProps,
-  any
-> {}
-
-export { default as WebViewLeaflet } from './WebViewLeaflet';
+export {
+  default as WebViewLeaflet,
+  WebViewLeafletProps
+} from "./WebViewLeaflet";
 export {
   AnimationType,
-  MapComponentMessages,
-  MapEvent,
+  MapComponentEvents,
   MapMarkerAnimation,
   MapMarker,
   MapLayer,
-  MapVectorLayer,
-  MapVectorLayerCircle,
-  MapVectorLayerCircleMarker,
-  MapVectorLayerPolyline,
-  MapVectorLayerPolygon,
-  MapVectorLayerRectangle,
-  MapVectorLayerType,
-  MapRasterLayer,
-  MapLayerTypes,
-  MapStartupMessage,
-  WebViewLeafletLatLng,
   WebviewLeafletMessage
-} from './models';
+} from "./models";

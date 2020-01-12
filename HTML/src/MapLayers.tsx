@@ -6,39 +6,12 @@ import {
   WMSTileLayerProps,
   TileLayerProps,
   ImageOverlay,
-  ImageOverlayProps,
-  LatLngBounds
+  ImageOverlayProps
 } from "react-leaflet";
 import VectorLayer, { MapVectorLayerProps } from "./VectorLayer";
+import { MapLayer, MapLayerType } from "./models";
+
 const { BaseLayer } = LayersControl;
-
-export enum MapLayerType {
-  IMAGE_LAYER = "ImageOverlay",
-  TILE_LAYER = "TileLayer",
-  VECTOR_LAYER = "VectorLayer",
-  VIDEO_LAYER = "VideoOverlay",
-  WMS_TILE_LAYER = "WMSTileLayer",
-  CIRCLE = "Circle",
-  CIRCLE_MARKER = "CircleMarker",
-  POLYLINE = "Polyline",
-  POLYGON = "Polygon",
-  RECTANGLE = "Rectangle"
-}
-
-export interface MapLayer {
-  attribution?: string;
-  baseLayer?: boolean;
-  baseLayerIsChecked?: boolean;
-  baseLayerName?: string;
-  bounds?: LatLngBounds;
-  id?: string;
-  layerType?: MapLayerType;
-  opacity?: number;
-  pane?: string;
-  subLayer?: string;
-  url?: string;
-  zIndex?: number;
-}
 
 interface MapLayersProps {
   mapLayers: MapLayer[];

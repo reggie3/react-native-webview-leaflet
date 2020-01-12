@@ -6,8 +6,14 @@ describe("MapComponentView", () => {
   test("it renders", () => {
     const { asFragment } = render(
       <MapComponentView
+        addDebugMessage={() => {}}
+        debugMessages={[]}
         mapCenterCoords={[36.56, -76.17]}
+        mapLayers={[]}
+        mapMarkers={[]}
+        onMapEvent={() => {}}
         setMapRef={() => {}}
+        zoom={13}
       />
     );
     expect(asFragment()).toMatchSnapshot();

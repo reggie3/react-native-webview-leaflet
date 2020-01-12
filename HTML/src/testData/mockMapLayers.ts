@@ -1,4 +1,4 @@
-import { MapLayer, MapLayerType } from "../MapLayers";
+import { MapLayer, MapLayerType } from "../models";
 
 const mockMapLayers: MapLayer[] = [
   {

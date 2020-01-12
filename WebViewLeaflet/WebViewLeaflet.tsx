@@ -1,34 +1,32 @@
 import * as React from "react";
-import { NativeSyntheticEvent } from "react-native";
 import { WebView } from "react-native-webview";
 import AssetUtils from "expo-asset-utils";
 import { Asset } from "expo-asset";
 import WebViewLeafletView from "./WebViewLeaflet.view";
 import {
-  MapVectorLayer,
-  MapRasterLayer,
+  LatLng,
   MapMarker,
   WebviewLeafletMessage,
   MapStartupMessage,
-  WebViewLeafletLatLng
+  MapComponentEvents,
+  MapLayer
 } from "./models";
-import { WebViewError } from "react-native-webview/lib/WebViewTypes";
 import { ActivityOverlay } from "./ActivityOverlay";
-const INDEX_FILE_PATH = require(`./assets/index.html`);
 import * as FileSystem from "expo-file-system";
+// @ts-ignore node types
+const INDEX_FILE_PATH = require(`./assets/index.html`);
 
-export interface Props {
+export interface WebViewLeafletProps {
   backgroundColor?: string;
   doShowDebugMessages?: boolean;
   loadingIndicator?: () => React.ReactElement;
-  onError?: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => void;
+  onError?: (syntheticEvent: any) => void;
   onLoadEnd?: () => void;
   onLoadStart?: () => void;
   onMessageReceived: (message: WebviewLeafletMessage) => void;
-  vectorLayers?: MapVectorLayer[];
-  rasterLayers?: MapRasterLayer[];
+  mapLayers?: MapLayer[];
   mapMarkers?: MapMarker[];
-  mapCenterCoords?: WebViewLeafletLatLng;
+  mapCenterCoords?: LatLng;
   zoom?: number;
 }
 
@@ -38,7 +36,7 @@ interface State {
   isLoading: boolean;
 }
 
-class WebViewLeaflet extends React.Component<Props, State> {
+class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
   private webViewRef: any;
   static defaultProps = {
     backgroundColor: "#FAEBD7",
@@ -46,7 +44,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
     loadingIndicator: () => {
       return <ActivityOverlay />;
     },
-    onError: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => {},
+    onError: (syntheticEvent: any) => {},
     onLoadEnd: () => {},
     onLoadStart: () => {}
   };
@@ -79,7 +77,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
     }
   };
 
-  componentDidUpdate = (prevProps: Props, prevState: State) => {
+  componentDidUpdate = (prevProps: WebViewLeafletProps, prevState: State) => {
     const { webviewContent } = this.state;
     if (!prevState.webviewContent && webviewContent) {
       this.updateDebugMessages("file loaded");
@@ -92,7 +90,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
 
     let message: WebviewLeafletMessage = JSON.parse(data);
     this.updateDebugMessages(`received: ${JSON.stringify(message)}`);
-    if (message.msg === "MAP_READY") {
+    if (message.msg === MapComponentEvents.MAP_READY) {
       this.sendStartupMessage();
     }
     onMessageReceived(message);
@@ -119,18 +117,9 @@ class WebViewLeaflet extends React.Component<Props, State> {
   // Send a startup message with initalizing values to the map
   private sendStartupMessage = () => {
     let startupMessage: MapStartupMessage = {};
-    const {
-      rasterLayers,
-      vectorLayers,
-      mapMarkers,
-      mapCenterCoords,
-      zoom = 7
-    } = this.props;
-    if (rasterLayers) {
-      startupMessage.rasterLayers = rasterLayers;
-    }
-    if (vectorLayers) {
-      startupMessage.vectorLayers = vectorLayers;
+    const { mapLayers, mapMarkers, mapCenterCoords, zoom = 7 } = this.props;
+    if (mapLayers) {
+      startupMessage.mapLayers = mapLayers;
     }
     if (mapMarkers) {
       startupMessage.mapMarkers = mapMarkers;
@@ -156,7 +145,7 @@ class WebViewLeaflet extends React.Component<Props, State> {
     });
   };
 
-  private onError = (syntheticEvent: NativeSyntheticEvent<WebViewError>) => {
+  private onError = (syntheticEvent: any) => {
     this.props.onError(syntheticEvent);
   };
   private onLoadEnd = () => {

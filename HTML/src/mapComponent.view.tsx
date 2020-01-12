@@ -2,9 +2,10 @@ import * as React from "react";
 import { useState } from "react";
 import Measure from "react-measure";
 import { Map } from "react-leaflet";
-import MapLayers, { MapLayer } from "./MapLayers";
-import MapMarkers, { MapMarker } from "./MapMarkers";
-import { MapEvent, SHOW_DEBUG_INFORMATION } from "./MapComponent";
+import MapLayers from "./MapLayers";
+import MapMarkers from "./MapMarkers";
+import { SHOW_DEBUG_INFORMATION } from "./MapComponent";
+import { MapComponentEvents, MapLayer, MapMarker } from "./models";
 
 interface MapComponentViewProps {
   addDebugMessage: (msg: any) => void;
@@ -12,7 +13,7 @@ interface MapComponentViewProps {
   mapCenterCoords: [number, number];
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
-  onMapEvent: (mapEvent: MapEvent) => void;
+  onMapEvent: (mapEvent: MapComponentEvents) => void;
   setMapRef: (mapRef: any) => void;
   zoom: number;
 }

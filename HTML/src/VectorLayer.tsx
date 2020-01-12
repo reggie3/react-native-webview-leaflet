@@ -13,7 +13,7 @@ import {
   RectangleProps,
   CircleProps
 } from "react-leaflet";
-import { MapLayer, MapLayerType } from "./MapLayers";
+import { MapLayer, MapLayerType } from "./models";
 
 export interface MapVectorLayerProps extends MapLayer {
   bounds?: LatLngBounds;

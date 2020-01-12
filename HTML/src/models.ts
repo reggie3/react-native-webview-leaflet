@@ -1,8 +1,4 @@
-import L from "leaflet";
-
-export type LatLng = { lat: number; lng: number };
-export type Point = [number, number];
-export type LatLngBounds = { southWest: LatLng; northEast: LatLng } | LatLng[];
+import { LatLng, Point, LatLngBounds } from "react-leaflet";
 
 export enum MapComponentEvents {
   MAP_COMPONENT_MOUNTED = "MAP_COMPONENT_MOUNTED",

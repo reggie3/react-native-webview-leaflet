@@ -1,4 +1,4 @@
-import { MapLayerType } from "../MapLayers";
+import { MapLayerType } from "../models";
 import { MapVectorLayerProps } from "../VectorLayer";
 
 export const circle: MapVectorLayerProps = {

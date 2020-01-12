@@ -2,41 +2,13 @@ import * as React from "react";
 import { LayerGroup, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { createDivIcon } from "./utilities";
-import { MapEvent } from "./MapComponent";
-import { LatLng, Point } from "react-leaflet";
+import { MapComponentEvents, MapMarker } from "./models";
 import { LatLngExpression } from "leaflet";
 require("react-leaflet-markercluster/dist/styles.min.css");
 
-export enum AnimationType {
-  BOUNCE = "bounce",
-  FADE = "fade",
-  PULSE = "pulse",
-  JUMP = "jump",
-  SPIN = "spin",
-  WAGGLE = "waggle"
-}
-export interface MapMarkerAnimation {
-  type: AnimationType;
-  duration?: number;
-  delay?: number;
-  direction?: "nomal" | "reverse" | "alternate" | "alternate-reverse";
-  iterationCount?: number | "infinite";
-}
-
-export interface MapMarker {
-  animation?: MapMarkerAnimation;
-  position: LatLng;
-  divIcon?: L.DivIcon;
-  icon: any;
-  iconAnchor?: Point;
-  id?: string;
-  size?: Point;
-  title?: string;
-}
-
 interface MapMarkersProps {
   mapMarkers: MapMarker[];
-  onMapEvent: (mapEvent: MapEvent, mapMarkerId: string) => void;
+  onMapEvent: (mapEvent: MapComponentEvents, mapMarkerId: string) => void;
   useMarkerClustering?: boolean;
 }
 
@@ -56,7 +28,10 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                     position={mapMarker.position as LatLngExpression}
                     icon={createDivIcon(mapMarker)}
                     onClick={() => {
-                      onMapEvent(MapEvent.ON_MAP_MARKER_CLICKED, mapMarker.id);
+                      onMapEvent(
+                        MapComponentEvents.ON_MAP_MARKER_CLICKED,
+                        mapMarker.id
+                      );
                     }}
                   >
                     {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
@@ -75,7 +50,10 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                   position={mapMarker.position as LatLngExpression}
                   icon={createDivIcon(mapMarker)}
                   onClick={() => {
-                    onMapEvent(MapEvent.ON_MAP_MARKER_CLICKED, mapMarker.id);
+                    onMapEvent(
+                      MapComponentEvents.ON_MAP_MARKER_CLICKED,
+                      mapMarker.id
+                    );
                   }}
                 >
                   {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
@@ -98,7 +76,10 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                 // @ts-ignore
                 icon={marker.divIcon}
                 onClick={() => {
-                  onMapEvent(MapEvent.ON_MAP_MARKER_CLICKED, marker.id);
+                  onMapEvent(
+                    MapComponentEvents.ON_MAP_MARKER_CLICKED,
+                    marker.id
+                  );
                 }}
               >
                 {marker.title && <Popup>{marker.title}</Popup>}

@@ -30,7 +30,8 @@
     "eject": "react-scripts eject",
     "cleanAssets": "del-cli --force ../WebViewLeaflet/assets/**/*",
     "copyDist": "npx copyfiles -u 1 ./dist/index.html ../WebViewLeaflet/assets",
-    "dist": "yarn build && gulp build && yarn cleanAssets && yarn copyDist"
+    "dist": "yarn build && gulp build && yarn cleanAssets && yarn copyDist",
+    "cpx": "cpx '../WebViewLeaflet/models.ts' ./src --watch"
   },
   "eslintConfig": {
     "extends": "react-app"

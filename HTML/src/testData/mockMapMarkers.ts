@@ -1,8 +1,9 @@
 import * as svgIcons from "./svgIcons";
 import { LatLng } from "leaflet";
-import { MapMarker, AnimationType } from "../MapMarkers";
+import { MapMarker, AnimationType } from "../models";
 
 const emoji = ["😴", "😄", "😃", "⛔", "🎠", "🚓", "🚇"];
+const animations = ["bounce", "fade", "pulse", "jump", "waggle", "spin"];
 const duration = Math.floor(Math.random() * 3) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
 const iterationCount = "infinite";

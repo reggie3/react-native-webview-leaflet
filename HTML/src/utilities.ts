@@ -1,6 +1,6 @@
 import L, { DivIcon } from "leaflet";
 import base64Image from "./webBase64Image";
-import { MapMarker, MapMarkerAnimation } from "./MapMarkers";
+import { MapMarker, MapMarkerAnimation } from "./models";
 import { Point } from "react-leaflet";
 
 export const createDivIcon = (mapMarker: MapMarker): DivIcon => {

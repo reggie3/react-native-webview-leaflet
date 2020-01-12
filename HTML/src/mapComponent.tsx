@@ -7,46 +7,19 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import MapComponentView from "./MapComponent.view";
 import L from "leaflet";
-import { MapLayer } from "./MapLayers";
 import mockMapLayers from "./testData/mockMapLayers";
 import mockVectorLayers from "./testData/mockVectorLayers";
 import mockMapMarkers from "./testData/mockMapMarkers";
-import { MapMarker } from "./MapMarkers";
+import {
+  MapComponentEvents,
+  MapEventMessage,
+  MapLayer,
+  MapMarker
+} from "./models";
 import "./styles/markers.css";
 import "./styles/markerAnimations.css";
 
 export const SHOW_DEBUG_INFORMATION = true;
-
-export enum MapComponentMessages {
-  MAP_COMPONENT_MOUNTED = "MAP_COMPONENT_MOUNTED",
-  DOCUMENT_EVENT_LISTENER_ADDED = "DOCUMENT_EVENT_LISTENER_ADDED",
-  WINDOW_EVENT_LISTENER_ADDED = "WINDOW_EVENT_LISTENER_ADDED",
-  UNABLE_TO_ADD_EVENT_LISTENER = "UNABLE_TO_ADD_EVENT_LISTENER",
-  DOCUMENT_EVENT_LISTENER_REMOVED = "DOCUMENT_EVENT_LISTENER_REMOVED",
-  WINDOW_EVENT_LISTENER_REMOVED = "WINDOW_EVENT_LISTENER_REMOVED"
-}
-
-export enum MapEvent {
-  ON_MOVE_END = "onMoveEnd",
-  ON_MOVE_START = "onMoveStart",
-  ON_MOVE = "onMove",
-  ON_RESIZE = "onResize",
-  ON_UNLOAD = "onUnload",
-  ON_VIEW_RESET = "onViewReset",
-  ON_ZOOM_END = "onZoomEnd",
-  ON_ZOOM_LEVELS_CHANGE = "onZoomLevelsChange",
-  ON_ZOOM_START = "onZoomStart",
-  ON_ZOOM = "onZoom",
-  ON_MAP_CLICKED = "onMapClicked",
-  ON_MAP_MARKER_CLICKED = "onMapMarkerClicked"
-}
-
-export interface MapEventMessage {
-  event?: any;
-  msg?: string;
-  error?: string;
-  payload?: any;
-}
 
 interface State {
   debugMessages: string[];
@@ -82,16 +55,20 @@ export default class MapComponent extends Component<{}, State> {
       shadowUrl: iconShadow
     });
     L.Marker.prototype.options.icon = DefaultIcon;
-    if (!this.state.isFromNative) {
-      this.loadMockData();
-    }
+
     this.addEventListeners();
+    this.sendMessage({
+      msg: MapComponentEvents.MAP_COMPONENT_MOUNTED
+    });
   };
 
   componentDidUpdate = (prevProps: any, prevState: State) => {
     const { isMobile, mapRef } = this.state;
     if (mapRef && !prevState.mapRef) {
       mapRef.current?.leafletElement.invalidateSize();
+      this.sendMessage({
+        msg: MapComponentEvents.MAP_READY
+      });
     }
     if (prevState.isMobile === null && isMobile === false) {
       this.loadMockData();
@@ -117,19 +94,19 @@ export default class MapComponent extends Component<{}, State> {
       document.addEventListener("message", this.handleMessage);
       this.addDebugMessage("set document listeners");
       this.sendMessage({
-        msg: "DOCUMENT_EVENT_LISTENER_ADDED"
+        msg: MapComponentEvents.DOCUMENT_EVENT_LISTENER_ADDED
       });
     }
     if (window) {
       window.addEventListener("message", this.handleMessage);
       this.addDebugMessage("setting Window");
       this.sendMessage({
-        msg: "WINDOW_EVENT_LISTENER_ADDED"
+        msg: MapComponentEvents.WINDOW_EVENT_LISTENER_ADDED
       });
     }
     if (!document && !window) {
       this.sendMessage({
-        error: "UNABLE_TO_ADD_EVENT_LISTENER"
+        error: MapComponentEvents.UNABLE_TO_ADD_EVENT_LISTENER
       });
       return;
     }
@@ -138,7 +115,7 @@ export default class MapComponent extends Component<{}, State> {
   private handleMessage = (event: any) => {
     this.addDebugMessage(event.data);
     try {
-      // this.setState({ ...this.state, ...event.data });
+      this.setState({ ...this.state, ...event.data });
     } catch (error) {
       this.addDebugMessage({ error: JSON.stringify(error) });
     }
@@ -154,17 +131,18 @@ export default class MapComponent extends Component<{}, State> {
   };
 
   private loadMockData = () => {
-    console.log("loading mock data");
+    this.addDebugMessage("loading mock data");
     this.setState({
       mapLayers: [...mockMapLayers, ...mockVectorLayers],
       mapMarkers: mockMapMarkers
     });
   };
 
-  private onMapEvent = (mapEvent: MapEvent) => {
+  private onMapEvent = (mapEvent: MapComponentEvents) => {
     console.log({ mapEvent });
   };
-  setMapRef = (mapRef: any) => {
+
+  private setMapRef = (mapRef: any) => {
     if (!this.state.mapRef) {
       this.setState({ mapRef });
     }

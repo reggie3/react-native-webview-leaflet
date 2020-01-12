@@ -1,5 +1,4 @@
 import * as React from "react";
-import MapLayers, { MapLayer } from "./MapLayers";
 import { default as MapLayerComponent } from "./MapLayers";
 import { render } from "@testing-library/react";
 import mockMapLayers from "./testData/mockMapLayers";
