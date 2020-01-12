@@ -8,7 +8,6 @@ import {
   ImageOverlay,
   ImageOverlayProps
 } from "react-leaflet";
-import VectorLayer, { MapVectorLayerProps } from "./VectorLayer";
 import { MapLayer, MapLayerType } from "./models";
 
 const { BaseLayer } = LayersControl;
@@ -20,12 +19,6 @@ interface MapLayersProps {
 class MapLayers extends React.Component<MapLayersProps> {
   private Layer = (props: MapLayer): JSX.Element => {
     switch (props.layerType) {
-      case MapLayerType.CIRCLE:
-      case MapLayerType.CIRCLE_MARKER:
-      case MapLayerType.POLYGON:
-      case MapLayerType.POLYLINE:
-      case MapLayerType.RECTANGLE:
-        return <VectorLayer {...(props as MapVectorLayerProps)} />;
       case MapLayerType.IMAGE_LAYER:
         return <ImageOverlay {...(props as ImageOverlayProps)} />;
       case MapLayerType.WMS_TILE_LAYER:

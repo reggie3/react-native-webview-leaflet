@@ -8,18 +8,21 @@ import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import MapComponentView from "./MapComponent.view";
 import L from "leaflet";
 import mockMapLayers from "./testData/mockMapLayers";
-import mockVectorLayers from "./testData/mockVectorLayers";
+import mockMapShapes from "./testData/mockMapShapes";
 import mockMapMarkers from "./testData/mockMapMarkers";
 import {
-  MapComponentEvents,
+  WebViewLeafletEvents,
   MapEventMessage,
   MapLayer,
-  MapMarker
+  MapMarker,
+  MapShape
 } from "./models";
 import "./styles/markers.css";
 import "./styles/markerAnimations.css";
 
-export const SHOW_DEBUG_INFORMATION = true;
+export const SHOW_DEBUG_INFORMATION = false;
+
+const ENABLE_BROWSER_TESTING = true;
 
 interface State {
   debugMessages: string[];
@@ -28,6 +31,7 @@ interface State {
   mapCenterCoords: [number, number];
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
+  mapShapes: MapShape[];
   mapRef: any;
   zoom: number;
 }
@@ -44,6 +48,7 @@ export default class MapComponent extends Component<{}, State> {
       mapCenterCoords: [36.56, -76.17],
       mapLayers: [],
       mapMarkers: [],
+      mapShapes: [],
       mapRef: null,
       zoom: 6
     };
@@ -58,20 +63,20 @@ export default class MapComponent extends Component<{}, State> {
 
     this.addEventListeners();
     this.sendMessage({
-      msg: MapComponentEvents.MAP_COMPONENT_MOUNTED
+      msg: WebViewLeafletEvents.MAP_COMPONENT_MOUNTED
     });
+    if (ENABLE_BROWSER_TESTING) {
+      this.loadMockData();
+    }
   };
 
   componentDidUpdate = (prevProps: any, prevState: State) => {
-    const { isMobile, mapRef } = this.state;
+    const { mapRef } = this.state;
     if (mapRef && !prevState.mapRef) {
       mapRef.current?.leafletElement.invalidateSize();
       this.sendMessage({
-        msg: MapComponentEvents.MAP_READY
+        msg: WebViewLeafletEvents.MAP_READY
       });
-    }
-    if (prevState.isMobile === null && isMobile === false) {
-      this.loadMockData();
     }
   };
 
@@ -94,19 +99,19 @@ export default class MapComponent extends Component<{}, State> {
       document.addEventListener("message", this.handleMessage);
       this.addDebugMessage("set document listeners");
       this.sendMessage({
-        msg: MapComponentEvents.DOCUMENT_EVENT_LISTENER_ADDED
+        msg: WebViewLeafletEvents.DOCUMENT_EVENT_LISTENER_ADDED
       });
     }
     if (window) {
       window.addEventListener("message", this.handleMessage);
       this.addDebugMessage("setting Window");
       this.sendMessage({
-        msg: MapComponentEvents.WINDOW_EVENT_LISTENER_ADDED
+        msg: WebViewLeafletEvents.WINDOW_EVENT_LISTENER_ADDED
       });
     }
     if (!document && !window) {
       this.sendMessage({
-        error: MapComponentEvents.UNABLE_TO_ADD_EVENT_LISTENER
+        error: WebViewLeafletEvents.UNABLE_TO_ADD_EVENT_LISTENER
       });
       return;
     }
@@ -133,13 +138,14 @@ export default class MapComponent extends Component<{}, State> {
   private loadMockData = () => {
     this.addDebugMessage("loading mock data");
     this.setState({
-      mapLayers: [...mockMapLayers, ...mockVectorLayers],
-      mapMarkers: mockMapMarkers
+      mapLayers: mockMapLayers,
+      mapMarkers: mockMapMarkers,
+      mapShapes: mockMapShapes
     });
   };
 
-  private onMapEvent = (mapEvent: MapComponentEvents) => {
-    console.log({ mapEvent });
+  private onMapEvent = (event: WebViewLeafletEvents, payload: any) => {
+    this.sendMessage({ event, payload });
   };
 
   private setMapRef = (mapRef: any) => {
@@ -154,6 +160,7 @@ export default class MapComponent extends Component<{}, State> {
       mapCenterCoords,
       mapLayers,
       mapMarkers,
+      mapShapes,
       zoom
     } = this.state;
     return (
@@ -161,8 +168,9 @@ export default class MapComponent extends Component<{}, State> {
         addDebugMessage={this.addDebugMessage}
         debugMessages={debugMessages}
         mapCenterCoords={mapCenterCoords}
-        mapMarkers={mapMarkers}
         mapLayers={mapLayers}
+        mapMarkers={mapMarkers}
+        mapShapes={mapShapes}
         onMapEvent={this.onMapEvent}
         setMapRef={this.setMapRef}
         zoom={zoom}

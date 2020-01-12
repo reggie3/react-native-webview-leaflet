@@ -4,15 +4,16 @@ import AssetUtils from "expo-asset-utils";
 import { Asset } from "expo-asset";
 import WebViewLeafletView from "./WebViewLeaflet.view";
 import {
-  LatLng,
   MapMarker,
   WebviewLeafletMessage,
   MapStartupMessage,
-  MapComponentEvents,
-  MapLayer
+  WebViewLeafletEvents,
+  MapLayer,
+  MapShape
 } from "./models";
 import { ActivityOverlay } from "./ActivityOverlay";
 import * as FileSystem from "expo-file-system";
+import { LatLng } from "react-leaflet";
 // @ts-ignore node types
 const INDEX_FILE_PATH = require(`./assets/index.html`);
 
@@ -26,6 +27,7 @@ export interface WebViewLeafletProps {
   onMessageReceived: (message: WebviewLeafletMessage) => void;
   mapLayers?: MapLayer[];
   mapMarkers?: MapMarker[];
+  mapShapes?: MapShape[];
   mapCenterCoords?: LatLng;
   zoom?: number;
 }
@@ -90,7 +92,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
 
     let message: WebviewLeafletMessage = JSON.parse(data);
     this.updateDebugMessages(`received: ${JSON.stringify(message)}`);
-    if (message.msg === MapComponentEvents.MAP_READY) {
+    if (message.msg === WebViewLeafletEvents.MAP_READY) {
       this.sendStartupMessage();
     }
     onMessageReceived(message);
@@ -117,7 +119,13 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
   // Send a startup message with initalizing values to the map
   private sendStartupMessage = () => {
     let startupMessage: MapStartupMessage = {};
-    const { mapLayers, mapMarkers, mapCenterCoords, zoom = 7 } = this.props;
+    const {
+      mapLayers,
+      mapMarkers,
+      mapShapes,
+      mapCenterCoords,
+      zoom = 7
+    } = this.props;
     if (mapLayers) {
       startupMessage.mapLayers = mapLayers;
     }
@@ -126,6 +134,9 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
     if (mapCenterCoords) {
       startupMessage.mapCenterCoords = mapCenterCoords;
+    }
+    if (mapShapes) {
+      startupMessage.mapShapes = mapShapes;
     }
 
     startupMessage.zoom = zoom;

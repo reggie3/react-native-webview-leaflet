@@ -2,13 +2,13 @@ import * as React from "react";
 import { LayerGroup, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { createDivIcon } from "./utilities";
-import { MapComponentEvents, MapMarker } from "./models";
+import { WebViewLeafletEvents, MapMarker } from "./models";
 import { LatLngExpression } from "leaflet";
 require("react-leaflet-markercluster/dist/styles.min.css");
 
 interface MapMarkersProps {
   mapMarkers: MapMarker[];
-  onMapEvent: (mapEvent: MapComponentEvents, mapMarkerId: string) => void;
+  onMapEvent: (mapEvent: WebViewLeafletEvents, payload: any) => void;
   useMarkerClustering?: boolean;
 }
 
@@ -28,10 +28,9 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                     position={mapMarker.position as LatLngExpression}
                     icon={createDivIcon(mapMarker)}
                     onClick={() => {
-                      onMapEvent(
-                        MapComponentEvents.ON_MAP_MARKER_CLICKED,
-                        mapMarker.id
-                      );
+                      onMapEvent(WebViewLeafletEvents.ON_MAP_MARKER_CLICKED, {
+                        mapMarkerID: mapMarker.id
+                      });
                     }}
                   >
                     {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
@@ -50,10 +49,9 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                   position={mapMarker.position as LatLngExpression}
                   icon={createDivIcon(mapMarker)}
                   onClick={() => {
-                    onMapEvent(
-                      MapComponentEvents.ON_MAP_MARKER_CLICKED,
-                      mapMarker.id
-                    );
+                    onMapEvent(WebViewLeafletEvents.ON_MAP_MARKER_CLICKED, {
+                      mapMarkerID: mapMarker.id
+                    });
                   }}
                 >
                   {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
@@ -77,7 +75,7 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
                 icon={marker.divIcon}
                 onClick={() => {
                   onMapEvent(
-                    MapComponentEvents.ON_MAP_MARKER_CLICKED,
+                    WebViewLeafletEvents.ON_MAP_MARKER_CLICKED,
                     marker.id
                   );
                 }}

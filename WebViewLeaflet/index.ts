@@ -4,9 +4,11 @@ export {
 } from "./WebViewLeaflet";
 export {
   AnimationType,
-  MapComponentEvents,
+  WebViewLeafletEvents,
   MapMarkerAnimation,
   MapMarker,
   MapLayer,
+  MapLayerType,
+  MapShapeType,
   WebviewLeafletMessage
 } from "./models";

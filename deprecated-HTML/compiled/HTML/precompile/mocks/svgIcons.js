@@ -1,4 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.greenCircle = "<svg xmlns=\"http://www.w3.org/2000/svg\">\n    <circle id=\"greencircle\" cx=\"30\" cy=\"30\" r=\"30\" fill=\"green\" />\n</svg>";
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3ZnSWNvbnMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi9wcmVjb21waWxlL21vY2tzL3N2Z0ljb25zLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQWEsUUFBQSxXQUFXLEdBQUcsbUlBRXBCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgY29uc3QgZ3JlZW5DaXJjbGUgPSBgPHN2ZyB4bWxucz1cImh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnXCI+XHJcbiAgICA8Y2lyY2xlIGlkPVwiZ3JlZW5jaXJjbGVcIiBjeD1cIjMwXCIgY3k9XCIzMFwiIHI9XCIzMFwiIGZpbGw9XCJncmVlblwiIC8+XHJcbjwvc3ZnPmA7XHJcbiJdfQ==

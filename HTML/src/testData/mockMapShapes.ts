@@ -1,24 +1,23 @@
-import { MapLayerType } from "../models";
-import { MapVectorLayerProps } from "../VectorLayer";
+import { MapShapeType, MapShape } from "../models";
 
-export const circle: MapVectorLayerProps = {
-  layerType: MapLayerType.CIRCLE,
+export const circle: MapShape = {
+  shapeType: MapShapeType.CIRCLE,
   color: "#123123",
   id: "1",
   center: { lat: 34.225727, lng: -77.94471 },
   radius: 2000
 };
 
-export const circleMarker: MapVectorLayerProps = {
-  layerType: MapLayerType.CIRCLE_MARKER,
+export const circleMarker: MapShape = {
+  shapeType: MapShapeType.CIRCLE_MARKER,
   color: "red",
   id: "2",
   center: { lat: 38.437424, lng: -78.867912 },
   radius: 15
 };
 
-export const polygon: MapVectorLayerProps = {
-  layerType: MapLayerType.POLYGON,
+export const polygon: MapShape = {
+  shapeType: MapShapeType.POLYGON,
   color: "blue",
   id: "3",
   positions: [
@@ -28,8 +27,8 @@ export const polygon: MapVectorLayerProps = {
   ]
 };
 
-export const multiPolygon: MapVectorLayerProps = {
-  layerType: MapLayerType.POLYGON,
+export const multiPolygon: MapShape = {
+  shapeType: MapShapeType.POLYGON,
   color: "violet",
   id: "4",
   positions: [
@@ -49,8 +48,8 @@ export const multiPolygon: MapVectorLayerProps = {
   ]
 };
 
-export const polyline: MapVectorLayerProps = {
-  layerType: MapLayerType.POLYLINE,
+export const polyline: MapShape = {
+  shapeType: MapShapeType.POLYLINE,
   color: "orange",
   id: "5",
   positions: [
@@ -60,8 +59,8 @@ export const polyline: MapVectorLayerProps = {
   ]
 };
 
-export const multiPolyline: MapVectorLayerProps = {
-  layerType: MapLayerType.POLYLINE,
+export const multiPolyline: MapShape = {
+  shapeType: MapShapeType.POLYLINE,
   color: "purple",
   id: "5a",
   positions: [
@@ -78,8 +77,8 @@ export const multiPolyline: MapVectorLayerProps = {
   ]
 };
 
-export const rectangle: MapVectorLayerProps = {
-  layerType: MapLayerType.RECTANGLE,
+export const rectangle: MapShape = {
+  shapeType: MapShapeType.RECTANGLE,
   color: "yellow",
   id: "6",
   bounds: [

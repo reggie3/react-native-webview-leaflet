@@ -5,7 +5,8 @@ import { Map } from "react-leaflet";
 import MapLayers from "./MapLayers";
 import MapMarkers from "./MapMarkers";
 import { SHOW_DEBUG_INFORMATION } from "./MapComponent";
-import { MapComponentEvents, MapLayer, MapMarker } from "./models";
+import { WebViewLeafletEvents, MapLayer, MapMarker, MapShape } from "./models";
+import MapShapes from "./MapShapes";
 
 interface MapComponentViewProps {
   addDebugMessage: (msg: any) => void;
@@ -13,7 +14,8 @@ interface MapComponentViewProps {
   mapCenterCoords: [number, number];
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
-  onMapEvent: (mapEvent: MapComponentEvents) => void;
+  mapShapes: MapShape[];
+  onMapEvent: (mapEvent: WebViewLeafletEvents, payload: any) => void;
   setMapRef: (mapRef: any) => void;
   zoom: number;
 }
@@ -24,6 +26,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
   mapCenterCoords,
   mapLayers = [],
   mapMarkers = [],
+  mapShapes = [],
   onMapEvent,
   setMapRef,
   zoom = 13
@@ -64,6 +67,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
               >
                 <MapLayers mapLayers={mapLayers} />
                 <MapMarkers mapMarkers={mapMarkers} onMapEvent={onMapEvent} />
+                <MapShapes mapShapes={mapShapes} onMapEvent={onMapEvent} />
               </Map>
             )}
           </div>

@@ -25,6 +25,30 @@ gulp.task("clean", function() {
     .pipe(clean());
 });
 
+gulp.task("disableBrowserTestFlag", () => {
+  return gulp
+    .src(["./src/MapComponent.tsx"])
+    .pipe(
+      replace(
+        "const ENABLE_BROWSER_TESTING = true;",
+        "const ENABLE_BROWSER_TESTING = false;"
+      )
+    )
+    .pipe(gulp.dest("./src"));
+});
+
+gulp.task("enableBrowserTestFlag", () => {
+  return gulp
+    .src(["./src/MapComponent.tsx"])
+    .pipe(
+      replace(
+        "const ENABLE_BROWSER_TESTING = false;",
+        "const ENABLE_BROWSER_TESTING = true;"
+      )
+    )
+    .pipe(gulp.dest("./src"));
+});
+
 gulp.task("addInlineTags", function() {
   return gulp
     .src(REACT_BUILD_FILES)

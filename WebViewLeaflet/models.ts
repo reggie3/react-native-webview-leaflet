@@ -1,10 +1,6 @@
-import L from "leaflet";
+import { LatLng, Point, LatLngBounds } from "react-leaflet";
 
-export type LatLng = { lat: number; lng: number };
-export type Point = [number, number];
-export type LatLngBounds = { southWest: LatLng; northEast: LatLng } | LatLng[];
-
-export enum MapComponentEvents {
+export enum WebViewLeafletEvents {
   MAP_COMPONENT_MOUNTED = "MAP_COMPONENT_MOUNTED",
   MAP_READY = "MAP_READY",
   DOCUMENT_EVENT_LISTENER_ADDED = "DOCUMENT_EVENT_LISTENER_ADDED",
@@ -24,6 +20,7 @@ export enum MapComponentEvents {
   ON_ZOOM = "onZoom",
   ON_MAP_CLICKED = "onMapClicked",
   ON_MAP_MARKER_CLICKED = "onMapMarkerClicked"
+  //  ON_MAP_SHAPE_CLICKED = "onMapShapeClicked" cannot click on shapes yet
 }
 
 export enum AnimationType {
@@ -40,7 +37,10 @@ export enum MapLayerType {
   TILE_LAYER = "TileLayer",
   VECTOR_LAYER = "VectorLayer",
   VIDEO_LAYER = "VideoOverlay",
-  WMS_TILE_LAYER = "WMSTileLayer",
+  WMS_TILE_LAYER = "WMSTileLayer"
+}
+
+export enum MapShapeType {
   CIRCLE = "Circle",
   CIRCLE_MARKER = "CircleMarker",
   POLYLINE = "Polyline",
@@ -89,9 +89,20 @@ export interface MapLayer {
   zIndex?: number;
 }
 
+export interface MapShape {
+  bounds?: LatLng[];
+  center?: LatLng;
+  color?: string;
+  id?: string;
+  positions?: LatLng[] | LatLng[][];
+  radius?: number;
+  shapeType: MapShapeType;
+}
+
 export interface MapStartupMessage {
   mapLayers?: MapLayer[];
   mapMarkers?: MapMarker[];
+  mapShapes?: MapShape[];
   mapCenterCoords?: LatLng;
   zoom?: number;
 }
