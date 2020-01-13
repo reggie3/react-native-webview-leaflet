@@ -1,4 +1,3 @@
-import { LatLng } from "leaflet";
 import React from "react";
 import { WebViewError } from "react-native-webview/lib/WebViewTypes";
 
@@ -23,7 +22,12 @@ export {
   WebViewLeafletProps
 } from "./WebViewLeaflet";
 export {
+  LatLng,
+  Point,
+  LatLngBounds,
+  AnimationDirection,
   AnimationType,
+  INFINITE_ANIMATION_ITERATIONS,
   WebViewLeafletEvents,
   MapMarkerAnimation,
   MapMarker,

@@ -9,21 +9,21 @@ const delay = Math.floor(Math.random()) * 0.5;
 const iterationCount = "infinite";
 
 const mapMarkers: MapMarker[] = [
-  {
+  /* {
     id: "2",
     position: { lat: 37.06452161, lng: -75.67364786 },
     icon: "😴",
     size: [
       64,
       64
-    ] /* ,
+    ] ,
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
       duration,
       delay,
-      iterationCount
-    } */
-  },
+	  iterationCount,
+	  type: AnimationType.PULSE
+    } 
+  }, */
   {
     id: "1",
     position: { lat: 36.46410354, lng: -75.6432701 },
@@ -36,8 +36,8 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.BOUNCE
     }
-  },
-  {
+  }
+  /* {
     id: "100",
     position: new LatLng(37.23310632, -76.23518332),
     icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -47,7 +47,7 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.WAGGLE
     }
-  },
+  }, */
   /* {
     id: 1,
     coords: [36.46410354, -75.6432701],
@@ -60,7 +60,7 @@ const mapMarkers: MapMarker[] = [
       iterationCount
     }
   },*/
-  {
+  /* {
     id: "1000",
     position: new LatLng(36.60061515, -76.48888338),
     icon: svgIcons.greenCircle,
@@ -70,7 +70,7 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.PULSE
     }
-  }
+  } */
 
   /* {
     id: Math.floor(Math.random() * 1000),

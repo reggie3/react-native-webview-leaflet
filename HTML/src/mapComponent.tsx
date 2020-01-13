@@ -28,7 +28,7 @@ interface State {
   debugMessages: string[];
   isFromNative: boolean;
   isMobile: boolean;
-  mapCenterCoords: [number, number];
+  mapCenterPosition: [number, number];
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
   mapShapes: MapShape[];
@@ -45,7 +45,7 @@ export default class MapComponent extends Component<{}, State> {
       debugMessages: ["test"],
       isFromNative: false,
       isMobile: null,
-      mapCenterCoords: [36.56, -76.17],
+      mapCenterPosition: [36.56, -76.17],
       mapLayers: [],
       mapMarkers: [],
       mapShapes: [],
@@ -157,7 +157,7 @@ export default class MapComponent extends Component<{}, State> {
   render() {
     const {
       debugMessages,
-      mapCenterCoords,
+      mapCenterPosition,
       mapLayers,
       mapMarkers,
       mapShapes,
@@ -167,7 +167,7 @@ export default class MapComponent extends Component<{}, State> {
       <MapComponentView
         addDebugMessage={this.addDebugMessage}
         debugMessages={debugMessages}
-        mapCenterCoords={mapCenterCoords}
+        mapCenterPosition={mapCenterPosition}
         mapLayers={mapLayers}
         mapMarkers={mapMarkers}
         mapShapes={mapShapes}

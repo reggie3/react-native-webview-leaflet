@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import {
+  INFINITE_ANIMATION_ITERATIONS,
+  LatLng,
   WebViewLeaflet,
   WebViewLeafletEvents,
   WebviewLeafletMessage,
@@ -8,12 +10,50 @@ import {
   MapShapeType
 } from "react-native-webview-leaflet";
 import { mapboxToken } from "./secrets";
-const emoji = ["😴", "😄", "😃", "⛔", "🎠", "🚓", "🚇"];
-const duration = Math.floor(Math.random() * 3) + 1;
-const delay = Math.floor(Math.random()) * 0.5;
+import { Button } from "native-base";
+import lodashSample from "lodash.sample";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
+
+const locations: { icon: string; position: LatLng; name: string }[] = [
+  {
+    icon: "⭐",
+    position: { lat: 38.895, lng: -77.0366 },
+    name: "Washington DC"
+  },
+  {
+    icon: "🎢",
+    position: { lat: 37.8399, lng: -77.4442 },
+    name: "Kings Dominion"
+  },
+  {
+    icon: "🎢",
+    position: { lat: 37.23652, lng: -76.646 },
+    name: "Busch Gardens Williamsburg"
+  },
+  {
+    icon: "⚓",
+    position: { lat: 36.8477, lng: -76.2951 },
+    name: "USS Wisconsin (BB-64)"
+  },
+  {
+    icon: "🏰",
+    position: { lat: 28.3852, lng: -81.5639 },
+    name: "Walt Disney World"
+  }
+];
+
+const getDuration = (): number => Math.floor(Math.random() * 3) + 1;
+const getDelay = (): number => Math.floor(Math.random()) * 0.5;
 const iterationCount = "infinite";
 
 export default function App() {
+  const [mapCenterPosition, setMapCenterPosition] = useState({
+    lat: 36.850769,
+    lng: -76.285873
+  });
+  const [ownPosition, setOwnPosition] = useState(null);
+
   const onMessageReceived = (message: WebviewLeafletMessage) => {
     switch (message.event) {
       case WebViewLeafletEvents.ON_MAP_MARKER_CLICKED:
@@ -26,6 +66,25 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    getLocationAsync();
+  });
+
+  const getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      console.warn("Permission to access location was denied");
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    if (!ownPosition) {
+      setOwnPosition({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -34,6 +93,7 @@ export default function App() {
       <View style={{ flex: 1 }}>
         {
           <WebViewLeaflet
+            backgroundColor={"green"}
             onMessageReceived={onMessageReceived}
             mapLayers={[
               {
@@ -44,7 +104,7 @@ export default function App() {
                 url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               },
               {
-                baseLayerName: "Streets",
+                baseLayerName: "Mapbox",
                 //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 url: `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
                 attribution:
@@ -52,18 +112,21 @@ export default function App() {
               }
             ]}
             mapMarkers={[
-              {
-                id: "2",
-                position: { lat: 37.06452161, lng: -75.67364786 },
-                icon: "😴",
-                size: [64, 64],
-                animation: {
-                  duration,
-                  delay,
-                  iterationCount,
-                  type: AnimationType.BOUNCE
-                }
-              },
+              ...locations.map(location => {
+                return {
+                  id: location.name.replace(" ", "-"),
+                  position: location.position,
+                  icon: location.icon,
+                  animation: {
+                    duration: getDuration(),
+                    delay: getDelay(),
+                    iterationCount,
+                    type: lodashSample(
+                      Object.values(AnimationType)
+                    ) as AnimationType
+                  }
+                };
+              }),
               {
                 id: "1",
                 position: { lat: 36.46410354, lng: -75.6432701 },
@@ -71,21 +134,10 @@ export default function App() {
                   "https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg",
                 size: [32, 32],
                 animation: {
-                  duration,
-                  delay,
+                  duration: getDuration(),
+                  delay: getDelay(),
                   iterationCount,
                   type: AnimationType.BOUNCE
-                }
-              },
-              {
-                id: "100",
-                position: { lat: 37.23310632, lng: -76.23518332 },
-                icon: emoji[Math.floor(Math.random() * emoji.length)],
-                animation: {
-                  duration,
-                  delay,
-                  iterationCount,
-                  type: AnimationType.WAGGLE
                 }
               }
             ]}
@@ -171,8 +223,49 @@ export default function App() {
                 ]
               }
             ]}
+            mapCenterPosition={mapCenterPosition}
+            ownPositionMarker={
+              ownPosition && {
+                id: "Own Position",
+                position: ownPosition,
+                icon: "❤️",
+                size: [32, 32],
+                animation: {
+                  duration: getDuration(),
+                  delay: getDelay(),
+                  iterationCount,
+                  type: AnimationType.BOUNCE
+                }
+              }
+            }
+            zoom={7}
           />
         }
+      </View>
+      <View style={styles.mapControls}>
+        {locations.map(location => {
+          return (
+            <Button
+              key={location.position.lat.toString()}
+              info
+              onPress={() => {
+                setMapCenterPosition(location.position);
+              }}
+              style={styles.mapButton}
+            >
+              <Text style={styles.mapButtonEmoji}>{location.icon}</Text>
+            </Button>
+          );
+        })}
+        <Button
+          onPress={() => {
+            setMapCenterPosition(ownPosition);
+          }}
+          style={styles.mapButton}
+          success
+        >
+          <Text style={styles.mapButtonEmoji}>🎯</Text>
+        </Button>
       </View>
     </View>
   );
@@ -193,5 +286,23 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "600"
+  },
+  mapControls: {
+    bottom: 25,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    left: 0,
+    marginHorizontal: 10,
+    position: "absolute",
+    right: 0
+  },
+  mapButton: {
+    alignItems: "center",
+    height: 42,
+    justifyContent: "center",
+    width: 42
+  },
+  mapButtonEmoji: {
+    fontSize: 28
   }
 });

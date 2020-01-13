@@ -46,8 +46,7 @@ class MapShapes extends React.Component<MapMapShapesProps> {
       <>
         {this.props.mapShapes.map(mapShape => {
           const props = { ...mapShape, color: mapShape.color ?? "white" };
-          debugger;
-          return <this.Shape {...props} />;
+          return <this.Shape {...props} key={Math.random().toString()} />;
         })}
       </>
     );

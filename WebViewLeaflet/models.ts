@@ -1,4 +1,9 @@
-import { LatLng, Point, LatLngBounds } from "react-leaflet";
+import * as ReactLeaflet from "react-leaflet";
+export type LatLng = ReactLeaflet.LatLng;
+export type Point = ReactLeaflet.Point;
+export type LatLngBounds = ReactLeaflet.LatLngBounds;
+
+export const OWN_POSTION_MARKER_ID = "OWN_POSTION_MARKER_ID";
 
 export enum WebViewLeafletEvents {
   MAP_COMPONENT_MOUNTED = "MAP_COMPONENT_MOUNTED",
@@ -48,12 +53,20 @@ export enum MapShapeType {
   RECTANGLE = "Rectangle"
 }
 
+export const INFINITE_ANIMATION_ITERATIONS: string = "infinite";
+
+export enum AnimationDirection {
+  NORMAL = "nomal",
+  REVERSE = "reverse",
+  ALTERNATE = "alternate",
+  ALTERNATE_REVERSE = "alternate-reverse"
+}
 export interface MapMarkerAnimation {
   type: AnimationType;
   duration?: number;
   delay?: number;
-  direction?: "nomal" | "reverse" | "alternate" | "alternate-reverse";
-  iterationCount?: number | "infinite";
+  direction?: AnimationDirection;
+  iterationCount?: number | typeof INFINITE_ANIMATION_ITERATIONS;
 }
 
 export interface MapMarker {
@@ -103,7 +116,8 @@ export interface MapStartupMessage {
   mapLayers?: MapLayer[];
   mapMarkers?: MapMarker[];
   mapShapes?: MapShape[];
-  mapCenterCoords?: LatLng;
+  mapCenterPosition?: LatLng;
+  ownPositionMarker?: OwnPositionMarker;
   zoom?: number;
 }
 
@@ -113,3 +127,11 @@ export interface WebviewLeafletMessage {
   error?: string;
   payload?: any;
 }
+
+export type OwnPositionMarker = {
+  animation: MapMarkerAnimation;
+  id?: string;
+  icon: string;
+  position: LatLng;
+  size: Point;
+};

@@ -9,11 +9,14 @@ import {
   MapStartupMessage,
   WebViewLeafletEvents,
   MapLayer,
-  MapShape
+  MapShape,
+  OwnPositionMarker,
+  OWN_POSTION_MARKER_ID
 } from "./models";
 import { ActivityOverlay } from "./ActivityOverlay";
 import * as FileSystem from "expo-file-system";
 import { LatLng } from "react-leaflet";
+import isEqual from "lodash.isequal";
 // @ts-ignore node types
 const INDEX_FILE_PATH = require(`./assets/index.html`);
 
@@ -28,7 +31,8 @@ export interface WebViewLeafletProps {
   mapLayers?: MapLayer[];
   mapMarkers?: MapMarker[];
   mapShapes?: MapShape[];
-  mapCenterCoords?: LatLng;
+  mapCenterPosition?: LatLng;
+  ownPositionMarker?: OwnPositionMarker;
   zoom?: number;
 }
 
@@ -42,6 +46,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
   private webViewRef: any;
   static defaultProps = {
     backgroundColor: "#FAEBD7",
+    doDisplayCenteringButton: true,
     doShowDebugMessages: false,
     loadingIndicator: () => {
       return <ActivityOverlay />;
@@ -81,8 +86,35 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
 
   componentDidUpdate = (prevProps: WebViewLeafletProps, prevState: State) => {
     const { webviewContent } = this.state;
+    const {
+      mapCenterPosition,
+      mapMarkers,
+      mapLayers,
+      mapShapes,
+      ownPositionMarker,
+      zoom
+    } = this.props;
+
     if (!prevState.webviewContent && webviewContent) {
       this.updateDebugMessages("file loaded");
+    }
+    if (!isEqual(mapCenterPosition, prevProps.mapCenterPosition)) {
+      this.sendMessage({ mapCenterPosition });
+    }
+    if (!isEqual(mapMarkers, prevProps.mapMarkers)) {
+      this.sendMessage({ mapMarkers });
+    }
+    if (!isEqual(mapLayers, prevProps.mapLayers)) {
+      this.sendMessage({ mapLayers });
+    }
+    if (!isEqual(mapShapes, prevProps.mapShapes)) {
+      this.sendMessage({ mapShapes });
+    }
+    if (!isEqual(ownPositionMarker, prevProps.ownPositionMarker)) {
+      this.sendMessage({ ownPositionMarker });
+    }
+    if (zoom !== prevProps.zoom) {
+      this.sendMessage({ zoom });
     }
   };
 
@@ -98,21 +130,12 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     onMessageReceived(message);
   };
 
-  // Send message to webvie
-  private sendMessage = (message: WebviewLeafletMessage) => {
-    const stringMessage = JSON.stringify(message);
+  // Send message to webview
+  private sendMessage = (payload: object) => {
+    this.updateDebugMessages(`sending: ${payload}`);
 
-    this.updateDebugMessages(`sending: ${stringMessage}`);
-    // this.webview.postMessage(stringMessage, '*');
-
-    // var event = new CustomEvent('payrookMessage', stringMessage);
-
-    const js = `
-    handleMessage(${JSON.stringify(message)});
-    `;
-    /* var event = new Event('message'); */
     this.webViewRef.injectJavaScript(
-      `handleMessage(${stringMessage}, '*'); true;`
+      `window.postMessage(${JSON.stringify(payload)}, '*');`
     );
   };
 
@@ -123,7 +146,8 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapLayers,
       mapMarkers,
       mapShapes,
-      mapCenterCoords,
+      mapCenterPosition,
+      ownPositionMarker,
       zoom = 7
     } = this.props;
     if (mapLayers) {
@@ -132,11 +156,17 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     if (mapMarkers) {
       startupMessage.mapMarkers = mapMarkers;
     }
-    if (mapCenterCoords) {
-      startupMessage.mapCenterCoords = mapCenterCoords;
+    if (mapCenterPosition) {
+      startupMessage.mapCenterPosition = mapCenterPosition;
     }
     if (mapShapes) {
       startupMessage.mapShapes = mapShapes;
+    }
+    if (ownPositionMarker) {
+      startupMessage.ownPositionMarker = {
+        ...ownPositionMarker,
+        id: OWN_POSTION_MARKER_ID
+      };
     }
 
     startupMessage.zoom = zoom;

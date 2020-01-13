@@ -11,7 +11,7 @@ import MapShapes from "./MapShapes";
 interface MapComponentViewProps {
   addDebugMessage: (msg: any) => void;
   debugMessages: string[];
-  mapCenterCoords: [number, number];
+  mapCenterPosition: [number, number];
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
   mapShapes: MapShape[];
@@ -23,7 +23,7 @@ interface MapComponentViewProps {
 const MapComponentView: React.FC<MapComponentViewProps> = ({
   addDebugMessage,
   debugMessages,
-  mapCenterCoords,
+  mapCenterPosition,
   mapLayers = [],
   mapMarkers = [],
   mapShapes = [],
@@ -60,7 +60,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                 ref={ref => {
                   setMapRef(ref);
                 }}
-                center={mapCenterCoords}
+                center={mapCenterPosition}
                 maxZoom={17}
                 zoom={zoom}
                 style={{ width: "100%", height: dimensions.height }}

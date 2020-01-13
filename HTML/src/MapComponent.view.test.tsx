@@ -8,7 +8,7 @@ describe("MapComponentView", () => {
       <MapComponentView
         addDebugMessage={() => {}}
         debugMessages={[]}
-        mapCenterCoords={[36.56, -76.17]}
+        mapCenterPosition={[36.56, -76.17]}
         mapLayers={[]}
         mapMarkers={[]}
         onMapEvent={() => {}}
