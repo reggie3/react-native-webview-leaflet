@@ -90,7 +90,6 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     const { webviewContent } = this.state;
     const {
       mapCenterPosition,
-
       mapMarkers,
       mapLayers,
       mapShapes,
