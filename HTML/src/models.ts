@@ -23,7 +23,7 @@ export enum WebViewLeafletEvents {
   ON_ZOOM_LEVELS_CHANGE = "onZoomLevelsChange",
   ON_ZOOM_START = "onZoomStart",
   ON_ZOOM = "onZoom",
-  ON_MAP_CLICKED = "onMapClicked",
+  ON_MAP_TOUCHED = "onMapClicked",
   ON_MAP_MARKER_CLICKED = "onMapMarkerClicked"
   //  ON_MAP_SHAPE_CLICKED = "onMapShapeClicked" cannot click on shapes yet
 }
@@ -121,11 +121,19 @@ export interface MapStartupMessage {
   zoom?: number;
 }
 
+export type WebviewLeafletMessagePayload = {
+  bounds?: LatLngBounds;
+  mapCenterPosition: LatLng;
+  mapMarkerID?: string;
+  touchLatLng?: LatLng;
+  zoom?: number;
+};
+
 export interface WebviewLeafletMessage {
   event?: any;
   msg?: string;
   error?: string;
-  payload?: any;
+  payload?: WebviewLeafletMessagePayload;
 }
 
 export type OwnPositionMarker = {

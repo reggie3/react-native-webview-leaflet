@@ -58,7 +58,14 @@ export default function App() {
     switch (message.event) {
       case WebViewLeafletEvents.ON_MAP_MARKER_CLICKED:
         Alert.alert(
-          `Map Marker Clicked ID: ${message.payload.mapMarkerID || "unknown"}`
+          `Map Marker Touched, ID: ${message.payload.mapMarkerID || "unknown"}`
+        );
+
+        break;
+      case WebViewLeafletEvents.ON_MAP_TOUCHED:
+        Alert.alert(
+          `Map Touched at:`,
+          `${message.payload.touchLatLng.lat}, ${message.payload.touchLatLng.lng}`
         );
         break;
       default:
@@ -226,7 +233,6 @@ export default function App() {
             mapCenterPosition={mapCenterPosition}
             ownPositionMarker={
               ownPosition && {
-                id: "Own Position",
                 position: ownPosition,
                 icon: "❤️",
                 size: [32, 32],

@@ -3,29 +3,25 @@ import { LatLng } from "leaflet";
 import { MapMarker, AnimationType } from "../models";
 
 const emoji = ["😴", "😄", "😃", "⛔", "🎠", "🚓", "🚇"];
-const animations = ["bounce", "fade", "pulse", "jump", "waggle", "spin"];
 const duration = Math.floor(Math.random() * 3) + 1;
 const delay = Math.floor(Math.random()) * 0.5;
 const iterationCount = "infinite";
 
 const mapMarkers: MapMarker[] = [
-  /* {
+  {
     id: "2",
     position: { lat: 37.06452161, lng: -75.67364786 },
     icon: "😴",
-    size: [
-      64,
-      64
-    ] ,
+    size: [64, 64],
     animation: {
       duration,
       delay,
-	  iterationCount,
-	  type: AnimationType.PULSE
-    } 
-  }, */
+      iterationCount,
+      type: AnimationType.PULSE
+    }
+  },
   {
-    id: "1",
+    id: "19",
     position: { lat: 36.46410354, lng: -75.6432701 },
     icon:
       "https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg",
@@ -36,8 +32,8 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.BOUNCE
     }
-  }
-  /* {
+  },
+  {
     id: "100",
     position: new LatLng(37.23310632, -76.23518332),
     icon: emoji[Math.floor(Math.random() * emoji.length)],
@@ -47,20 +43,20 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.WAGGLE
     }
-  }, */
-  /* {
-    id: 1,
-    coords: [36.46410354, -75.6432701],
-    icon: '😴',
+  },
+  {
+    id: "1",
+    position: { lat: 36.46410354, lng: -75.6432701 },
+    icon: "😴",
     size: [32, 32],
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
+      type: AnimationType.SPIN,
       duration,
       delay,
       iterationCount
     }
-  },*/
-  /* {
+  },
+  {
     id: "1000",
     position: new LatLng(36.60061515, -76.48888338),
     icon: svgIcons.greenCircle,
@@ -70,31 +66,30 @@ const mapMarkers: MapMarker[] = [
       iterationCount,
       type: AnimationType.PULSE
     }
-  } */
-
-  /* {
-    id: Math.floor(Math.random() * 1000),
-    coords: [37.0580835, -75.82318747],
-    icon: 'Fish',
+  },
+  {
+    id: Math.floor(Math.random() * 1000).toString(),
+    position: { lat: 37.0580835, lng: -75.82318747 },
+    icon: "Fish",
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
+      type: AnimationType.WAGGLE,
       duration,
       delay,
       iterationCount
     }
   },
   {
-    id: Math.floor(Math.random() * 1000),
-    coords: [37.23310632, -76.23518332],
+    id: Math.floor(Math.random() * 1000).toString(),
+    position: { lat: 37.23310632, lng: -76.23518332 },
     icon: emoji[Math.floor(Math.random() * emoji.length)],
     size: [4, 4],
     animation: {
-      name: animations[Math.floor(Math.random() * animations.length)],
+      type: AnimationType.PULSE,
       duration,
       delay,
       iterationCount
     }
-  } */
+  }
   /*
 	{
 		id: Math.floor(Math.random() * 1000),

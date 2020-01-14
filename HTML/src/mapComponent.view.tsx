@@ -1,21 +1,23 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Measure from "react-measure";
-import { Map } from "react-leaflet";
+import { Map, LatLng } from "react-leaflet";
 import MapLayers from "./MapLayers";
 import MapMarkers from "./MapMarkers";
 import { SHOW_DEBUG_INFORMATION } from "./MapComponent";
 import { WebViewLeafletEvents, MapLayer, MapMarker, MapShape } from "./models";
 import MapShapes from "./MapShapes";
+import { LatLngExpression } from "leaflet";
 
 interface MapComponentViewProps {
   addDebugMessage: (msg: any) => void;
   debugMessages: string[];
-  mapCenterPosition: [number, number];
+  mapCenterPosition: LatLng;
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
   mapShapes: MapShape[];
-  onMapEvent: (mapEvent: WebViewLeafletEvents, payload: any) => void;
+  onMapEvent: (mapEvent: WebViewLeafletEvents, payload?: any) => void;
+  ownPositionMarker: MapMarker;
   setMapRef: (mapRef: any) => void;
   zoom: number;
 }
@@ -28,10 +30,21 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
   mapMarkers = [],
   mapShapes = [],
   onMapEvent,
+  ownPositionMarker,
   setMapRef,
   zoom = 13
 }: MapComponentViewProps) => {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
+  const [combinedMapMarkers, setCombinedMapMarkers] = useState([]);
+
+  useEffect(() => {
+    const combinedMapMarkers = mapMarkers;
+    if (ownPositionMarker) {
+      combinedMapMarkers.push(ownPositionMarker);
+    }
+
+    setCombinedMapMarkers(combinedMapMarkers);
+  }, [mapMarkers, ownPositionMarker]);
 
   return (
     <>
@@ -60,13 +73,54 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                 ref={ref => {
                   setMapRef(ref);
                 }}
-                center={mapCenterPosition}
+                center={mapCenterPosition as LatLngExpression}
+                onClick={(event: any) => {
+                  const { containerPoint, layerPoint, latlng } = event;
+                  onMapEvent(WebViewLeafletEvents.ON_MAP_TOUCHED, {
+                    containerPoint,
+                    layerPoint,
+                    touchLatLng: latlng
+                  });
+                }}
+                onZoomLevelsChange={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_ZOOM_LEVELS_CHANGE);
+                }}
+                onResize={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_RESIZE);
+                }}
+                onZoomStart={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_ZOOM_START);
+                }}
+                onMoveStart={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_MOVE_START);
+                }}
+                onZoom={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_ZOOM);
+                }}
+                onMove={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_MOVE);
+                }}
+                onZoomEnd={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_ZOOM_END);
+                }}
+                onMoveEnd={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_MOVE_END);
+                }}
+                onUnload={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_UNLOAD);
+                }}
+                onViewReset={() => {
+                  onMapEvent(WebViewLeafletEvents.ON_VIEW_RESET);
+                }}
                 maxZoom={17}
                 zoom={zoom}
                 style={{ width: "100%", height: dimensions.height }}
               >
                 <MapLayers mapLayers={mapLayers} />
-                <MapMarkers mapMarkers={mapMarkers} onMapEvent={onMapEvent} />
+                <MapMarkers
+                  mapMarkers={combinedMapMarkers}
+                  onMapEvent={onMapEvent}
+                />
                 <MapShapes mapShapes={mapShapes} onMapEvent={onMapEvent} />
               </Map>
             )}

@@ -15,41 +15,46 @@ import {
   MapEventMessage,
   MapLayer,
   MapMarker,
-  MapShape
+  MapShape,
+  INFINITE_ANIMATION_ITERATIONS,
+  AnimationType,
+  WebviewLeafletMessagePayload
 } from "./models";
 import "./styles/markers.css";
 import "./styles/markerAnimations.css";
+import { LatLng } from "react-leaflet";
 
 export const SHOW_DEBUG_INFORMATION = false;
-
 const ENABLE_BROWSER_TESTING = true;
 
 interface State {
   debugMessages: string[];
   isFromNative: boolean;
   isMobile: boolean;
-  mapCenterPosition: [number, number];
+  mapCenterPosition: LatLng;
   mapLayers: MapLayer[];
   mapMarkers: MapMarker[];
   mapShapes: MapShape[];
+  ownPositionMarker: MapMarker;
   mapRef: any;
+  updatedCenterPosition: LatLng;
   zoom: number;
 }
 
 export default class MapComponent extends Component<{}, State> {
-  mapRef: any = React.createRef();
-
   constructor(props: {}) {
     super(props);
     this.state = {
       debugMessages: ["test"],
       isFromNative: false,
       isMobile: null,
-      mapCenterPosition: [36.56, -76.17],
+      mapCenterPosition: { lat: 36.56, lng: -76.17 },
       mapLayers: [],
       mapMarkers: [],
       mapShapes: [],
       mapRef: null,
+      ownPositionMarker: null,
+      updatedCenterPosition: null,
       zoom: 6
     };
   }
@@ -117,9 +122,18 @@ export default class MapComponent extends Component<{}, State> {
     }
   };
 
-  private handleMessage = (event: any) => {
+  private handleMessage = (event: any & { data: State }) => {
     this.addDebugMessage(event.data);
     try {
+      if (
+        event.data.mapCenterPosition &&
+        this.state.updatedCenterPosition &&
+        event.data.mapCenterPosition !== this.state.updatedCenterPosition
+      ) {
+        this.addDebugMessage("setting re-centering coordinates");
+        event.data.mapCenterPosition.lat += 0.00001;
+        event.data.mapCenterPosition.lng += 0.00001;
+      }
       this.setState({ ...this.state, ...event.data });
     } catch (error) {
       this.addDebugMessage({ error: JSON.stringify(error) });
@@ -140,12 +154,43 @@ export default class MapComponent extends Component<{}, State> {
     this.setState({
       mapLayers: mockMapLayers,
       mapMarkers: mockMapMarkers,
-      mapShapes: mockMapShapes
+      mapShapes: mockMapShapes,
+      ownPositionMarker: {
+        id: "Own Position",
+        position: { lat: 36.56, lng: -76.17 },
+        icon: "❤️",
+        size: [32, 32],
+        animation: {
+          duration: 1,
+          delay: 0,
+          iterationCount: INFINITE_ANIMATION_ITERATIONS,
+          type: AnimationType.BOUNCE
+        }
+      }
     });
   };
 
-  private onMapEvent = (event: WebViewLeafletEvents, payload: any) => {
-    this.sendMessage({ event, payload });
+  private onMapEvent = (
+    webViewLeafletEvent: WebViewLeafletEvents,
+    payload?: WebviewLeafletMessagePayload
+  ) => {
+    if (!payload && this.state.mapRef?.leafletElement) {
+      console.log(webViewLeafletEvent);
+      const mapCenterPosition: LatLng = {
+        lat: this.state.mapRef.leafletElement?.getCenter().lat,
+        lng: this.state.mapRef.leafletElement?.getCenter().lng
+      };
+
+      payload = {
+        mapCenterPosition: mapCenterPosition,
+        bounds: this.state.mapRef.leafletElement?.getBounds(),
+        zoom: this.state.mapRef.leafletElement?.getZoom()
+      };
+      if ([WebViewLeafletEvents.ON_MOVE_END].includes(webViewLeafletEvent)) {
+        this.setState({ updatedCenterPosition: mapCenterPosition });
+      }
+    }
+    this.sendMessage({ event: webViewLeafletEvent, payload });
   };
 
   private setMapRef = (mapRef: any) => {
@@ -161,6 +206,7 @@ export default class MapComponent extends Component<{}, State> {
       mapLayers,
       mapMarkers,
       mapShapes,
+      ownPositionMarker,
       zoom
     } = this.state;
     return (
@@ -172,6 +218,7 @@ export default class MapComponent extends Component<{}, State> {
         mapMarkers={mapMarkers}
         mapShapes={mapShapes}
         onMapEvent={this.onMapEvent}
+        ownPositionMarker={ownPositionMarker}
         setMapRef={this.setMapRef}
         zoom={zoom}
       />
