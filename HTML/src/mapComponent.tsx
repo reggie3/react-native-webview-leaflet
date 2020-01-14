@@ -37,7 +37,6 @@ interface State {
   mapShapes: MapShape[];
   ownPositionMarker: MapMarker;
   mapRef: any;
-  updatedCenterPosition: LatLng;
   zoom: number;
 }
 
@@ -54,7 +53,6 @@ export default class MapComponent extends Component<{}, State> {
       mapShapes: [],
       mapRef: null,
       ownPositionMarker: null,
-      updatedCenterPosition: null,
       zoom: 6
     };
   }
@@ -125,14 +123,11 @@ export default class MapComponent extends Component<{}, State> {
   private handleMessage = (event: any & { data: State }) => {
     this.addDebugMessage(event.data);
     try {
-      if (
-        event.data.mapCenterPosition &&
-        this.state.updatedCenterPosition &&
-        event.data.mapCenterPosition !== this.state.updatedCenterPosition
-      ) {
-        this.addDebugMessage("setting re-centering coordinates");
-        event.data.mapCenterPosition.lat += 0.00001;
-        event.data.mapCenterPosition.lng += 0.00001;
+      if (event.data.mapCenterPosition) {
+        this.state.mapRef.leafletElement.flyTo([
+          event.data.mapCenterPosition.lat,
+          event.data.mapCenterPosition.lng
+        ]);
       }
       this.setState({ ...this.state, ...event.data });
     } catch (error) {
@@ -175,7 +170,7 @@ export default class MapComponent extends Component<{}, State> {
     payload?: WebviewLeafletMessagePayload
   ) => {
     if (!payload && this.state.mapRef?.leafletElement) {
-      console.log(webViewLeafletEvent);
+      debugger;
       const mapCenterPosition: LatLng = {
         lat: this.state.mapRef.leafletElement?.getCenter().lat,
         lng: this.state.mapRef.leafletElement?.getCenter().lng
@@ -186,9 +181,6 @@ export default class MapComponent extends Component<{}, State> {
         bounds: this.state.mapRef.leafletElement?.getBounds(),
         zoom: this.state.mapRef.leafletElement?.getZoom()
       };
-      if ([WebViewLeafletEvents.ON_MOVE_END].includes(webViewLeafletEvent)) {
-        this.setState({ updatedCenterPosition: mapCenterPosition });
-      }
     }
     this.sendMessage({ event: webViewLeafletEvent, payload });
   };

@@ -7,7 +7,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "cleanNodeModules": "del-cli --force ./node_modules",
-    "clean": "yarn cleanNodeModules && yarn"
+    "clean": "yarn upgrade react-native-webview-leaflet"
   },
   "dependencies": {
     "expo": "~36.0.0",

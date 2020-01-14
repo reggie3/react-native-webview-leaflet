@@ -53,6 +53,7 @@ export default function App() {
     lng: -76.285873
   });
   const [ownPosition, setOwnPosition] = useState(null);
+  const [webViewLeafletRef, setWebViewLeafletRef] = useState(null);
 
   const onMessageReceived = (message: WebviewLeafletMessage) => {
     switch (message.event) {
@@ -100,6 +101,9 @@ export default function App() {
       <View style={{ flex: 1 }}>
         {
           <WebViewLeaflet
+            ref={(ref: WebViewLeaflet) => {
+              setWebViewLeafletRef(ref);
+            }}
             backgroundColor={"green"}
             onMessageReceived={onMessageReceived}
             mapLayers={[
@@ -266,6 +270,9 @@ export default function App() {
         <Button
           onPress={() => {
             setMapCenterPosition(ownPosition);
+            if (webViewLeafletRef) {
+              webViewLeafletRef.setMapCenterPosition();
+            }
           }}
           style={styles.mapButton}
           success

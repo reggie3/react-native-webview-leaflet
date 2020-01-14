@@ -38,6 +38,7 @@ export interface WebViewLeafletProps {
 
 interface State {
   debugMessages: string[];
+  mapCurrentCenterPosition: LatLng;
   webviewContent: string;
   isLoading: boolean;
 }
@@ -60,8 +61,9 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     super(props);
     this.state = {
       debugMessages: [],
-      webviewContent: null,
-      isLoading: null
+      isLoading: null,
+      mapCurrentCenterPosition: null,
+      webviewContent: null
     };
     this.webViewRef = null;
   }
@@ -88,6 +90,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     const { webviewContent } = this.state;
     const {
       mapCenterPosition,
+
       mapMarkers,
       mapLayers,
       mapShapes,
@@ -118,6 +121,20 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
   };
 
+  private setMapCenterPosition = () => {
+    const { mapCurrentCenterPosition } = this.state;
+    const { mapCenterPosition } = this.props;
+
+    if (!isEqual(mapCenterPosition, mapCurrentCenterPosition)) {
+      this.setState({
+        mapCurrentCenterPosition: mapCenterPosition
+      });
+      this.sendMessage({
+        mapCenterPosition
+      });
+    }
+  };
+
   // Handle messages received from webview contents
   private handleMessage = (data: string) => {
     const { onMessageReceived } = this.props;
@@ -127,6 +144,11 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     if (message.msg === WebViewLeafletEvents.MAP_READY) {
       this.sendStartupMessage();
     }
+    if (message.event === WebViewLeafletEvents.ON_MOVE_END) {
+      this.setState({
+        mapCurrentCenterPosition: message.payload.mapCenterPosition
+      });
+    }
     onMessageReceived(message);
   };
 
@@ -134,7 +156,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
   private sendMessage = (payload: object) => {
     this.updateDebugMessages(`sending: ${payload}`);
 
-    this.webViewRef.injectJavaScript(
+    this.webViewRef?.injectJavaScript(
       `window.postMessage(${JSON.stringify(payload)}, '*');`
     );
   };
