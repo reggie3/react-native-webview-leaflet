@@ -1,10 +1,12 @@
-# React Native Webview Leaflet
+# React Native Webview Leaflet V5
 
 ## A Leaflet map component with no native code for React Native applications
 
 ### Why Use This Library
 
-This component is useful if you want to display HTML elements on an interactive map. Since the elements are just HTML items, you can use SVG's, emojis, text, images, etc., and they can even be animated, updated, and changed as required.
+This component is useful if you want to display HTML elements on an interactive map. Since the elements are standard HTML items, they can be SVG's, emojis, text, images, etc.
+
+Additionally, the elements can even be animated, updated, and changed as required.
 
 ### Why Not Use This Library
 
@@ -15,7 +17,7 @@ You may not want to use this library if you'd rather use Google map tiles and da
 [![npm](https://img.shields.io/npm/dt/react-native-webview-leaflet.svg)](https://www.npmjs.com/package/react-native-webview-leaflet)
 [![npm](https://img.shields.io/npm/l/react-native-webview-leaflet.svg)](https://github.com/react-native-component/react-native-webview-leaflet/blob/master/LICENSE)
 
-![Image](https://thumbs.gfycat.com/NaughtyCanineAmericanlobster-size_restricted.gif)
+[![Alt text](https://img.youtube.com/vi/Jpo-Mg3BSVk/0.jpg)](https://www.youtube.com/watch?v=Jpo-Mg3BSVk)
 
 ## Installation
 
@@ -44,42 +46,52 @@ A typical example is shown below:
 ```javascript
 <WebViewLeaflet
   ref={component => (this.webViewLeaflet = component)}
-  // Optional: a callback that will be called when the map is loaded
-  onLoad={this.onLoad}
-  // Optional: the component that will receive map events}
-  eventReceiver={this}
-  // Optional: the center of the displayed map
-  centerPosition={this.state.mapCenterPosition}
-  // Optional: a list of markers that will be displayed on the map
-  markers={this.state.markers}
-  // Required: the map layers that will be displayed on the map. See below for a description of the map layers object
-  mapLayers={mapLayers}
-  // Optional: display a marker to be at a given location
-  ownPositionMarker={{
-    coords: this.state.currentLocation,
+  // The rest of your props, see the list below
+/>
+```
+
+## Props
+
+| property            | required | type                            | purpose                                                                                                                                                                                                         |
+| ------------------- | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| backgroundColor     | optional | string                          | Color seen prior to the map loading                                                                                                                                                                             |
+| doShowDebugMessages | optional | boolean                         | show debug information from the component containing the Leaflet map                                                                                                                                            |
+| loadingIndicator    | optional | React.ReactElement              | custom component displayed while the map is loading                                                                                                                                                             |
+| onError             | optional | function                        | Will receive an error event                                                                                                                                                                                     |
+| onLoadEnd           | optional | function                        | Called when map stops loading                                                                                                                                                                                   |
+| onLoadStart         | optional | function                        | Called when the map starts to load                                                                                                                                                                              |
+| onMessageReceived   | required | function                        | This function receives messages in the form of a WebviewLeafletMessage object from the map                                                                                                                      |
+| mapLayers           | optional | MapLayer array                  | An array of map layers                                                                                                                                                                                          |
+| mapMarkers          | optional | MapMarker array                 | An array of map markers                                                                                                                                                                                         |
+| mapShapes           | optional | MapShape[]                      | An array of map shapes                                                                                                                                                                                          |
+| mapCenterPosition   | optional | {lat: [Lat], lng: [Lng]} object | The center position of the map. This coordinate will not be accurate if the map has been moved manually. However, calling the map's setMapCenterPosition function will cause the map to revert to this location |
+| ownPositionMarker   | optional | Marker                          | A special marker that has an ID of OWN_POSTION_MARKER_ID                                                                                                                                                        |  |
+| zoom                | optional | number                          | Desired zoom value of the map                                                                                                                                                                                   |
+
+### Example Marker
+
+```javascript
+ownPositionMarker={{
+    id: '1',
+    coords: {lat: 36.00, lng, -76.00},
     icon: "❤️",
     size: [24, 24],
     animation: {
-      name: "pulse",
+      name: AnimationType.BOUNCE,
       duration: ".5",
       delay: 0,
-      interationCount: "infinite"
+      interationCount: INFINITE_ANIMATION_ITERATIONS
     }
   }}
-  // Optional (defaults to false): display a button that centers the map on the coordinates of ownPostionMarker. Requires that "ownPositionMarker" prop be set
-  centerButton={true}
-  // Optional (defaults to false): cluster icons that are in the same area
-  useMarkerClustering={true}
-/>
 ```
 
 After loading, the map expects to receive an array of map layer information objects. A sample object showing a [MapBox](https://www.mapbox.com/) tile layer is shown below.
 
 ```javascript
   {
-    name: 'streets',  // the name of the layer, this will be seen in the layer selection control
-    checked: 'true',  // if the layer is selected in the layer selection control
-    type: 'TileLayer',  // the type of layer as shown at https://react-leaflet.js.org/docs/en/components.html#raster-layers
+    baseLayerName: 'OpenStreetMap',  // the name of the layer, this will be seen in the layer selection control
+    baseLayerIsChecked: 'true',  // if the layer is selected in the layer selection control
+    layerType: 'TileLayer',  // Optional: a MapLayerType enum specifying the type of layer see "Types of Layers" below. Defaults to TILE_LAYER
     baseLayer: true,
     // url of tiles
     url: `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
@@ -89,12 +101,17 @@ After loading, the map expects to receive an array of map layer information obje
   }
 ```
 
-The format of the object depends on the type of layer to be displayed, and corresponds to the Raster Layers in react-leaflet  
-https://react-leaflet.js.org/docs/en/components.html#raster-layers
+### Types of Layers
 
-**NOTE: Image and VideoOverlay layers do not currently work.**
-
-Example objects are shown in the mockMapLayers.js file in this repository.
+```javascript
+export enum MapLayerType {
+  IMAGE_LAYER = "ImageOverlay",
+  TILE_LAYER = "TileLayer",
+  VECTOR_LAYER = "VectorLayer",
+  VIDEO_LAYER = "VideoOverlay",
+  WMS_TILE_LAYER = "WMSTileLayer"
+}
+```
 
 ### Communicating with the map
 
@@ -102,27 +119,35 @@ Example objects are shown in the mockMapLayers.js file in this repository.
 
 This library supports map clicked, map marker clicked, and the map events that are exposed by Leaflet.
 
-##### Map Clicked and Map Marker Clicked Events
-
-To receive map clicked and on map marker clicked events, add the following functions to the component identified by the eventReceiver prop.
-
-```javascript
-onMapClicked = ({ payload }) => {
-  console.log(`Map Clicked: app received: ${payload.coords}`);
-  this.showAlert("Map Clicked", `Coordinates = ${payload.coords}`);
-};
-
-onMapMarkerClicked = ({ payload }) => {
-  console.log(`Marker Clicked: ${payload.id}`);
-  this.showAlert("Marker Clicked", `Marker ID = ${payload.id}`);
-};
-```
-
 ##### Leaflet Map Events
 
-To react to leaflet map events, you need to create functions in your component to handle them. These functions' names must be camelCased and prefixed by 'on'.
-For example, to listen for Leaflet's `zoomlevelschange` event, you will need to create a function
-called `onZoomLevelsChange`. These functions will receive the following object
+The following Map Events are passed to the function designated by the onMessageReceived prop.
+
+```javascript
+export enum WebViewLeafletEvents {
+  MAP_COMPONENT_MOUNTED = "MAP_COMPONENT_MOUNTED",
+  MAP_READY = "MAP_READY",
+  DOCUMENT_EVENT_LISTENER_ADDED = "DOCUMENT_EVENT_LISTENER_ADDED",
+  WINDOW_EVENT_LISTENER_ADDED = "WINDOW_EVENT_LISTENER_ADDED",
+  UNABLE_TO_ADD_EVENT_LISTENER = "UNABLE_TO_ADD_EVENT_LISTENER",
+  DOCUMENT_EVENT_LISTENER_REMOVED = "DOCUMENT_EVENT_LISTENER_REMOVED",
+  WINDOW_EVENT_LISTENER_REMOVED = "WINDOW_EVENT_LISTENER_REMOVED",
+  ON_MOVE_END = "onMoveEnd",
+  ON_MOVE_START = "onMoveStart",
+  ON_MOVE = "onMove",
+  ON_RESIZE = "onResize",
+  ON_UNLOAD = "onUnload",
+  ON_VIEW_RESET = "onViewReset",
+  ON_ZOOM_END = "onZoomEnd",
+  ON_ZOOM_LEVELS_CHANGE = "onZoomLevelsChange",
+  ON_ZOOM_START = "onZoomStart",
+  ON_ZOOM = "onZoom",
+  ON_MAP_TOUCHED = "onMapClicked",
+  ON_MAP_MARKER_CLICKED = "onMapMarkerClicked"
+}
+```
+
+Events prefixed with "ON" will receive the below object containing information about the map
 
 ```javascript
 {
@@ -132,70 +157,43 @@ called `onZoomLevelsChange`. These functions will receive the following object
 }
 ```
 
-### Sending Events to the Map
-
-The map can be be updated by sending messages from your component to the WebViewLeaflet component via its reference like so:
-
-```javascript
-this.webViewLeaflet.sendMessage({
-  zoom: 6,
-  locations: this.state.locations, // an array of locations
-  showAttributionControl: this.state.mapState.showAttributionControl, // a boolean controlling whether the map displays its attribution control
-  showZoomControl: this.state.mapState.showZoomControl // a boolean controlling whether the map displays its zoom control
-});
-```
-
-A [react-leaflet](https://react-leaflet.js.org/en/) component makes up the map that is rendered by `WebViewLeaflet`. This allows messages like the one above to be used to directly set values in the map's state.
-
 ### Creating Map Markers
 
-The map builds and displays its markers based on the value of the `locations` key in its own state. You can update the value of it's `locations` by sending a message containing an object that contains a key of `locations` and a value that is an array of location objects like the one shown below. An example of such a call and a location object is show below.
-
 ```javascript
-// sending locations to the map
-this.webViewLeaflet.sendMessage({
-  locations: [...this.state.locations]
-});
-```
-
-```javascript
-// a location object
 {
   id: uuidV1(), // The ID attached to the marker. It will be returned when onMarkerClicked is called
-  coords: [LATITUDE, LONGITUDE], // Latitude and Longitude of the marker
+  position: {lat: [LATITTUDE], lng: [LONGITUDE]}, // Latitude and Longitude of the marker
   icon: '🍇', // HTML element that will be displayed as the marker.  It can also be text or an SVG string.
-
-  // The child object, "animation", controls the optional animation that will be attached to the marker.
-  // See below for a list of available animations
+  size: [32, 32],
   animation: {
-    name: animations[Math.floor(Math.random() * animations.length)],
-    duration: Math.floor(Math.random() _ 3) + 1,
-    delay: Math.floor(Math.random()) _ 0.5,
-    interationCount
+    duration: getDuration(),
+    delay: getDelay(),
+    iterationCount,
+    type: AnimationType.BOUNCE
   }
-  // optional size for this individual icon
-  // will default to the WebViewLeaflet `defaultIconSize` property if not provided
-  size: [64, 64],
 }
 ```
 
-### Adding Geometry
+### Adding Leaflet Geometry Layers to the Map
 
-Thanks to @gotoglup for the PR adding geometry layers. A geometry layer can be added to the may by following the example below:
+Thanks to @gotoglup for the PR adding leaflet geometry layers. A geometry layer can be added to the may by following the example below:
 
 ```javascript
-geometryLayers={[
+mapShapes={[
   {
-    id: 1,
-    coords: [[51.515, -0.09], [51.52, -0.1], [51.52, -0.12]],
-    color: '#123123',
-    },
-  ]}
+    shapeType: MapShapeType.CIRCLE,
+    color: "#123123",
+    id: "1",
+    center: { lat: 34.225727, lng: -77.94471 },
+    radius: 2000
+  }
+]}
 ```
 
 ### Available Animations
 
-Animations for "bounce", "fade", "pulse", "jump", "waggle", "spin", and "beat" can be specified in the animation.name property of an individual location.
+Marker animations can be specified by setting the animation.type of the marker object to an AnimationType enum.
+Values for AnimationType can be found in the models.ts file in the WebViewLeaflet directory of this project.
 
 ### Animation Information
 
@@ -267,6 +265,7 @@ Animations are kept in the file [markers.css](https://github.com/reggie3/react-n
 * Switch to react-native-community/react-native-webview implementation
 * Add ability to draw shapes on the map (Leaflet vector layers)
 * Display map layer vector icons
+* Simplify event communication
 
 ## LICENSE
 
