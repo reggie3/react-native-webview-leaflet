@@ -7,7 +7,9 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "cleanNodeModules": "del-cli --force ./node_modules",
-    "clean": "yarn upgrade react-native-webview-leaflet"
+    "clean": "yarn upgrade react-native-webview-leaflet",
+    "test": "node_modules/.bin/jest",
+    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
   },
   "dependencies": {
     "expo": "~36.0.0",
@@ -23,14 +25,20 @@
     "react-native-webview-leaflet": "file:../WebViewLeaflet"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.8.3",
+    "@testing-library/react-native": "^5.0.3",
+    "@types/jest": "^24.0.25",
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
+    "babel-jest": "^24.9.0",
     "babel-preset-expo": "~8.0.0",
     "del-cli": "^3.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-run": "^1.7.1",
-    "typescript": "~3.6.3"
+    "jest": "^24.9.0",
+    "jest-expo": "^36.0.1",
+    "ts-jest": "^24.3.0",
+    "typescript": "^3.7.4"
   },
   "private": true
 }

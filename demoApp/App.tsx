@@ -15,6 +15,7 @@ import lodashSample from "lodash.sample";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 
+type LatLngObject = { lat: number; lng: number };
 const locations: { icon: string; position: LatLng; name: string }[] = [
   {
     icon: "⭐",
@@ -64,10 +65,9 @@ export default function App() {
 
         break;
       case WebViewLeafletEvents.ON_MAP_TOUCHED:
-        Alert.alert(
-          `Map Touched at:`,
-          `${message.payload.touchLatLng.lat}, ${message.payload.touchLatLng.lng}`
-        );
+        const position: LatLngObject = message.payload
+          .touchLatLng as LatLngObject;
+        Alert.alert(`Map Touched at:`, `${position.lat}, ${position.lng}`);
         break;
       default:
         console.log("App received", message);
@@ -131,7 +131,7 @@ export default function App() {
                   animation: {
                     duration: getDuration(),
                     delay: getDelay(),
-                    iterationCount,
+                    iterationCount: INFINITE_ANIMATION_ITERATIONS,
                     type: lodashSample(
                       Object.values(AnimationType)
                     ) as AnimationType
@@ -256,10 +256,10 @@ export default function App() {
         {locations.map(location => {
           return (
             <Button
-              key={location.position.lat.toString()}
+              key={(location.position as LatLngObject).lat.toString()}
               info
               onPress={() => {
-                setMapCenterPosition(location.position);
+                setMapCenterPosition(location.position as LatLngObject);
               }}
               style={styles.mapButton}
             >
@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
   header: {
     height: 60,
     backgroundColor: "dodgerblue",
+    paddingHorizontal: 10,
     paddingTop: 30,
     width: "100%"
   },
@@ -301,11 +302,14 @@ const styles = StyleSheet.create({
     fontWeight: "600"
   },
   mapControls: {
+    backgroundColor: "rgba(255,255,255,.5)",
+    borderRadius: 5,
     bottom: 25,
     flexDirection: "row",
     justifyContent: "space-between",
     left: 0,
     marginHorizontal: 10,
+    padding: 7,
     position: "absolute",
     right: 0
   },

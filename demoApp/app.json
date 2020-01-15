@@ -25,6 +25,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Demonstration of react-native-webview-leaflet library.\n",
+    "githubUrl": "https://github.com/react-native-community/react-native-webview"
   }
 }
