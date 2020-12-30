@@ -1,16 +1,15 @@
 import React, { ReactElement } from 'react';
 import { StyleSheet, View, NativeSyntheticEvent } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { Asset } from 'expo-asset';
 import DebugMessageBox from './DebugMessageBox';
-import { WebViewError } from 'react-native-webview/lib/WebViewTypes';
+import { WebViewError, WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
 export interface Props {
   backgroundColor: string;
   debugMessages: string[];
   doShowDebugMessages: boolean;
   handleMessage: (data: string) => void;
-  webviewContent: string;
+  webviewSource: WebViewSource;
   loadingIndicator: () => ReactElement;
   onError: (syntheticEvent: NativeSyntheticEvent<WebViewError>) => void;
   onLoadEnd: () => void;
@@ -23,7 +22,7 @@ const WebViewLeafletView = ({
   debugMessages,
   doShowDebugMessages,
   handleMessage,
-  webviewContent,
+  webviewSource,
   loadingIndicator,
   onError,
   onLoadEnd,
@@ -38,7 +37,7 @@ const WebViewLeafletView = ({
         backgroundColor: backgroundColor
       }}
     >
-      {webviewContent && (
+      {webviewSource && (
         <WebView
           containerStyle={{
             flex: 0,
@@ -58,14 +57,11 @@ const WebViewLeafletView = ({
             }
           }}
           domStorageEnabled={true}
-          useWebKit={true}
           startInLoadingState={true}
           onError={onError}
           originWhitelist={['*']}
          /*  renderLoading={loadingIndicator || null} */
-          source={{
-            html: webviewContent
-          }}
+          source={webviewSource}
           allowFileAccess={true}
         allowUniversalAccessFromFileURLs={true}
         allowFileAccessFromFileURLs={true}
