@@ -2,6 +2,10 @@
 
 ## A Leaflet map component with no native code for React Native applications
 
+## Opposed to the original repo, this one supports React Native without Expo by removing the corresponding dependencies.
+## It also removed Mapbox as tile provider and uses OSM instead
+## Note: In production you should never use the hosted OSM tile server.
+
 ### Why Use This Library
 
 This component is useful if you want to display HTML elements on an interactive map. Since the elements are standard HTML items, they can be SVG's, emojis, text, images, etc.

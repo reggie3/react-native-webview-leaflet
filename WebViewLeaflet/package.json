@@ -1,6 +1,6 @@
 {
-  "name": "react-native-webview-leaflet",
-  "version": "5.0.2",
+  "name": "react-native-expoless-webview-leaflet",
+  "version": "5.1.0",
   "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
   "repository": {
     "type": "git",
