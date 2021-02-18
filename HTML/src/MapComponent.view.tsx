@@ -114,6 +114,7 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                 }}
                 maxZoom={17}
                 zoom={zoom}
+                attributionControl={false}
                 style={{ width: "100%", height: dimensions.height }}
               >
                 <MapLayers mapLayers={mapLayers} />

@@ -31,6 +31,7 @@ export interface WebViewLeafletProps {
   mapCenterPosition?: LatLng;
   ownPositionMarker?: OwnPositionMarker;
   zoom?: number;
+  zoomControl?: boolean;
 }
 
 interface State {
@@ -70,7 +71,8 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapLayers,
       mapShapes,
       ownPositionMarker,
-      zoom
+      zoom,
+      zoomControl
     } = this.props;
 
     if (!isEqual(mapCenterPosition, prevProps.mapCenterPosition)) {
@@ -90,6 +92,9 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
     if (zoom !== prevProps.zoom) {
       this.sendMessage({ zoom });
+    }
+    if (zoomControl !== prevProps.zoomControl) {
+      this.sendMessage({ zoomControl });
     }
   };
 
@@ -142,7 +147,8 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapShapes,
       mapCenterPosition,
       ownPositionMarker,
-      zoom = 7
+      zoom = 7,
+      zoomControl = true
     } = this.props;
     if (mapLayers) {
       startupMessage.mapLayers = mapLayers;
@@ -164,6 +170,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
 
     startupMessage.zoom = zoom;
+    startupMessage.zoomControl = zoomControl;
 
     this.setState({ isLoading: false });
     this.updateDebugMessages("sending startup message");
