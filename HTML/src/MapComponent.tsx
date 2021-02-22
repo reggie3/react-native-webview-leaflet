@@ -25,7 +25,7 @@ import "./styles/markerAnimations.css";
 import { LatLng } from "react-leaflet";
 
 export const SHOW_DEBUG_INFORMATION = false;
-const ENABLE_BROWSER_TESTING = true;
+const ENABLE_BROWSER_TESTING = false;
 
 interface State {
   debugMessages: string[];
@@ -172,7 +172,6 @@ export default class MapComponent extends Component<{}, State> {
     payload?: WebviewLeafletMessagePayload
   ) => {
     if (!payload && this.state.mapRef?.leafletElement) {
-      debugger;
       const mapCenterPosition: LatLng = {
         lat: this.state.mapRef.leafletElement?.getCenter().lat,
         lng: this.state.mapRef.leafletElement?.getCenter().lng
