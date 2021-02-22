@@ -119,7 +119,6 @@ export interface MapStartupMessage {
   mapCenterPosition?: LatLng;
   ownPositionMarker?: OwnPositionMarker;
   zoom?: number;
-  zoomControl?: boolean;
 }
 
 export type WebviewLeafletMessagePayload = {

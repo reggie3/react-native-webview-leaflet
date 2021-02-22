@@ -38,7 +38,8 @@ interface State {
   ownPositionMarker: MapMarker;
   mapRef: any;
   zoom: number;
-  zoomControl: boolean;
+  zoomIn?: number;
+  zoomOut?: number;
 }
 
 export default class MapComponent extends Component<{}, State> {
@@ -54,8 +55,7 @@ export default class MapComponent extends Component<{}, State> {
       mapShapes: [],
       mapRef: null,
       ownPositionMarker: null,
-      zoom: 6,
-      zoomControl: true
+      zoom: 6
     };
   }
 
@@ -130,13 +130,6 @@ export default class MapComponent extends Component<{}, State> {
           event.data.mapCenterPosition.lat,
           event.data.mapCenterPosition.lng
         ]);
-      }
-      if (this.state.zoomControl !== event.data.zoomControl) {
-        if (event.data.zoomControl) {
-          this.state.mapRef.leafletElement.addControl(this.state.mapRef.leafletElement.zoomControl);
-        } else {
-          this.state.mapRef.leafletElement.removeControl(this.state.mapRef.leafletElement.zoomControl);
-        }
       }
       this.setState({ ...this.state, ...event.data });
     } catch (error) {

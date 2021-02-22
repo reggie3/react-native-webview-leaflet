@@ -31,7 +31,6 @@ export interface WebViewLeafletProps {
   mapCenterPosition?: LatLng;
   ownPositionMarker?: OwnPositionMarker;
   zoom?: number;
-  zoomControl?: boolean;
 }
 
 interface State {
@@ -72,7 +71,6 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapShapes,
       ownPositionMarker,
       zoom,
-      zoomControl
     } = this.props;
 
     if (!isEqual(mapCenterPosition, prevProps.mapCenterPosition)) {
@@ -92,9 +90,6 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
     if (zoom !== prevProps.zoom) {
       this.sendMessage({ zoom });
-    }
-    if (zoomControl !== prevProps.zoomControl) {
-      this.sendMessage({ zoomControl });
     }
   };
 
@@ -131,7 +126,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
 
   // Send message to webview
   private sendMessage = (payload: object) => {
-    this.updateDebugMessages(`sending: ${payload}`);
+    this.updateDebugMessages(`sending: ${JSON.stringify(payload, null, 2)}`);
 
     this.webViewRef?.injectJavaScript(
       `window.postMessage(${JSON.stringify(payload)}, '*');`
@@ -148,7 +143,6 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapCenterPosition,
       ownPositionMarker,
       zoom = 7,
-      zoomControl = true
     } = this.props;
     if (mapLayers) {
       startupMessage.mapLayers = mapLayers;
@@ -170,10 +164,9 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     }
 
     startupMessage.zoom = zoom;
-    startupMessage.zoomControl = zoomControl;
 
     this.setState({ isLoading: false });
-    this.updateDebugMessages("sending startup message");
+    this.updateDebugMessages("sending startup message: " + JSON.stringify(startupMessage, null, 2));
 
     this.webViewRef.injectJavaScript(
       `window.postMessage(${JSON.stringify(startupMessage)}, '*');`
