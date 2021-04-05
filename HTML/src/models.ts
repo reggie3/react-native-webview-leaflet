@@ -24,8 +24,8 @@ export enum WebViewLeafletEvents {
   ON_ZOOM_START = "onZoomStart",
   ON_ZOOM = "onZoom",
   ON_MAP_TOUCHED = "onMapClicked",
-  ON_MAP_MARKER_CLICKED = "onMapMarkerClicked"
-  //  ON_MAP_SHAPE_CLICKED = "onMapShapeClicked" cannot click on shapes yet
+  ON_MAP_MARKER_CLICKED = "onMapMarkerClicked", 
+  ON_MAP_SHAPE_CLICKED = "onMapShapeClicked"
 }
 
 export enum AnimationType {
@@ -103,6 +103,7 @@ export interface MapLayer {
 }
 
 export interface MapShape {
+  title?: string;
   bounds?: LatLng[];
   center?: LatLng;
   color?: string;
