@@ -9,7 +9,8 @@ import {
   PolylineProps,
   PolygonProps,
   RectangleProps,
-  CircleProps
+  CircleProps,
+  Popup
 } from "react-leaflet";
 import { MapShapeType, MapShape, WebViewLeafletEvents } from "./models";
 
@@ -46,7 +47,15 @@ class MapShapes extends React.Component<MapMapShapesProps> {
       <>
         {this.props.mapShapes.map(mapShape => {
           const props = { ...mapShape, color: mapShape.color ?? "white" };
-          return <this.Shape {...props} key={Math.random().toString()} />;
+          return <this.Shape {...props} key={mapShape.id || Math.random().toString()} 
+            onClick={() => {
+              this.props.onMapEvent(WebViewLeafletEvents.ON_MAP_SHAPE_CLICKED, {
+                mapShapeID: mapShape.id
+              });
+            }}
+            >
+              {mapShape.title && <Popup>{mapShape.title}</Popup>}
+            </this.Shape>
         })}
       </>
     );
