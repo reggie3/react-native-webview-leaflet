@@ -36,6 +36,7 @@ interface State {
   mapMarkers: MapMarker[];
   mapShapes: MapShape[];
   ownPositionMarker: MapMarker;
+  useMarkerClustering: boolean;
   mapRef: any;
   zoom: number;
   zoomIn?: number;
@@ -55,6 +56,7 @@ export default class MapComponent extends Component<{}, State> {
       mapShapes: [],
       mapRef: null,
       ownPositionMarker: null,
+      useMarkerClustering: false,
       zoom: 6
     };
   }
@@ -163,7 +165,7 @@ export default class MapComponent extends Component<{}, State> {
           iterationCount: INFINITE_ANIMATION_ITERATIONS,
           type: AnimationType.BOUNCE
         }
-      }
+      },
     });
   };
 
@@ -200,6 +202,7 @@ export default class MapComponent extends Component<{}, State> {
       mapMarkers,
       mapShapes,
       ownPositionMarker,
+      useMarkerClustering,
       zoom
     } = this.state;
     return (
@@ -213,6 +216,7 @@ export default class MapComponent extends Component<{}, State> {
         onMapEvent={this.onMapEvent}
         ownPositionMarker={ownPositionMarker}
         setMapRef={this.setMapRef}
+        useMarkerClustering={useMarkerClustering}
         zoom={zoom}
       />
     );
