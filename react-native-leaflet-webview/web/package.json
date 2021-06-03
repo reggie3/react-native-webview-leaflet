@@ -1,0 +1,59 @@
+{
+  "name": "html",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "postbuild": "yarn dist",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "cleanAssets": "del-cli --force ../assets/index.html",
+    "copyDist": "npx copyfiles -u 1 ./dist/index.html ../assets",
+    "dist": "gulp build && yarn cleanAssets && yarn copyDist"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.0",
+    "@types/leaflet": "1.7.1",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-leaflet": "^2.5.0",
+    "@types/react-measure": "^2.0.5",
+    "del-cli": "^3.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-inline-source": "^4.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.0.0",
+    "react-scripts": "4.0.3",
+    "typescript": "~4.3.2"
+  },
+  "dependencies": {
+    "leaflet": "^1.7.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-leaflet": "^3.2.0",
+    "react-measure": "^2.3.0"
+  },
+  "futureDeps": {
+    "@types/react-leaflet-markercluster": "^2.0.0",
+    "leaflet.markercluster": "^1.5.0",
+    "react-leaflet-markercluster": "^2.0.0"
+  }
+}

@@ -1,6 +1,5 @@
 {
-  "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-run": "^1.7.1"
+  "dependencies": {
+    "prettier": "^2.3.0"
   }
 }

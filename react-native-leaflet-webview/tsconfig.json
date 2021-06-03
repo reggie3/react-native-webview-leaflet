@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "lib": ["dom", "es6", "es2016.array.include", "es2017.object", "ES2019"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "sourceMap": false,
+    "jsx": "react-native",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2019"
+  }
+}
