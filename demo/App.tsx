@@ -1,95 +1,46 @@
+import { ExpoLeaflet } from 'expo-leaflet'
 import * as Location from 'expo-location'
-import * as Permissions from 'expo-permissions'
+import type { LatLngLiteral } from 'leaflet'
 import React, { useEffect, useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
-import { WebViewLeaflet } from 'react-native-leaflet-webview'
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import { MapLayer } from 'expo-leaflet'
 import { mapMarkers, mapShapes } from './mockData'
 
-export const mapboxToken =
-  'pk.eyJ1Ijoid2hlcmVzbXl3YXZlcyIsImEiOiJjanJ6cGZtd24xYmU0M3lxcmVhMDR2dWlqIn0.QQSWbd-riqn1U5ppmyQjRw'
+const mapLayers: Array<MapLayer> = [
+  {
+    attribution:
+      '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    baseLayerIsChecked: true,
+    baseLayerName: 'OpenStreetMap',
+    layerType: 'TileLayer',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  },
+  {
+    baseLayerIsChecked: true,
+    baseLayer: true,
+    baseLayerName: 'Mapbox',
+    layerType: 'TileLayer',
+    url: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoid2hlcmVzbXl3YXZlcyIsImEiOiJjanJ6cGZtd24xYmU0M3lxcmVhMDR2dWlqIn0.QQSWbd-riqn1U5ppmyQjRw`,
+  },
+]
 
-export default function App() {
-  const [zoom, setZoom] = useState(7)
-  const [mapCenterPosition, setMapCenterPosition] = useState({
-    lat: 36.850769,
-    lng: -76.285873,
-  })
-  const [ownPosition, setOwnPosition] = useState(null)
+const mapOptions = {
+  attributionControl: false,
+  zoomControl: Platform.OS === 'web',
+}
 
-  useEffect(() => {
-    const getLocationAsync = async () => {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION)
-      if (status !== 'granted') {
-        console.warn('Permission to access location was denied')
-      }
-
-      let location = await Location.getCurrentPositionAsync({})
-      if (!ownPosition) {
-        setOwnPosition({
-          lat: location.coords.latitude,
-          lng: location.coords.longitude,
-        })
-      }
-    }
-
-    getLocationAsync()
-  }, [])
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>React Native Webview Leaflet Demo</Text>
-      </View>
-      <View style={{ flex: 1 }}>
-        {
-          <WebViewLeaflet
-            backgroundColor={'green'}
-            onMessage={(message) => {
-              switch (message.tag) {
-                case 'onMapMarkerClicked':
-                  Alert.alert(
-                    `Map Marker Touched, ID: ${
-                      message.mapMarkerId || 'unknown'
-                    }`,
-                  )
-                  break
-                case 'onMapClicked':
-                  Alert.alert(
-                    `Map Touched at:`,
-                    `${message.location.lat}, ${message.location.lng}`,
-                  )
-                  break
-                case 'onMove':
-                  setMapCenterPosition(message.mapCenter)
-                case 'onZoom':
-                  setZoom(message.zoom)
-                default:
-                  console.log('App received', message)
-              }
-            }}
-            mapLayers={[
-              {
-                attribution:
-                  '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-                baseLayerIsChecked: true,
-                baseLayerName: 'OpenStreetMap.Mapnik',
-                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              },
-              {
-                baseLayerName: 'Mapbox',
-                url: `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
-              },
-            ]}
-            mapMarkers={mapMarkers}
-            mapShapes={mapShapes}
-            mapCenterPosition={mapCenterPosition}
-            zoom={zoom}
-            maxZoom={20}
-          />
-        }
-      </View>
-    </View>
-  )
+const initialPosition = {
+  lat: 51.4545,
+  lng: 2.5879,
 }
 
 const styles = StyleSheet.create({
@@ -131,3 +82,83 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
 })
+
+export default function App() {
+  const [zoom, setZoom] = useState(7)
+  const [mapCenterPosition, setMapCenterPosition] = useState(initialPosition)
+  const [ownPosition, setOwnPosition] = useState<null | LatLngLiteral>(null)
+
+  useEffect(() => {
+    const getLocationAsync = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        console.warn('Permission to access location was denied')
+      }
+
+      let location = await Location.getCurrentPositionAsync({})
+      if (!ownPosition) {
+        setOwnPosition({
+          lat: location.coords.latitude,
+          lng: location.coords.longitude,
+        })
+      }
+    }
+
+    getLocationAsync().catch((error) => {
+      console.error(error)
+    })
+  }, [])
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>expo-leaflet</Text>
+      </View>
+      <View style={{ flex: 1, position: 'relative' }}>
+        <ExpoLeaflet
+          loadingIndicator={() => <ActivityIndicator />}
+          mapCenterPosition={mapCenterPosition}
+          mapLayers={mapLayers}
+          mapMarkers={mapMarkers}
+          mapOptions={mapOptions}
+          mapShapes={mapShapes}
+          maxZoom={20}
+          onMessage={(message) => {
+            switch (message.tag) {
+              case 'onMapMarkerClicked':
+                Alert.alert(
+                  `Map Marker Touched, ID: ${message.mapMarkerId || 'unknown'}`,
+                )
+                break
+              case 'onMapClicked':
+                Alert.alert(
+                  `Map Touched at:`,
+                  `${message.location.lat}, ${message.location.lng}`,
+                )
+                break
+              case 'onMoveEnd':
+                setMapCenterPosition(message.mapCenter)
+                break
+              case 'onZoomEnd':
+                setZoom(message.zoom)
+                break
+              default:
+                if (['onMove'].includes(message.tag)) {
+                  return
+                }
+                console.log(message)
+            }
+          }}
+          zoom={zoom}
+        />
+      </View>
+      <Button
+        onPress={() => {
+          setMapCenterPosition(initialPosition)
+          setZoom(7)
+        }}
+        title="Reset Map"
+      />
+    </SafeAreaView>
+  )
+}

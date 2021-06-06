@@ -1,10 +1,10 @@
 {
-  "name": "react-native-leaflet-webview",
-  "version": "6.0.0",
+  "name": "expo-leaflet",
+  "version": "1.0.0",
   "description": "A React Native component that uses a WebView to provide a Leaflet map.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dean177/react-native-webview-leaflet.git"
+    "url": "git+https://github.com/Dean177/expo-leaflet.git"
   },
   "keywords": [
     "react-native",
@@ -15,7 +15,8 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "iterate": "yarn build && pushd web && yarn iterate && popd"
   },
   "author": "Dean Merchant <deanmerchant@gmail.com>",
   "license": "ISC",
@@ -26,35 +27,23 @@
   },
   "peerDependencies": {
     "expo-asset": "7.x || 8.x",
-    "expo-asset-utils": "1.x || 2.x",
     "expo-file-system": "8.x || 9.x || 11.x",
     "react": "16.x || 17.x",
-    "react-dom": "16.x || 17.x",
-    "react-native": "^0.61.2",
+    "react-native": "*",
     "react-native-webview": "8.x || 9.x || 10.x || 11.x",
     "react-measure": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-react": "^7.6.3",
     "@types/leaflet": "1.7.1",
     "@types/lodash.isequal": "^4.5.5",
     "@types/node": "^13.1.6",
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.6",
+    "@types/react-measure": "^2.0.6",
     "@types/react-native": "^0.63.50",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "expo": "^41.0.1",
-    "expo-asset-utils": "2.0.0",
-    "expo-file-system": "11.x",
-    "gulp": "4",
-    "gulp-run": "^1.7.1",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-inliner": "^1.0.10",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
+    "expo-asset": "~8.3.1",
+    "expo-file-system": "~11.0.2",
     "react-native-webview": "11.6.2",
     "typescript": "^4.3.2"
   }

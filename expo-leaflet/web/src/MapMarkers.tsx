@@ -1,17 +1,35 @@
-import { LatLngExpression } from 'leaflet'
+import type { LatLngExpression } from 'leaflet'
+import { DivIcon, divIcon } from 'leaflet'
 import * as React from 'react'
 import { LayerGroup, Marker, Popup } from 'react-leaflet'
 // import MarkerClusterGroup from 'react-leaflet-markercluster'
 // import 'react-leaflet-markercluster/dist/styles.min.css'
-import { MapMarker as MapMarkerType, MapMarkerClickedEvent } from '../model'
-import { createDivIcon } from '../utilities'
+import { Dimensions, MapMarker as MapMarkerType } from './model'
+
+export const createDivIcon = (mapMarker: MapMarkerType): DivIcon => {
+  const [x, y]: Dimensions = mapMarker.size ?? [24, 24]
+  const html =
+    mapMarker.icon.includes('svg') || mapMarker.icon.includes('SVG')
+      ? `<div style='font-size: ${Math.max(x, y)}px'>${mapMarker.icon}</div>`
+      : mapMarker.icon.includes('//') && mapMarker.icon.includes('http')
+      ? `<img src="${mapMarker.icon}" style="width:${x}px;height:${y}px;">`
+      : mapMarker.icon.includes('base64')
+      ? `<img src="${mapMarker.icon}" style="width:${x}px;height:${y}px;">`
+      : `<div style='font-size: ${Math.max(x, y)}px'>${mapMarker.icon}</div>`
+
+  return divIcon({
+    className: 'clearMarkerContainer',
+    html,
+    iconAnchor: mapMarker.iconAnchor,
+  })
+}
 
 const MapMarker = ({
   mapMarker,
   onClick,
 }: {
   mapMarker: MapMarkerType
-  onClick: (mapEvent: MapMarkerClickedEvent) => void
+  onClick: (markerId: string) => void
 }) => {
   return (
     <Marker
@@ -20,10 +38,7 @@ const MapMarker = ({
       icon={createDivIcon(mapMarker)}
       eventHandlers={{
         click: () => {
-          onClick({
-            tag: 'onMapMarkerClicked',
-            mapMarkerId: mapMarker.id,
-          })
+          onClick(mapMarker.id)
         },
       }}
     >
@@ -34,11 +49,11 @@ const MapMarker = ({
 
 interface MapMarkersProps {
   mapMarkers: Array<MapMarkerType>
-  onClick: (clickEvent: MapMarkerClickedEvent) => void
+  onClick: (markerId: string) => void
   // maxClusterRadius?: number
 }
 
-export default function MapMarkers(props: MapMarkersProps) {
+export function MapMarkers(props: MapMarkersProps) {
   // const useMarkerClustering = props.maxClusterRadius == null
   // if (useMarkerClustering) {
   //   return (
@@ -76,7 +91,13 @@ export default function MapMarkers(props: MapMarkersProps) {
   return (
     <LayerGroup>
       {props.mapMarkers.map((mapMarker: MapMarkerType) => {
-        return <MapMarker mapMarker={mapMarker} onClick={props.onClick} />
+        return (
+          <MapMarker
+            key={mapMarker.id}
+            mapMarker={mapMarker}
+            onClick={props.onClick}
+          />
+        )
       })}
     </LayerGroup>
   )

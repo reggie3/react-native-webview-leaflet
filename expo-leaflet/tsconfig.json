@@ -10,5 +10,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2019"
-  }
+  },
+  "exclude": [
+    "web/node_modules_temp/**/*"
+  ]
 }

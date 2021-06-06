@@ -1,13 +1,7 @@
-import { LatLng, LatLngLiteral } from 'leaflet'
-import {
-  AnimationType,
-  MapMarker,
-  MapShape,
-  MapShapeType,
-} from 'react-native-leaflet-webview'
+import { MapMarker, MapShape } from 'expo-leaflet'
 
 export const circle: MapShape = {
-  shapeType: MapShapeType.CIRCLE,
+  shapeType: 'circle',
   color: '#123123',
   id: '1',
   center: { lat: 34.225727, lng: -77.94471 },
@@ -15,7 +9,7 @@ export const circle: MapShape = {
 }
 
 export const circleMarker: MapShape = {
-  shapeType: MapShapeType.CIRCLE_MARKER,
+  shapeType: 'circle',
   color: 'red',
   id: '2',
   center: { lat: 38.437424, lng: -78.867912 },
@@ -23,7 +17,7 @@ export const circleMarker: MapShape = {
 }
 
 export const polygon: MapShape = {
-  shapeType: MapShapeType.POLYGON,
+  shapeType: 'polygon',
   color: 'blue',
   id: '3',
   positions: [
@@ -34,7 +28,7 @@ export const polygon: MapShape = {
 }
 
 export const multiPolygon: MapShape = {
-  shapeType: MapShapeType.POLYGON,
+  shapeType: 'polygon',
   color: 'violet',
   id: '4',
   positions: [
@@ -55,7 +49,7 @@ export const multiPolygon: MapShape = {
 }
 
 export const polyline: MapShape = {
-  shapeType: MapShapeType.POLYLINE,
+  shapeType: 'polyline',
   color: 'orange',
   id: '5',
   positions: [
@@ -66,7 +60,7 @@ export const polyline: MapShape = {
 }
 
 export const multiPolyline: MapShape = {
-  shapeType: MapShapeType.POLYLINE,
+  shapeType: 'polyline',
   color: 'purple',
   id: '5a',
   positions: [
@@ -84,7 +78,7 @@ export const multiPolyline: MapShape = {
 }
 
 export const rectangle: MapShape = {
-  shapeType: MapShapeType.RECTANGLE,
+  shapeType: 'rectangle',
   color: 'yellow',
   id: '6',
   bounds: [
@@ -95,22 +89,22 @@ export const rectangle: MapShape = {
 
 export const mapShapes: Array<MapShape> = [
   {
-    shapeType: MapShapeType.CIRCLE,
+    shapeType: 'circle',
     color: '#123123',
     id: '1',
     center: { lat: 34.225727, lng: -77.94471 },
     radius: 2000,
   },
   {
-    shapeType: MapShapeType.CIRCLE_MARKER,
-    color: 'red',
+    shapeType: 'circleMarker',
+    color: '#dd2245',
     id: '2',
     center: { lat: 38.437424, lng: -78.867912 },
     radius: 15,
   },
   {
-    shapeType: MapShapeType.POLYGON,
-    color: 'blue',
+    shapeType: 'polygon',
+    color: '#4545dd',
     id: '3',
     positions: [
       { lat: 38.80118939192329, lng: -74.69604492187501 },
@@ -119,8 +113,8 @@ export const mapShapes: Array<MapShape> = [
     ],
   },
   {
-    shapeType: MapShapeType.POLYGON,
-    color: 'violet',
+    shapeType: 'polygon',
+    color: '#25cc25',
     id: '4',
     positions: [
       [
@@ -139,7 +133,7 @@ export const mapShapes: Array<MapShape> = [
     ],
   },
   {
-    shapeType: MapShapeType.POLYLINE,
+    shapeType: 'polyline',
     color: 'orange',
     id: '5',
     positions: [
@@ -149,9 +143,9 @@ export const mapShapes: Array<MapShape> = [
     ],
   },
   {
-    shapeType: MapShapeType.POLYLINE,
+    shapeType: 'polyline',
     color: 'purple',
-    id: '5a',
+    id: '6',
     positions: [
       [
         { lat: 36.36822190085111, lng: -79.26086425781251 },
@@ -166,7 +160,7 @@ export const mapShapes: Array<MapShape> = [
     ],
   },
   {
-    shapeType: MapShapeType.RECTANGLE,
+    shapeType: 'rectangle',
     color: 'yellow',
     id: '6',
     bounds: [
@@ -176,121 +170,33 @@ export const mapShapes: Array<MapShape> = [
   },
 ]
 
-const emoji = ['😴', '😄', '😃', '⛔', '🎠', '🚓', '🚇']
-const duration = Math.floor(Math.random() * 3) + 1
-const delay = Math.floor(Math.random()) * 0.5
-const iterationCount = 'infinite'
-
-const locations: { icon: string; position: LatLngLiteral; name: string }[] = [
-  {
-    icon: '⭐',
-    position: { lat: 38.895, lng: -77.0366 },
-    name: 'Washington DC',
-  },
-  {
-    icon: '🎢',
-    position: { lat: 37.8399, lng: -77.4442 },
-    name: 'Kings Dominion',
-  },
-  {
-    icon: '🎢',
-    position: { lat: 37.23652, lng: -76.646 },
-    name: 'Busch Gardens Williamsburg',
-  },
-  {
-    icon: '⚓',
-    position: { lat: 36.8477, lng: -76.2951 },
-    name: 'USS Wisconsin (BB-64)',
-  },
-  {
-    icon: '🏰',
-    position: { lat: 28.3852, lng: -81.5639 },
-    name: 'Walt Disney World',
-  },
-]
-
 export const mapMarkers: MapMarker[] = [
+  {
+    id: '1',
+    position: { lat: 36.46410354, lng: -75.6432701 },
+    icon: '📍',
+    size: [32, 32],
+  },
   {
     id: '2',
     position: { lat: 37.06452161, lng: -75.67364786 },
     icon: '😴',
     size: [64, 64],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.PULSE,
-    },
   },
   {
-    id: '19',
+    id: '3',
     position: { lat: 36.46410354, lng: -75.6432701 },
     icon: 'https://www.catster.com/wp-content/uploads/2018/07/Savannah-cat-long-body-shot.jpg',
     size: [32, 32],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.BOUNCE,
-    },
   },
   {
-    id: '100',
-    position: new LatLng(37.23310632, -76.23518332),
-    icon: emoji[Math.floor(Math.random() * emoji.length)],
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.WAGGLE,
-    },
-  },
-  {
-    id: '1',
-    position: { lat: 36.46410354, lng: -75.6432701 },
-    icon: '😴',
-    size: [32, 32],
-    animation: {
-      type: AnimationType.SPIN,
-      duration,
-      delay,
-      iterationCount,
-    },
-  },
-  {
-    id: '1000',
-    position: new LatLng(36.60061515, -76.48888338),
-    icon: `<svg xmlns="http://www.w3.org/2000/svg">
-    <circle id="greencircle" cx="30" cy="30" r="30" fill="green" />
-</svg>`,
-    animation: {
-      duration,
-      delay,
-      iterationCount,
-      type: AnimationType.PULSE,
-    },
-  },
-  {
-    id: Math.floor(Math.random() * 1000).toString(),
-    position: { lat: 37.0580835, lng: -75.82318747 },
-    icon: 'Fish',
-    animation: {
-      type: AnimationType.WAGGLE,
-      duration,
-      delay,
-      iterationCount,
-    },
-  },
-  {
-    id: Math.floor(Math.random() * 1000).toString(),
+    id: '4',
     position: { lat: 37.23310632, lng: -76.23518332 },
-    icon: emoji[Math.floor(Math.random() * emoji.length)],
-    size: [4, 4],
-    animation: {
-      type: AnimationType.PULSE,
-      duration,
-      delay,
-      iterationCount,
-    },
+    icon: `
+    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.9 1a8.6 8.6 0 00-8.6 8.6c0 4.35 7.2 12.05 8.42 13.33a.24.24 0 00.35 0c1.22-1.27 8.42-9 8.42-13.33A8.6 8.6 0 0011.9 1zm0 11.67A3.07 3.07 0 1115 9.6a3.07 3.07 0 01-3.1 3.07z"/>
+    </svg>
+    `,
+    size: [24, 24],
   },
 ]

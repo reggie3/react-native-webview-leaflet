@@ -11,22 +11,22 @@ import {
   Rectangle,
   RectangleProps,
 } from 'react-leaflet'
-import { LeafletWebViewEvent, MapShape, MapShapeType } from '../model'
+import { MapShape } from './model'
 
 export const Shape = (props: MapShape) => {
   switch (props.shapeType) {
-    case MapShapeType.CIRCLE:
+    case 'circle':
       return <Circle {...(props as CircleProps)} />
-    case MapShapeType.CIRCLE_MARKER: {
+    case 'circleMarker': {
       return <CircleMarker {...(props as CircleMarkerProps)} />
     }
-    case MapShapeType.POLYGON: {
+    case 'polygon': {
       return <Polygon {...(props as PolygonProps)} />
     }
-    case MapShapeType.POLYLINE: {
+    case 'polyline': {
       return <Polyline {...(props as PolylineProps)} />
     }
-    case MapShapeType.RECTANGLE: {
+    case 'rectangle': {
       return <Rectangle {...(props as RectangleProps)} />
     }
     default:
@@ -35,11 +35,11 @@ export const Shape = (props: MapShape) => {
   }
 }
 
-export interface MapMapShapesProps {
-  mapShapes: MapShape[]
+export type MapMapShapesProps = {
+  mapShapes: Array<MapShape>
 }
 
-function MapShapes(props: MapMapShapesProps) {
+export function MapShapes(props: MapMapShapesProps) {
   return (
     <>
       {props.mapShapes.map((mapShape) => {
@@ -54,5 +54,3 @@ function MapShapes(props: MapMapShapesProps) {
     </>
   )
 }
-
-export default MapShapes

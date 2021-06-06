@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "react-native-webview-leaflet-demo",
+    "name": "expo-leaflet-demo",
     "slug": "demoApp",
     "privacy": "public",
     "platforms": [
