@@ -19,7 +19,7 @@
     "iterate": "yarn build && pushd web && yarn iterate && popd"
   },
   "author": "Dean Merchant <deanmerchant@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "leaflet": "^1.7.1",
     "lodash.isequal": "^4.5.0",
