@@ -1,6 +1,6 @@
 {
   "name": "expo-leaflet",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React Native component that uses a WebView to provide a Leaflet map.",
   "repository": {
     "type": "git",
@@ -29,9 +29,9 @@
     "expo-asset": "7.x || 8.x",
     "expo-file-system": "8.x || 9.x || 11.x",
     "react": "16.x || 17.x",
+    "react-measure": "^2.3.0",
     "react-native": "*",
-    "react-native-webview": "8.x || 9.x || 10.x || 11.x",
-    "react-measure": "^2.3.0"
+    "react-native-webview": "8.x || 9.x || 10.x || 11.x"
   },
   "devDependencies": {
     "@types/leaflet": "1.7.1",
