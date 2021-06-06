@@ -1,6 +1,6 @@
 # expo-leaflet
 
-## A Leaflet map component with no native code
+A [Leaflet](https://leafletjs.com) map component with no native code
 
 ## Installation
 
@@ -8,16 +8,16 @@
 expo install expo-asset expo-file-system react-native-webview
 ```
 
+If you want web support you also need to 
+
+```sh
+npm install --save react-measure
+```
+
 Then:
 
 ```sh
 npm install --save expo-leaflet
-```
-
-or
-
-```sh
-yarn add expo-leaflet
 ```
 
 ## Usage

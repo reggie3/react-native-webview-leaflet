@@ -7,9 +7,12 @@
     "url": "git+https://github.com/Dean177/expo-leaflet.git"
   },
   "keywords": [
-    "react-native",
-    "leaflet",
     "expo",
+    "leaflet",
+    "mapbox",
+    "maps",
+    "osm",
+    "react-native",
     "webview"
   ],
   "main": "index.js",
