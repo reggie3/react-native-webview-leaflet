@@ -39,7 +39,7 @@ export const NativeHarness = () => {
       window.addEventListener('message', handleNativeMessage)
       sendMessage({
         tag: 'MapComponentMounted',
-        version: '1.0.1',
+        version: '1.0.2',
       })
     } else {
       sendMessage({

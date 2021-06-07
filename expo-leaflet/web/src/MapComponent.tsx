@@ -219,7 +219,7 @@ export const MapComponent = (props: ExpoLeafletProps) => {
                     })
                   },
                 })
-                onMessage({ tag: 'MapReady', version: '1.0.1' })
+                onMessage({ tag: 'MapReady', version: '1.0.2' })
               }}
               center={mapCenterPosition as LatLngExpression}
               maxZoom={props.maxZoom ?? 20}
