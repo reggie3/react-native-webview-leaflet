@@ -21,6 +21,8 @@ export const ExpoLeaflet = ({
   const [isWebviewReady, setWebviewReady] = useState(false)
   const previousPropsRef = useRef<Partial<LeafletMapProps>>({})
   useEffect(() => {
+    let isNotCancelled = true;
+
     const loadHtmlFile = async () => {
       try {
         const path = require(`./assets/index.html`)
@@ -29,17 +31,25 @@ export const ExpoLeaflet = ({
         const webviewContent: string = await FileSystem.readAsStringAsync(
           htmlFile.localUri!,
         )
-        setWebviewContent(webviewContent)
-        onMessage({
-          tag: 'DebugMessage',
-          message: 'WebView content loaded',
-        })
+        if (isNotCancelled) {
+          setWebviewContent(webviewContent)
+          onMessage({
+            tag: 'DebugMessage',
+            message: 'WebView content loaded',
+          })
+        }
       } catch (error) {
-        onMessage({ tag: 'Error', error })
+        if (isNotCancelled) {
+          onMessage({ tag: 'Error', error })
+        }
       }
     }
 
     loadHtmlFile().catch(() => {})
+
+    return () => {
+      isNotCancelled = false;
+    }
   }, [])
 
   useEffect(() => {
