@@ -65,7 +65,7 @@ A typical example is shown below:
 | mapMarkers          | optional | MapMarker array                 | An array of map markers                                                                                                                                                                                         |
 | mapShapes           | optional | MapShape[]                      | An array of map shapes                                                                                                                                                                                          |
 | mapCenterPosition   | optional | {lat: [Lat], lng: [Lng]} object | The center position of the map. This coordinate will not be accurate if the map has been moved manually. However, calling the map's setMapCenterPosition function will cause the map to revert to this location |
-| ownPositionMarker   | optional | Marker                          | A special marker that has an ID of OWN_POSTION_MARKER_ID                                                                                                                                                        |  |
+| ownPositionMarker   | optional | OwnPositionMarker               | A special marker that has an ID of OWN_POSTION_MARKER_ID                                                                                                                                                        |  |
 | zoom                | optional | number                          | Desired zoom value of the map                                                                                                                                                                                   |
 
 ### Example Marker
@@ -73,14 +73,14 @@ A typical example is shown below:
 ```javascript
 ownPositionMarker={{
     id: '1',
-    coords: {lat: 36.00, lng, -76.00},
+    position: {lat: 36.00, lng, -76.00},
     icon: "❤️",
     size: [24, 24],
     animation: {
-      name: AnimationType.BOUNCE,
-      duration: ".5",
+      type: AnimationType.BOUNCE,
+      duration: 0.5,
       delay: 0,
-      interationCount: INFINITE_ANIMATION_ITERATIONS
+      iterationCount: INFINITE_ANIMATION_ITERATIONS
     }
   }}
 ```
