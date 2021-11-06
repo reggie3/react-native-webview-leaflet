@@ -35,7 +35,7 @@ yarn add react-native-webview-leaflet
 
 ## Usage
 
-and import like so
+and import like so:
 
 ```javascript
 import WebViewLeaflet from "react-native-webview-leaflet";
