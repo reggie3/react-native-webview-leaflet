@@ -19,6 +19,7 @@ interface MapComponentViewProps {
   onMapEvent: (mapEvent: WebViewLeafletEvents, payload?: any) => void;
   ownPositionMarker: MapMarker;
   setMapRef: (mapRef: any) => void;
+  useMarkerClustering: boolean;
   zoom: number;
 }
 
@@ -32,7 +33,8 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
   onMapEvent,
   ownPositionMarker,
   setMapRef,
-  zoom = 13
+  useMarkerClustering,
+  zoom = 13,
 }: MapComponentViewProps) => {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
   const [combinedMapMarkers, setCombinedMapMarkers] = useState([]);
@@ -114,12 +116,15 @@ const MapComponentView: React.FC<MapComponentViewProps> = ({
                 }}
                 maxZoom={17}
                 zoom={zoom}
+                attributionControl={false}
+                zoomControl={false}
                 style={{ width: "100%", height: dimensions.height }}
               >
                 <MapLayers mapLayers={mapLayers} />
                 <MapMarkers
                   mapMarkers={combinedMapMarkers}
                   onMapEvent={onMapEvent}
+                  useMarkerClustering={useMarkerClustering}
                 />
                 <MapShapes mapShapes={mapShapes} onMapEvent={onMapEvent} />
               </Map>

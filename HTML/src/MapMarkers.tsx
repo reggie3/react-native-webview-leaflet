@@ -28,6 +28,7 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
             mapMarkerID: mapMarker.id
           });
         }}
+
       >
         {mapMarker.title && <Popup>{mapMarker.title}</Popup>}
       </Marker>
@@ -35,7 +36,7 @@ export default class MapMarkers extends React.Component<MapMarkersProps> {
   };
 
   render() {
-    const { mapMarkers, useMarkerClustering = true } = this.props;
+    const { mapMarkers, useMarkerClustering = false } = this.props;
     if (useMarkerClustering) {
       return (
         <LayerGroup>

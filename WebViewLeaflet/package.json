@@ -1,15 +1,14 @@
 {
-  "name": "react-native-webview-leaflet",
-  "version": "5.0.2",
+  "name": "react-native-expoless-webview-leaflet",
+  "version": "5.1.5",
   "description": "A React Native component that uses a React Native WebView to provide a Leaflet map.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reggie3/react-native-webview-leaflet.git"
+    "url": "git+https://github.com/matmedev/react-native-webview-leaflet.git"
   },
   "keywords": [
     "react-native",
     "leaflet",
-    "expo",
     "webview"
   ],
   "main": "index.ts",
@@ -20,14 +19,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "expo-asset": "^7.0.0",
-    "expo-asset-utils": "^1.2.0",
-    "expo-file-system": "^8.0.0",
-    "leaflet": "^1.5.1",
+    "leaflet": "^1.7.1",
     "lodash.isequal": "^4.5.0",
-    "react-dom": "^16.10.2",
-    "react-leaflet": "^2.6.1",
-    "react-native-webview": "^8.0.3"
+    "react-dom": "^17.0.1",
+    "react-leaflet": "^3.0.5",
+    "react-native-webview": "^11.0.2"
   },
   "peerDependencies": {
     "react": "^16.9.0",
@@ -35,16 +31,16 @@
     "react-native": "^0.61.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-react": "^7.6.3",
-    "@types/node": "^13.1.6",
-    "@types/react-leaflet": "^2.4.0",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-react": "^7.12.10",
+    "@types/node": "^14.14.16",
+    "@types/react-leaflet": "^2.5.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "gulp": "4",
+    "gulp": "4.0.2",
     "gulp-run": "^1.7.1",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-inliner": "^1.0.10",
-    "typescript": "^3.6.4"
+    "parcel-plugin-inliner": "^1.0.14",
+    "typescript": "^4.1.3"
   }
 }

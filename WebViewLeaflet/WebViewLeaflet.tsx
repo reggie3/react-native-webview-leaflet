@@ -1,7 +1,5 @@
 import * as React from "react";
 import { WebView } from "react-native-webview";
-import AssetUtils from "expo-asset-utils";
-import { Asset } from "expo-asset";
 import WebViewLeafletView from "./WebViewLeaflet.view";
 import {
   MapMarker,
@@ -14,11 +12,10 @@ import {
   OWN_POSTION_MARKER_ID
 } from "./models";
 import { ActivityOverlay } from "./ActivityOverlay";
-import * as FileSystem from "expo-file-system";
 import { LatLng } from "react-leaflet";
 import isEqual from "lodash.isequal";
 // @ts-ignore node types
-const INDEX_FILE_PATH = require(`./assets/index.html`);
+const HTML_FILE_SOURCE = Platform.OS === 'android' ? {uri: 'file:///android_asset/index.html'} : require(`./assets/index.html`);
 
 export interface WebViewLeafletProps {
   backgroundColor?: string;
@@ -39,7 +36,6 @@ export interface WebViewLeafletProps {
 interface State {
   debugMessages: string[];
   mapCurrentCenterPosition: LatLng;
-  webviewContent: string;
   isLoading: boolean;
 }
 
@@ -63,43 +59,20 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       debugMessages: [],
       isLoading: null,
       mapCurrentCenterPosition: null,
-      webviewContent: null
     };
     this.webViewRef = null;
   }
 
-  componentDidMount = () => {
-    this.loadHTMLFile();
-  };
-
-  private loadHTMLFile = async () => {
-    try {
-      let asset: Asset = await AssetUtils.resolveAsync(INDEX_FILE_PATH);
-      let fileString: string = await FileSystem.readAsStringAsync(
-        asset.localUri
-      );
-
-      this.setState({ webviewContent: fileString });
-    } catch (error) {
-      console.warn(error);
-      console.warn("Unable to resolve index file");
-    }
-  };
-
   componentDidUpdate = (prevProps: WebViewLeafletProps, prevState: State) => {
-    const { webviewContent } = this.state;
     const {
       mapCenterPosition,
       mapMarkers,
       mapLayers,
       mapShapes,
       ownPositionMarker,
-      zoom
+      zoom,
     } = this.props;
 
-    if (!prevState.webviewContent && webviewContent) {
-      this.updateDebugMessages("file loaded");
-    }
     if (!isEqual(mapCenterPosition, prevProps.mapCenterPosition)) {
       this.sendMessage({ mapCenterPosition });
     }
@@ -153,7 +126,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
 
   // Send message to webview
   private sendMessage = (payload: object) => {
-    this.updateDebugMessages(`sending: ${payload}`);
+    this.updateDebugMessages(`sending: ${JSON.stringify(payload, null, 2)}`);
 
     this.webViewRef?.injectJavaScript(
       `window.postMessage(${JSON.stringify(payload)}, '*');`
@@ -169,7 +142,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
       mapShapes,
       mapCenterPosition,
       ownPositionMarker,
-      zoom = 7
+      zoom = 7,
     } = this.props;
     if (mapLayers) {
       startupMessage.mapLayers = mapLayers;
@@ -193,7 +166,7 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
     startupMessage.zoom = zoom;
 
     this.setState({ isLoading: false });
-    this.updateDebugMessages("sending startup message");
+    this.updateDebugMessages("sending startup message: " + JSON.stringify(startupMessage, null, 2));
 
     this.webViewRef.injectJavaScript(
       `window.postMessage(${JSON.stringify(startupMessage)}, '*');`
@@ -221,33 +194,29 @@ class WebViewLeaflet extends React.Component<WebViewLeafletProps, State> {
 
   // Output rendered item to screen
   render() {
-    const { debugMessages, webviewContent } = this.state;
+    const { debugMessages } = this.state;
     const {
       backgroundColor,
       doShowDebugMessages,
       loadingIndicator
     } = this.props;
 
-    if (webviewContent) {
-      return (
-        <WebViewLeafletView
-          backgroundColor={backgroundColor}
-          debugMessages={debugMessages}
-          doShowDebugMessages={doShowDebugMessages}
-          handleMessage={this.handleMessage}
-          webviewContent={webviewContent}
-          loadingIndicator={loadingIndicator}
-          onError={this.onError}
-          onLoadEnd={this.onLoadEnd}
-          onLoadStart={this.onLoadStart}
-          setWebViewRef={(ref: WebView) => {
-            this.webViewRef = ref;
-          }}
-        />
-      );
-    } else {
-      return null;
-    }
+    return (
+      <WebViewLeafletView
+        backgroundColor={backgroundColor}
+        debugMessages={debugMessages}
+        doShowDebugMessages={doShowDebugMessages}
+        handleMessage={this.handleMessage}
+        webviewSource={HTML_FILE_SOURCE}
+        loadingIndicator={loadingIndicator}
+        onError={this.onError}
+        onLoadEnd={this.onLoadEnd}
+        onLoadStart={this.onLoadStart}
+        setWebViewRef={(ref: WebView) => {
+          this.webViewRef = ref;
+        }}
+      />
+    );
   }
 }
 

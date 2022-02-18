@@ -9,7 +9,6 @@ import {
   AnimationType,
   MapShapeType
 } from "react-native-webview-leaflet";
-import { mapboxToken } from "./secrets";
 import { Button } from "native-base";
 import lodashSample from "lodash.sample";
 import * as Location from "expo-location";
@@ -113,13 +112,6 @@ export default function App() {
                 baseLayerIsChecked: true,
                 baseLayerName: "OpenStreetMap.Mapnik",
                 url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              },
-              {
-                baseLayerName: "Mapbox",
-                //url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                url: `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${mapboxToken}`,
-                attribution:
-                  "&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
               }
             ]}
             mapMarkers={[
